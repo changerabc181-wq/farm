@@ -10,9 +10,14 @@ class_name Village
 # 场景切换目标
 const FARM_SCENE = "res://src/world/maps/Farm.tscn"
 
+# NPC管理器
+var npc_manager: NPCManager = null
+
 func _ready() -> void:
 	print("[Village] Scene loaded")
 	_setup_tilemap()
+	_setup_npc_manager()
+	_setup_ui()
 	_connect_transition_areas()
 
 func _setup_tilemap() -> void:
@@ -20,6 +25,24 @@ func _setup_tilemap() -> void:
 		var tile_set: TileSet = TileSet.new()
 		tile_map.tile_set = tile_set
 	print("[Village] TileMap setup complete")
+
+func _setup_npc_manager() -> void:
+	npc_manager = NPCManager.new()
+	npc_manager.name = "NPCManager"
+	add_child(npc_manager)
+	npc_manager.set_current_scene(self)
+	print("[Village] NPC Manager initialized")
+
+func _setup_ui() -> void:
+	# 创建UI画布层
+	var ui_canvas = CanvasLayer.new()
+	ui_canvas.layer = 10
+	add_child(ui_canvas)
+	
+	# 添加时间显示
+	var time_display = preload("res://src/ui/hud/TimeDisplay.tscn").instantiate()
+	ui_canvas.add_child(time_display)
+	print("[Village] UI setup complete")
 
 func _connect_transition_areas() -> void:
 	var to_farm_area = $TransitionAreas/ToFarmArea

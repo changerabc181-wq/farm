@@ -26,6 +26,7 @@ GiftSystem="*res://src/core/social/GiftSystem.gd"
 ForagingSystem="*res://src/core/farming/ForagingSystem.gd"
 QuestSystem="*res://src/core/quest/QuestSystem.gd"
 PlantingManager="*res://src/core/farming/PlantingManager.gd"
+NPCManager="*res://src/core/relationship/NPCManager.gd"
 
 [display]
 window/size/viewport_width=1280
