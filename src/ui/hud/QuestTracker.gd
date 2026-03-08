@@ -1,322 +1,146 @@
 extends Control
 class_name QuestTracker
 
-## QuestTracker - 任务追踪UI
-## 在屏幕边缘显示当前追踪任务的进度
+## QuestTracker - 任务追踪器UI
+## 显示当前活跃任务和进度
 
-## 任务面板场景
-const QUEST_PANEL_SCENE: PackedScene = preload("res://src/ui/hud/QuestPanel.tscn")
+@onready var quest_list: VBoxContainer = $Panel/QuestList
+@onready var toggle_button: Button = $ToggleButton
+@onready var panel: Panel = $Panel
 
-## 追踪面板容器
-@onready var _panel_container: VBoxContainer = $MarginContainer/VBoxContainer
-
-## 标题标签
-@onready var _title_label: Label = $MarginContainer/VBoxContainer/TitleLabel
-
-## 任务列表容器
-@onready var _quest_list: VBoxContainer = $MarginContainer/VBoxContainer/QuestList
-
-## 展开/折叠按钮
-@onready var _toggle_button: Button = $MarginContainer/VBoxContainer/ToggleButton
-
-## 是否展开
-var _is_expanded: bool = true
-
-## 最大显示任务数
-const MAX_DISPLAYED_QUESTS: int = 5
-
-## 当前追踪的任务ID列表
-var _tracked_quests: Array[String] = []
-
-## 任务面板缓存
-var _quest_panels: Dictionary = {}
-
-## 动画持续时间
-const ANIM_DURATION: float = 0.3
-
+var is_visible: bool = true
+var quest_items: Dictionary = {}  # quest_id -> UI节点
 
 func _ready() -> void:
+	_setup_ui()
 	_connect_signals()
-	_create_toggle_button()
-	_update_display()
+	_refresh_quest_list()
 
+func _setup_ui() -> void:
+	if toggle_button:
+		toggle_button.pressed.connect(_on_toggle_pressed)
+	
+	# 初始显示状态
+	if panel:
+		panel.visible = is_visible
 
 func _connect_signals() -> void:
+	# 连接任务系统信号
 	if QuestSystem:
 		QuestSystem.quest_accepted.connect(_on_quest_accepted)
+		QuestSystem.quest_progress_updated.connect(_on_quest_progress_updated)
 		QuestSystem.quest_completed.connect(_on_quest_completed)
 		QuestSystem.quest_turned_in.connect(_on_quest_turned_in)
-		QuestSystem.quest_progress_updated.connect(_on_quest_progress_updated)
 		QuestSystem.objective_completed.connect(_on_objective_completed)
-		QuestSystem.quest_failed.connect(_on_quest_failed)
 
-
-func _create_toggle_button() -> void:
-	if _toggle_button:
-		_toggle_button.text = "收起"
-		_toggle_button.pressed.connect(_toggle_expanded)
-
-
-func _toggle_expanded() -> void:
-	_is_expanded = not _is_expanded
-
-	if _toggle_button:
-		_toggle_button.text = "展开" if not _is_expanded else "收起"
-
-	if _quest_list:
-		var tween: Tween = create_tween()
-		tween.set_ease(Tween.EASE_IN_OUT)
-		tween.set_trans(Tween.TRANS_QUAD)
-
-		if _is_expanded:
-			_quest_list.visible = true
-			tween.tween_property(_quest_list, "modulate:a", 1.0, ANIM_DURATION)
-		else:
-			tween.tween_property(_quest_list, "modulate:a", 0.0, ANIM_DURATION)
-			tween.tween_callback(func(): _quest_list.visible = false)
-
-
-func _update_display() -> void:
-	if not _quest_list:
-		return
-
-	# 清空现有面板
-	for child in _quest_list.get_children():
-		child.queue_free()
-
-	_quest_panels.clear()
-
-	# 获取活跃任务
-	if not QuestSystem:
-		return
-
-	var active_quests: Array = QuestSystem.get_active_quests()
-
-	# 限制显示数量
-	var display_count: int = mini(active_quests.size(), MAX_DISPLAYED_QUESTS)
-
-	for i in range(display_count):
-		var quest: QuestSystem.QuestData = active_quests[i]
-		_add_quest_panel(quest)
-
-	# 更新标题
-	if _title_label:
-		if active_quests.size() > MAX_DISPLAYED_QUESTS:
-			_title_label.text = "任务追踪 (%d/%d)" % [MAX_DISPLAYED_QUESTS, active_quests.size()]
-		else:
-			_title_label.text = "任务追踪 (%d)" % active_quests.size()
-
-
-func _add_quest_panel(quest: QuestSystem.QuestData) -> void:
-	if not _quest_list:
-		return
-
-	var panel: Control = _create_quest_panel(quest)
-	_quest_list.add_child(panel)
-	_quest_panels[quest.id] = panel
-
-
-func _create_quest_panel(quest: QuestSystem.QuestData) -> Control:
-	# 创建面板容器
-	var panel: PanelContainer = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(250, 0)
-
-	# 创建样式
-	var style: StyleBoxFlat = StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.1, 0.15, 0.85)
-	style.border_color = Color(0.3, 0.3, 0.4)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	panel.add_theme_stylebox_override("panel", style)
-
-	# 内容容器
-	var content: VBoxContainer = VBoxContainer.new()
-	content.add_theme_constant_override("separation", 4)
-	panel.add_child(content)
-
-	# 任务标题
-	var title: Label = Label.new()
-	title.text = quest.title
-	title.add_theme_font_size_override("font_size", 14)
-	title.add_theme_color_override("font_color", Color(1.0, 0.9, 0.6))
-	title.add_theme_color_override("font_outline_color", Color.BLACK)
-	title.add_theme_constant_override("outline_size", 2)
-	content.add_child(title)
-
-	# 目标列表
-	var progress: QuestSystem.QuestProgress = QuestSystem.get_quest_progress(quest.id)
-
-	for i in quest.objectives.size():
-		var objective: Dictionary = quest.objectives[i]
-		var current: int = progress.objective_progress[i] if progress and i < progress.objective_progress.size() else 0
-		var required: int = objective.required
-
-		var obj_label: Label = Label.new()
-		obj_label.text = QuestSystem.get_objective_description(quest.id, i)
-
-		# 完成状态颜色
-		if current >= required:
-			obj_label.add_theme_color_override("font_color", Color(0.5, 1.0, 0.5))
-			obj_label.text = "✓ " + obj_label.text
-		else:
-			obj_label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
-			obj_label.text = "○ " + obj_label.text + " (%d/%d)" % [current, required]
-
-		obj_label.add_theme_font_size_override("font_size", 12)
-		obj_label.add_theme_color_override("font_outline_color", Color.BLACK)
-		obj_label.add_theme_constant_override("outline_size", 1)
-		obj_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		content.add_child(obj_label)
-
-	# 完成进度条
-	if quest.objectives.size() > 1:
-		var progress_bar: ProgressBar = ProgressBar.new()
-		progress_bar.custom_minimum_size = Vector2(0, 8)
-		progress_bar.show_percentage = false
-
-		var completed: int = 0
-		for i in quest.objectives.size():
-			if QuestSystem.is_objective_completed(quest.id, i):
-				completed += 1
-
-		progress_bar.max_value = quest.objectives.size()
-		progress_bar.value = completed
-
-		# 进度条样式
-		var bg_style: StyleBoxFlat = StyleBoxFlat.new()
-		bg_style.bg_color = Color(0.2, 0.2, 0.2)
-		bg_style.set_corner_radius_all(4)
-		progress_bar.add_theme_stylebox_override("background", bg_style)
-
-		var fill_style: StyleBoxFlat = StyleBoxFlat.new()
-		fill_style.bg_color = Color(0.3, 0.7, 0.3)
-		fill_style.set_corner_radius_all(4)
-		progress_bar.add_theme_stylebox_override("fill", fill_style)
-
-		content.add_child(progress_bar)
-
-	return panel
-
-
-func _refresh_quest_panel(quest_id: String) -> void:
-	if not _quest_panels.has(quest_id):
-		return
-
-	var quest: QuestSystem.QuestData = QuestSystem.get_quest(quest_id)
-	if not quest:
-		return
-
-	# 移除旧面板
-	var old_panel: Control = _quest_panels[quest_id]
-	var index: int = old_panel.get_index()
-
-	old_panel.queue_free()
-	_quest_panels.erase(quest_id)
-
-	# 创建新面板
-	await get_tree().process_frame
-
-	if _quest_list and _quest_list.get_child_count() >= index:
-		var new_panel: Control = _create_quest_panel(quest)
-		_quest_list.add_child(new_panel)
-		_quest_list.move_child(new_panel, index)
-		_quest_panels[quest_id] = new_panel
-
-
-# ===== 信号处理 =====
-
+func _on_toggle_pressed() -> void:
+	is_visible = !is_visible
+	if panel:
+		panel.visible = is_visible
+	if toggle_button:
+		toggle_button.text = "▼" if is_visible else "▶"
 
 func _on_quest_accepted(quest_id: String) -> void:
-	_update_display()
-	_show_notification("新任务: " + _get_quest_title(quest_id))
+	_refresh_quest_list()
 
+func _on_quest_progress_updated(quest_id: String, objective_index: int, current: int, required: int) -> void:
+	_update_quest_item(quest_id)
 
 func _on_quest_completed(quest_id: String) -> void:
-	_show_notification("任务完成: " + _get_quest_title(quest_id), true)
-	_update_display()
-
+	_update_quest_item(quest_id)
 
 func _on_quest_turned_in(quest_id: String, _rewards: Dictionary) -> void:
-	if _quest_panels.has(quest_id):
-		var panel: Control = _quest_panels[quest_id]
-		panel.queue_free()
-		_quest_panels.erase(quest_id)
-
-	_update_display()
-
-
-func _on_quest_progress_updated(quest_id: String, _objective_index: int, _current: int, _required: int) -> void:
-	_refresh_quest_panel(quest_id)
-
+	_remove_quest_item(quest_id)
 
 func _on_objective_completed(quest_id: String, _objective_index: int) -> void:
-	_refresh_quest_panel(quest_id)
+	_update_quest_item(quest_id)
 
+func _refresh_quest_list() -> void:
+	if not QuestSystem or not quest_list:
+		return
+	
+	# 清除现有列表
+	for child in quest_list.get_children():
+		child.queue_free()
+	quest_items.clear()
+	
+	# 获取活跃任务
+	var active_quests = QuestSystem.get_active_quests()
+	
+	for quest in active_quests:
+		var quest_item = _create_quest_item(quest)
+		quest_list.add_child(quest_item)
+		quest_items[quest.id] = quest_item
 
-func _on_quest_failed(quest_id: String, _reason: String) -> void:
-	_show_notification("任务失败: " + _get_quest_title(quest_id), false, true)
-	_update_display()
+func _create_quest_item(quest: QuestSystem.QuestData) -> Control:
+	var container = VBoxContainer.new()
+	container.name = "Quest_" + quest.id
+	
+	# 任务标题
+	var title_label = Label.new()
+	title_label.text = quest.title
+	title_label.add_theme_font_size_override("font_size", 16)
+	container.add_child(title_label)
+	
+	# 获取任务进度
+	var progress = QuestSystem.get_quest_progress(quest.id)
+	var is_completed = QuestSystem.get_quest_state(quest.id) == QuestSystem.QuestState.COMPLETED
+	
+	if is_completed:
+		# 显示完成提示
+		var complete_label = Label.new()
+		complete_label.text = "✓ 已完成 - 去找 " + quest.quest_giver + " 提交"
+		complete_label.add_theme_color_override("font_color", Color.GREEN)
+		container.add_child(complete_label)
+	else:
+		# 显示目标列表
+		for i in quest.objectives.size():
+			var objective = quest.objectives[i]
+			var current = QuestSystem.get_objective_progress(quest.id, i)
+			var required = objective.required
+			var is_obj_completed = QuestSystem.is_objective_completed(quest.id, i)
+			
+			var obj_label = Label.new()
+			var desc = QuestSystem.get_objective_description(quest.id, i)
+			
+			if is_obj_completed:
+				obj_label.text = "  ✓ %s" % desc
+				obj_label.add_theme_color_override("font_color", Color.GRAY)
+			else:
+				obj_label.text = "  ○ %s (%d/%d)" % [desc, current, required]
+			
+			obj_label.add_theme_font_size_override("font_size", 12)
+			container.add_child(obj_label)
+	
+	return container
 
+func _update_quest_item(quest_id: String) -> void:
+	if not quest_items.has(quest_id):
+		_refresh_quest_list()
+		return
+	
+	var quest = QuestSystem.get_quest(quest_id)
+	if not quest:
+		return
+	
+	# 重新创建该任务项
+	var old_item = quest_items[quest_id]
+	var new_item = _create_quest_item(quest)
+	
+	var index = old_item.get_index()
+	quest_list.remove_child(old_item)
+	old_item.queue_free()
+	
+	quest_list.add_child(new_item)
+	quest_list.move_child(new_item, index)
+	quest_items[quest_id] = new_item
 
-func _get_quest_title(quest_id: String) -> String:
-	var quest: QuestSystem.QuestData = QuestSystem.get_quest(quest_id)
-	if quest:
-		return quest.title
-	return quest_id
+func _remove_quest_item(quest_id: String) -> void:
+	if quest_items.has(quest_id):
+		var item = quest_items[quest_id]
+		quest_list.remove_child(item)
+		item.queue_free()
+		quest_items.erase(quest_id)
 
-
-func _show_notification(message: String, is_complete: bool = false, is_fail: bool = false) -> void:
-	if EventBus:
-		var type: int = 0  # 普通通知
-		if is_complete:
-			type = 1  # 成功通知
-		elif is_fail:
-			type = 2  # 失败通知
-		EventBus.notification_shown.emit(message, type)
-
-
-## 打开任务日志界面
-func open_quest_log() -> void:
-	# TODO: 实现任务日志界面
-	print("[QuestTracker] Opening quest log...")
-
-
-## 追踪指定任务
-func track_quest(quest_id: String) -> void:
-	if not _tracked_quests.has(quest_id):
-		_tracked_quests.append(quest_id)
-		_update_display()
-
-
-## 取消追踪任务
-func untrack_quest(quest_id: String) -> void:
-	if _tracked_quests.has(quest_id):
-		_tracked_quests.erase(quest_id)
-		_update_display()
-
-
-## 获取追踪的任务列表
-func get_tracked_quests() -> Array[String]:
-	return _tracked_quests
-
-
-## 保存设置
-func save_settings() -> Dictionary:
-	return {
-		"is_expanded": _is_expanded,
-		"tracked_quests": _tracked_quests
-	}
-
-
-## 加载设置
-func load_settings(data: Dictionary) -> void:
-	_is_expanded = data.get("is_expanded", true)
-	_tracked_quests.clear()
-
-	for qid in data.get("tracked_quests", []):
-		_tracked_quests.append(str(qid))
-
-	if _toggle_button:
-		_toggle_button.text = "展开" if not _is_expanded else "收起"
-
-	_update_display()
+func toggle_visibility() -> void:
+	_on_toggle_pressed()

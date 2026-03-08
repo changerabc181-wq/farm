@@ -19,10 +19,28 @@ class_name Beach
 # 场景切换点
 @onready var exit_to_village: Area2D = $ExitToVillage if has_node("ExitToVillage") else null
 
+const VILLAGE_SCENE = "res://src/world/maps/Village.tscn"
+
 func _ready() -> void:
+	_setup_ui()
 	_setup_fishing_spots()
 	_setup_exits()
 	print("[Beach] Scene initialized")
+
+func _setup_ui() -> void:
+	# 创建UI画布层
+	var ui_canvas = CanvasLayer.new()
+	ui_canvas.layer = 10
+	add_child(ui_canvas)
+	
+	# 添加时间显示
+	var time_display = preload("res://src/ui/hud/TimeDisplay.tscn").instantiate()
+	ui_canvas.add_child(time_display)
+	
+	# 添加任务追踪
+	var quest_tracker = preload("res://src/ui/hud/QuestTracker.tscn").instantiate()
+	ui_canvas.add_child(quest_tracker)
+	print("[Beach] UI setup complete")
 
 ## 设置钓鱼点
 func _setup_fishing_spots() -> void:
@@ -54,8 +72,7 @@ func _on_fishing_ended(spot: FishingSpot, success: bool, fish_id: String) -> voi
 func _on_exit_village(body: Node2D) -> void:
 	if body is Player:
 		print("[Beach] Player exiting to village")
-		EventBus.scene_transition_started.emit("Village")
-		# TODO: 实现场景切换
+		SceneTransition.transition_to(VILLAGE_SCENE)
 
 ## 获取钓鱼地点类型
 func get_fishing_location_type() -> String:

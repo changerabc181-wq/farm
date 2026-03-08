@@ -2,156 +2,67 @@ extends Area2D
 class_name FishingSpot
 
 ## FishingSpot - 钓鱼点
-## 玩家可以在此使用鱼竿钓鱼
+## 玩家可以在这里使用鱼竿钓鱼
 
-# 信号
-signal fishing_started(spot: FishingSpot)
-signal fishing_ended(spot: FishingSpot, success: bool, fish_id: String)
-signal interaction_available(spot: FishingSpot)
-signal interaction_unavailable(spot: FishingSpot)
+@export var location_type: String = "lake"  # lake, river, beach, pond
+@export var fishing_rod_scene: PackedScene = null
 
-# 配置
-@export var spot_name: String = "钓鱼点"
-@export var fishing_location: String = "lake"  # lake, river, beach, pond
-@export var interaction_radius: float = 40.0
+var is_player_in_range: bool = false
+var current_player: Player = null
 
-# 状态
-var is_player_nearby: bool = false
-var is_fishing: bool = false
-
-# 节点引用
-@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
-@onready var interaction_area: CollisionShape2D = $InteractionArea if has_node("InteractionArea") else null
-@onready var hint_label: Label = $HintLabel if has_node("HintLabel") else null
-
-# 鱼竿引用
-var fishing_rod: FishingRod = null
+# 钓鱼UI
+var fishing_ui: Control = null
 
 func _ready() -> void:
-	_setup_interaction()
-	_setup_hint()
-	print("[FishingSpot] Initialized: ", spot_name)
-
-func _setup_interaction() -> void:
-	# 创建交互区域
-	if not interaction_area:
-		interaction_area = CollisionShape2D.new()
-		var shape := CircleShape2D.new()
-		shape.radius = interaction_radius
-		interaction_area.shape = shape
-		add_child(interaction_area)
-
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	
+	# 加载钓鱼竿场景
+	if fishing_rod_scene == null:
+		fishing_rod_scene = preload("res://src/entities/tools/FishingRod.tscn")
+	
+	print("[FishingSpot] Fishing spot initialized: ", location_type)
 
-func _setup_hint() -> void:
-	if hint_label:
-		hint_label.text = "[按E键钓鱼]"
-		hint_label.visible = false
-
-func _input(event: InputEvent) -> void:
-	if not is_player_nearby or is_fishing:
-		return
-
-	# 检测交互输入
-	if event.is_action_pressed("ui_interact") or event.is_action_pressed("ui_accept"):
-		_start_fishing()
-		get_viewport().set_input_as_handled()
-
-## 玩家进入范围
 func _on_body_entered(body: Node2D) -> void:
 	if body is Player:
-		is_player_nearby = true
-		interaction_available.emit(self)
+		is_player_in_range = true
+		current_player = body
+		_show_fishing_prompt()
 
-		if hint_label:
-			hint_label.visible = true
-
-		print("[FishingSpot] Player entered: ", spot_name)
-
-## 玩家离开范围
 func _on_body_exited(body: Node2D) -> void:
 	if body is Player:
-		is_player_nearby = false
-		interaction_unavailable.emit(self)
+		is_player_in_range = false
+		current_player = null
+		_hide_fishing_prompt()
 
-		if hint_label:
-			hint_label.visible = false
+func _show_fishing_prompt() -> void:
+	# 显示钓鱼提示
+	print("[FishingSpot] Press F to fish here")
+	# TODO: 显示UI提示
 
-		# 如果正在钓鱼，取消钓鱼
-		if is_fishing and fishing_rod:
-			fishing_rod.cancel_fishing()
+func _hide_fishing_prompt() -> void:
+	# 隐藏钓鱼提示
+	print("[FishingSpot] Left fishing spot")
 
-		print("[FishingSpot] Player exited: ", spot_name)
+func _input(event: InputEvent) -> void:
+	if not is_player_in_range:
+		return
+	
+	if event.is_action_pressed("interact"):
+		_start_fishing()
 
-## 开始钓鱼
 func _start_fishing() -> void:
-	if is_fishing:
+	if not current_player:
 		return
-
-	# 创建或获取鱼竿
-	fishing_rod = _get_or_create_fishing_rod()
-	if not fishing_rod:
-		push_error("[FishingSpot] Failed to get fishing rod")
-		return
-
-	# 连接信号
-	fishing_rod.fishing_started.connect(_on_fishing_started)
-	fishing_rod.fishing_ended.connect(_on_fishing_ended)
-	fishing_rod.energy_consumed.connect(_on_energy_consumed)
-
-	# 开始钓鱼
-	is_fishing = true
-	var success := fishing_rod.use(global_position, fishing_location)
-
-	if not success:
-		is_fishing = false
-		_cleanup_fishing_rod()
-
-## 获取或创建鱼竿
-func _get_or_create_fishing_rod() -> FishingRod:
-	# TODO: 从玩家背包获取鱼竿
-	# 暂时创建一个新的
-	var rod := FishingRod.new()
-	get_tree().current_scene.add_child(rod)
-	return rod
-
-## 钓鱼开始回调
-func _on_fishing_started() -> void:
-	fishing_started.emit(self)
-
-	# 隐藏提示
-	if hint_label:
-		hint_label.visible = false
-
-## 钓鱼结束回调
-func _on_fishing_ended(success: bool, fish_id: String, _size: int) -> void:
-	is_fishing = false
-	fishing_ended.emit(self, success, fish_id)
-
-	_cleanup_fishing_rod()
-
-	# 重新显示提示
-	if is_player_nearby and hint_label:
-		hint_label.visible = true
-
-## 体力消耗回调
-func _on_energy_consumed(amount: int) -> void:
-	EventBus.energy_changed.emit(-amount, 0)
-
-## 清理鱼竿
-func _cleanup_fishing_rod() -> void:
-	if fishing_rod:
-		fishing_rod.fishing_started.disconnect(_on_fishing_started)
-		fishing_rod.fishing_ended.disconnect(_on_fishing_ended)
-		fishing_rod.energy_consumed.disconnect(_on_energy_consumed)
-		fishing_rod.queue_free()
-		fishing_rod = null
-
-## 获取钓鱼点信息
-func get_spot_info() -> Dictionary:
-	return {
-		"name": spot_name,
-		"location_type": fishing_location,
-		"can_fish": is_player_nearby and not is_fishing
-	}
+	
+	# 检查玩家是否装备了鱼竿
+	if current_player.tool_manager:
+		var current_tool = current_player.tool_manager.get_current_tool()
+		if current_tool is FishingRod:
+			var rod = current_tool as FishingRod
+			if rod.current_state == FishingRod.FishingState.IDLE:
+				rod.use(global_position, location_type)
+				print("[FishingSpot] Started fishing at ", location_type)
+		else:
+			print("[FishingSpot] Need to equip fishing rod first!")
+			# 可以在这里显示提示UI
