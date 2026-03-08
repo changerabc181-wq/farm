@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cookingui001"]
+
+[ext_resource type="Script" path="res://src/ui/menus/CookingUI.gd" id="1_cooking"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+bg_color = Color(0.15, 0.15, 0.2, 0.95)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+border_color = Color(0.3, 0.3, 0.4, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+
+[node name="CookingUI" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_cooking")

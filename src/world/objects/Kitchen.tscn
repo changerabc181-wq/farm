@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://cookkitchen001"]
+
+[ext_resource type="Script" path="res://src/world/objects/Kitchen.gd" id="1_kitchen"]
+
+[node name="Kitchen" type="Area2D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_kitchen")
+station_name = "厨房"
+
+[node name="CollisionShape2D" type="CollisionShape2D" index="0"]
+position = Vector2(0, 0)
+
+[node name="Sprite2D" type="Sprite2D" index="1"]
+position = Vector2(0, -16)
+
+[node name="InteractionLabel" type="Label" index="2"]
+offset_left = -40.0
+offset_top = -60.0
+offset_right = 40.0
+offset_bottom = -40.0
+horizontal_alignment = 1
+vertical_alignment = 1

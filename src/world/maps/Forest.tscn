@@ -1,0 +1,70 @@
+[gd_scene load_steps=5 format=3 uid="uid://forest_scene_001"]
+
+[ext_resource type="Script" path="res://src/world/maps/Forest.gd" id="1_forest"]
+[ext_resource type="PackedScene" uid="uid://dp5y8hqm2x8nr" path="res://src/entities/player/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://forage_item_001" path="res://src/entities/items/ForageItem.tscn" id="3_forage"]
+
+[sub_resource type="TileSet" id="TileSet_forest"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tofarm"]
+size = Vector2(32, 64)
+
+[node name="Forest" type="Node2D"]
+script = ExtResource("1_forest")
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_forest")
+format = 2
+layer_0/name = "Ground"
+layer_0/tile_data = PackedInt32Array()
+layer_1/name = "Trees"
+layer_1/tile_data = PackedInt32Array()
+layer_2/name = "Objects"
+layer_2/tile_data = PackedInt32Array()
+layer_3/name = "Collision"
+layer_3/tile_data = PackedInt32Array()
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(400, 360)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(400, 360)
+
+[node name="TransitionAreas" type="Node2D" parent="."]
+
+[node name="ToFarmArea" type="Area2D" parent="TransitionAreas"]
+position = Vector2(50, 360)
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TransitionAreas/ToFarmArea"]
+shape = SubResource("RectangleShape2D_tofarm")
+
+[node name="ForagePoints" type="Node2D" parent="."]
+
+[node name="ForageItem0" parent="ForagePoints" instance=ExtResource("3_forage")]
+position = Vector2(200, 200)
+forage_id = "wild_berry"
+
+[node name="ForageItem1" parent="ForagePoints" instance=ExtResource("3_forage")]
+position = Vector2(350, 280)
+forage_id = "common_mushroom"
+
+[node name="ForageItem2" parent="ForagePoints" instance=ExtResource("3_forage")]
+position = Vector2(500, 220)
+forage_id = "wild_herb"
+
+[node name="ForageItem3" parent="ForagePoints" instance=ExtResource("3_forage")]
+position = Vector2(650, 300)
+forage_id = "fallen_branch"
+
+[node name="ForageItem4" parent="ForagePoints" instance=ExtResource("3_forage")]
+position = Vector2(280, 450)
+forage_id = "loose_stone"
+
+[node name="ForageItem5" parent="ForagePoints" instance=ExtResource("3_forage")]
+position = Vector2(550, 400)
+forage_id = "wild_flower"
+
+[node name="SceneTransition" type="CanvasLayer" parent="."]
+script = ExtResource("res://src/world/transitions/SceneTransition.gd")

@@ -1,0 +1,157 @@
+[gd_scene load_steps=2 format=3 uid="uid://shopui00000001"]
+
+[ext_resource type="Script" path="res://src/ui/menus/ShopUI.gd" id="1_shopui"]
+
+[node name="ShopUI" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_shopui")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="CenterContainer"]
+custom_minimum_size = Vector2(700, 500)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="ShopNameLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.2, 0.1, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "杂货店"
+
+[node name="ModeTabs" type="HBoxContainer" parent="CenterContainer/Panel/VBoxContainer/Header"]
+layout_mode = 2
+
+[node name="BuyButton" type="Button" parent="CenterContainer/Panel/VBoxContainer/Header/ModeTabs"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+text = "购买"
+
+[node name="SellButton" type="Button" parent="CenterContainer/Panel/VBoxContainer/Header/ModeTabs"]
+layout_mode = 2
+toggle_mode = true
+text = "出售"
+
+[node name="CloseButton" type="Button" parent="CenterContainer/Panel/VBoxContainer/Header"]
+layout_mode = 2
+text = "X"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CenterContainer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemsList" type="VBoxContainer" parent="CenterContainer/Panel/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemInfoPanel" type="Panel" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer/ItemInfoPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ItemNameLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer/ItemInfoPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "选择物品"
+
+[node name="ItemDescLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer/ItemInfoPanel/VBoxContainer"]
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="ItemPriceLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer/ItemInfoPanel/VBoxContainer"]
+layout_mode = 2
+text = "价格: -"
+
+[node name="ItemStockLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer/ItemInfoPanel/VBoxContainer"]
+layout_mode = 2
+text = "库存: -"
+
+[node name="ControlsPanel" type="Panel" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer/ControlsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer/ControlsPanel/VBoxContainer"]
+layout_mode = 2
+text = "数量"
+
+[node name="QuantitySpinBox" type="SpinBox" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer/ControlsPanel/VBoxContainer"]
+layout_mode = 2
+min_value = 1.0
+max_value = 999.0
+value = 1.0
+
+[node name="TotalPriceLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer/ControlsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+text = "总计: 0G"
+
+[node name="ConfirmButton" type="Button" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer/ControlsPanel/VBoxContainer"]
+layout_mode = 2
+text = "购买"
+
+[node name="Footer" type="HBoxContainer" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="MoneyLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+text = "金币: 0G"
+
+[node name="MessageLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 2
