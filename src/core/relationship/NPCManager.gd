@@ -55,7 +55,7 @@ func _load_npc_data() -> void:
 func _connect_signals() -> void:
 	# 监听场景切换
 	if EventBus:
-		EventBus.scene_transition_completed.connect(_on_scene_transition_completed)
+		get_node("/root/EventBus").scene_transition_completed.connect(_on_scene_transition_completed)
 
 ## 设置当前场景
 func set_current_scene(scene: Node2D) -> void:
@@ -142,7 +142,7 @@ func _get_spawn_position(npc_id: String, npc_data: Dictionary) -> Vector2:
 	# 从日程中获取当前时间的位置
 	if TimeManager and npc_data.has("schedule"):
 		var schedule = npc_data["schedule"]
-		var current_time = TimeManager.current_time
+		var current_time = get_node("/root/TimeManager").current_time
 		
 		for entry in schedule:
 			var start_time = entry.get("start_time", 0.0)
@@ -198,7 +198,7 @@ func update_npc_positions() -> void:
 	if not TimeManager:
 		return
 	
-	var current_time = TimeManager.current_time
+	var current_time = get_node("/root/TimeManager").current_time
 	
 	for npc_id in _spawned_npcs.keys():
 		var npc = _spawned_npcs[npc_id]

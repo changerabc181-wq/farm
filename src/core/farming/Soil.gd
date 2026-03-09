@@ -98,7 +98,7 @@ func till() -> bool:
 
 	current_state = State.TILLED
 	soil_tilled.emit(self)
-	EventBus.crop_planted.emit("soil_tilled", global_position)  # 复用信号
+	get_node("/root/EventBus").crop_planted.emit("soil_tilled", global_position)  # 复用信号
 	print("[Soil] Tilled at ", grid_position)
 	return true
 
@@ -117,7 +117,7 @@ func water(amount: int = 50) -> bool:
 		current_state = State.WATERED
 
 	soil_watered.emit(self)
-	EventBus.soil_watered.emit(global_position)
+	get_node("/root/EventBus").soil_watered.emit(global_position)
 	print("[Soil] Watered at ", grid_position, ", moisture: ", moisture, "/", max_moisture)
 	return true
 
@@ -141,7 +141,7 @@ func _process_daily_moisture() -> void:
 		if current_state == State.WATERED:
 			current_state = State.TILLED
 			soil_dried.emit(self)
-			EventBus.soil_dried.emit(global_position)
+			get_node("/root/EventBus").soil_dried.emit(global_position)
 			print("[Soil] Dried at ", grid_position)
 
 	_update_visual()
@@ -163,7 +163,7 @@ func dry() -> void:
 		current_state = State.TILLED
 		moisture = 0
 		soil_dried.emit(self)
-		EventBus.soil_dried.emit(global_position)
+		get_node("/root/EventBus").soil_dried.emit(global_position)
 		print("[Soil] Dried at ", grid_position)
 
 
@@ -183,7 +183,7 @@ func plant_crop(crop_scene: PackedScene, crop_id: String) -> bool:
 	crop = new_crop
 
 	crop_planted.emit(self, crop_id)
-	EventBus.crop_planted.emit(crop_id, global_position)
+	get_node("/root/EventBus").crop_planted.emit(crop_id, global_position)
 	print("[Soil] Planted ", crop_id, " at ", grid_position)
 	return true
 
@@ -248,7 +248,7 @@ func load_save_data(data: Dictionary) -> void:
 func _on_interaction_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		# 由工具系统处理交互
-		EventBus.player_interacted.emit(self)
+		get_node("/root/EventBus").player_interacted.emit(self)
 
 
 func _on_mouse_entered() -> void:

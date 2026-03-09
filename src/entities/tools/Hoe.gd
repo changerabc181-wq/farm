@@ -51,7 +51,7 @@ func use(target: Node) -> bool:
 	if success:
 		print("[Hoe] Successfully tilled soil at ", soil.global_position)
 		# 消耗体力（通过EventBus通知）
-		EventBus.energy_changed.emit(-energy_cost, 0)  # 负值表示消耗
+		get_node("/root/EventBus").energy_changed.emit(-energy_cost, 0)  # 负值表示消耗
 
 	tool_used.emit(success, soil.global_position)
 

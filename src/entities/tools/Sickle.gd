@@ -37,13 +37,13 @@ func use(target: Node) -> bool:
 		if crop.can_harvest():
 			var result = crop.harvest()
 			if not result.is_empty():
-				EventBus.item_added.emit(result.crop_id, result.quantity)
+				get_node("/root/EventBus").item_added.emit(result.crop_id, result.quantity)
 				success = true
 				print("[Sickle] Harvested ", result.quantity, "x ", result.crop_id)
 	
 	# 消耗体力
 	if success:
-		EventBus.energy_changed.emit(-energy_cost, 0)
+		get_node("/root/EventBus").energy_changed.emit(-energy_cost, 0)
 	
 	tool_used.emit(success, target)
 	

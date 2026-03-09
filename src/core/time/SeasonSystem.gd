@@ -197,7 +197,7 @@ func process_season_change(new_season: int) -> void:
 func _process_crops_for_season_change() -> void:
 	# 通知所有农场地图处理季节作物
 	if EventBus:
-		EventBus.season_changed.emit(current_season, SEASON_NAMES[current_season])
+		get_node("/root/EventBus").season_changed.emit(current_season, SEASON_NAMES[current_season])
 
 
 ## 更新季节特效

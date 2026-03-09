@@ -56,7 +56,7 @@ func _generate_random_forage() -> void:
 	if ForagingSystem == null:
 		return
 
-	var season: String = TimeManager.get_season_name() if TimeManager else "Spring"
+	var season: String = get_node("/root/TimeManager").get_season_name() if TimeManager else "Spring"
 	var spawn_positions: Array[Vector2] = [
 		Vector2(200, 200), Vector2(400, 150), Vector2(600, 200),
 		Vector2(250, 400), Vector2(450, 350), Vector2(650, 400),

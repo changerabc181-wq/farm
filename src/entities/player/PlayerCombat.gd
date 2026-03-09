@@ -80,7 +80,7 @@ func _ready() -> void:
 	_setup_signals()
 
 func _setup_signals() -> void:
-	EventBus.health_changed.connect(_on_health_changed)
+	get_node("/root/EventBus").health_changed.connect(_on_health_changed)
 
 ## 初始化战斗系统
 func initialize(player_node: CharacterBody2D) -> void:
@@ -152,11 +152,11 @@ func attack(direction: Vector2 = Vector2.ZERO) -> bool:
 		if GameManager.current_stamina < energy_cost:
 			is_attacking = false
 			return false
-		EventBus.energy_changed.emit(-energy_cost, 0)
+		get_node("/root/EventBus").energy_changed.emit(-energy_cost, 0)
 
 	# 发射攻击信号
 	attacked.emit(current_weapon, damage)
-	EventBus.player_attacked.emit(get_weapon_name(), damage)
+	get_node("/root/EventBus").player_attacked.emit(get_weapon_name(), damage)
 
 	# 检测攻击范围内的敌人
 	_check_attack_hits(damage)
@@ -212,9 +212,9 @@ func take_damage(damage: int, source: Node = null) -> void:
 	current_health = max(0, current_health - actual_damage)
 
 	damaged.emit(actual_damage, source)
-	EventBus.player_damaged.emit(actual_damage, source)
+	get_node("/root/EventBus").player_damaged.emit(actual_damage, source)
 	health_changed.emit(current_health, max_health)
-	EventBus.health_changed.emit(current_health, max_health)
+	get_node("/root/EventBus").health_changed.emit(current_health, max_health)
 
 	# 播放受伤效果
 	_play_damage_effect()
@@ -275,14 +275,14 @@ func heal(amount: int) -> void:
 	if actual_heal > 0:
 		healed.emit(actual_heal)
 		health_changed.emit(current_health, max_health)
-		EventBus.health_changed.emit(current_health, max_health)
+		get_node("/root/EventBus").health_changed.emit(current_health, max_health)
 		print("[PlayerCombat] Healed %d HP" % actual_heal)
 
 ## 死亡
 func die() -> void:
 	print("[PlayerCombat] Player died!")
 	# 这里可以触发死亡事件、显示游戏结束画面等
-	EventBus.combat_ended.emit()
+	get_node("/root/EventBus").combat_ended.emit()
 
 ## 切换武器
 func switch_weapon(weapon: WeaponType) -> void:

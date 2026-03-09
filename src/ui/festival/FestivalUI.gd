@@ -38,10 +38,10 @@ func _ready() -> void:
 
 func _connect_signals() -> void:
 	if EventBus:
-		EventBus.festival_started.connect(_on_festival_started)
-		EventBus.festival_ended.connect(_on_festival_ended)
-		EventBus.festival_activity_completed.connect(_on_activity_completed)
-		EventBus.festival_reward_claimed.connect(_on_reward_claimed)
+		get_node("/root/EventBus").festival_started.connect(_on_festival_started)
+		get_node("/root/EventBus").festival_ended.connect(_on_festival_ended)
+		get_node("/root/EventBus").festival_activity_completed.connect(_on_activity_completed)
+		get_node("/root/EventBus").festival_reward_claimed.connect(_on_reward_claimed)
 
 
 func _setup_buttons() -> void:
@@ -62,7 +62,7 @@ func open_festival(festival_id: String) -> void:
 
 	_update_display()
 	visible = true
-	EventBus.ui_opened.emit("festival_ui")
+	get_node("/root/EventBus").ui_opened.emit("festival_ui")
 
 
 ## 关闭节日界面
@@ -70,7 +70,7 @@ func close() -> void:
 	visible = false
 	current_festival_id = ""
 	festival_data = {}
-	EventBus.ui_closed.emit("festival_ui")
+	get_node("/root/EventBus").ui_closed.emit("festival_ui")
 	closed.emit()
 
 
@@ -272,7 +272,7 @@ func _on_shop_pressed() -> void:
 		var first_vendor: Dictionary = vendors[0]
 		var shop_id: String = first_vendor.get("id", "")
 		if not shop_id.is_empty() and EventBus:
-			EventBus.shop_opened.emit(shop_id)
+			get_node("/root/EventBus").shop_opened.emit(shop_id)
 
 
 ## 处理输入

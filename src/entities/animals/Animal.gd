@@ -162,7 +162,7 @@ func feed(food_item_id: String = "") -> bool:
 
 	fed.emit(self)
 	if EventBus:
-		EventBus.notification_shown.emit("%s吃饱了！" % animal_name, 0)
+		get_node("/root/EventBus").notification_shown.emit("%s吃饱了！" % animal_name, 0)
 
 	print("[Animal] %s fed, hunger: %d" % [animal_name, hunger])
 	return true

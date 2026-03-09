@@ -197,7 +197,7 @@ func add_friendship_points(npc_id: String, points: int, source: FriendshipSource
 
 	# 发射EventBus信号
 	if EventBus:
-		EventBus.friendship_changed.emit(npc_id, new_hearts)
+		get_node("/root/EventBus").friendship_changed.emit(npc_id, new_hearts)
 
 	print("[Friendship] %s: %+d points (source: %s), total: %d points, %d hearts" % [
 		npc_id, delta, FriendshipSource.keys()[source], new_points, new_hearts
@@ -268,7 +268,7 @@ func give_gift(npc_id: String, item_id: String, is_birthday: bool = false) -> Di
 
 	# 发射EventBus信号
 	if EventBus:
-		EventBus.gift_given.emit(npc_id, item_id, reaction)
+		get_node("/root/EventBus").gift_given.emit(npc_id, item_id, reaction)
 
 	return {
 		"success": true,

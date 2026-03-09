@@ -59,7 +59,7 @@ func _connect_signals() -> void:
 
 	# 连接EventBus信号
 	if EventBus:
-		EventBus.spawn_point_changed.connect(_on_spawn_point_changed)
+		get_node("/root/EventBus").spawn_point_changed.connect(_on_spawn_point_changed)
 
 	print("[PlayerHouse] Signals connected")
 

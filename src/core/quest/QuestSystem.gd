@@ -165,15 +165,15 @@ func _parse_objective_type(type_str: String) -> ObjectiveType:
 func _connect_signals() -> void:
 	# 连接背包事件（收集任务）
 	if EventBus:
-		EventBus.item_added.connect(_on_item_added)
-		EventBus.dialogue_ended.connect(_on_dialogue_ended)
-		EventBus.gift_given.connect(_on_gift_given)
-		EventBus.friendship_changed.connect(_on_friendship_changed)
-		EventBus.crop_harvested.connect(_on_crop_harvested)
+		get_node("/root/EventBus").item_added.connect(_on_item_added)
+		get_node("/root/EventBus").dialogue_ended.connect(_on_dialogue_ended)
+		get_node("/root/EventBus").gift_given.connect(_on_gift_given)
+		get_node("/root/EventBus").friendship_changed.connect(_on_friendship_changed)
+		get_node("/root/EventBus").crop_harvested.connect(_on_crop_harvested)
 
 	# 连接时间事件（检查时间限制）
 	if TimeManager:
-		TimeManager.day_changed.connect(_on_day_changed)
+		get_node("/root/TimeManager").day_changed.connect(_on_day_changed)
 
 ## 获取所有可用任务
 func get_available_quests() -> Array[QuestData]:
@@ -253,9 +253,9 @@ func accept_quest(quest_id: String) -> bool:
 
 	# 记录开始时间
 	if TimeManager:
-		progress.start_day = TimeManager.current_day
-		progress.start_season = TimeManager.current_season
-		progress.start_year = TimeManager.current_year
+		progress.start_day = get_node("/root/TimeManager").current_day
+		progress.start_season = get_node("/root/TimeManager").current_season
+		progress.start_year = get_node("/root/TimeManager").current_year
 
 	_player_progress[quest_id] = progress
 	_active_quests.append(quest_id)
@@ -288,7 +288,7 @@ func _check_initial_progress(quest_id: String) -> void:
 ## 获取物品数量
 func _get_item_count(item_id: String) -> int:
 	if Inventory:
-		return Inventory.get_item_count(item_id)
+		return get_node("/root/Inventory").get_item_count(item_id)
 	return 0
 
 ## 更新目标进度
@@ -414,7 +414,7 @@ func _grant_rewards(rewards: Dictionary) -> void:
 	# 金钱奖励
 	var money: int = rewards.get("money", 0)
 	if money > 0 and MoneySystem:
-		MoneySystem.add_money(money)
+		get_node("/root/MoneySystem").add_money(money)
 		print("[QuestSystem] Reward: %d gold" % money)
 
 	# 物品奖励
@@ -423,7 +423,7 @@ func _grant_rewards(rewards: Dictionary) -> void:
 		var item_id: String = item.get("id", "")
 		var quantity: int = item.get("quantity", 1)
 		if item_id != "" and Inventory:
-			Inventory.add_item(item_id, quantity)
+			get_node("/root/Inventory").add_item(item_id, quantity)
 			print("[QuestSystem] Reward: %dx %s" % [quantity, item_id])
 
 	# 经验奖励
@@ -557,7 +557,7 @@ func _generate_objective_description(objective: Dictionary) -> String:
 ## 获取目标显示名称
 func _get_target_display_name(target: String) -> String:
 	if ItemDatabase:
-		var item = ItemDatabase.get_item(target)
+		var item = get_node("/root/ItemDatabase").get_item(target)
 		if item:
 			return item.name
 	return target
@@ -662,9 +662,9 @@ func _calculate_days_passed(progress: QuestProgress) -> int:
 		return 0
 
 	var days: int = 0
-	days += (TimeManager.current_year - progress.start_year) * 112  # 4季 x 28天
-	days += (TimeManager.current_season - progress.start_season) * 28
-	days += TimeManager.current_day - progress.start_day
+	days += (get_node("/root/TimeManager").current_year - progress.start_year) * 112  # 4季 x 28天
+	days += (get_node("/root/TimeManager").current_season - progress.start_season) * 28
+	days += get_node("/root/TimeManager").current_day - progress.start_day
 
 	return days
 

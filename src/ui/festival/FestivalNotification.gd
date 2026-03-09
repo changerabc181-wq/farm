@@ -25,9 +25,9 @@ func _ready() -> void:
 
 func _connect_signals() -> void:
 	if EventBus:
-		EventBus.festival_started.connect(_on_festival_started)
-		EventBus.festival_ended.connect(_on_festival_ended)
-		EventBus.festival_upcoming.connect(_on_festival_upcoming)
+		get_node("/root/EventBus").festival_started.connect(_on_festival_started)
+		get_node("/root/EventBus").festival_ended.connect(_on_festival_ended)
+		get_node("/root/EventBus").festival_upcoming.connect(_on_festival_upcoming)
 
 
 ## 显示节日通知

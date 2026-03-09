@@ -58,15 +58,15 @@ func _setup_exits() -> void:
 ## 钓鱼开始
 func _on_fishing_started(spot: FishingSpot) -> void:
 	print("[Beach] Fishing started at spot: ", spot.name)
-	EventBus.ui_opened.emit("fishing")
+	get_node("/root/EventBus").ui_opened.emit("fishing")
 
 ## 钓鱼结束
 func _on_fishing_ended(spot: FishingSpot, success: bool, fish_id: String) -> void:
 	print("[Beach] Fishing ended: ", "success" if success else "failed")
-	EventBus.ui_closed.emit("fishing")
+	get_node("/root/EventBus").ui_closed.emit("fishing")
 
 	if success and not fish_id.is_empty():
-		EventBus.notification_shown.emit("钓到了鱼!", 0)
+		get_node("/root/EventBus").notification_shown.emit("钓到了鱼!", 0)
 
 ## 离开海滩去村庄
 func _on_exit_village(body: Node2D) -> void:

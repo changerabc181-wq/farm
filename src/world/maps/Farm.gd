@@ -82,9 +82,9 @@ func _connect_time_signals() -> void:
 
 func _connect_event_signals() -> void:
 	# 连接交互信号
-	EventBus.player_interacted.connect(_on_player_interacted)
+	get_node("/root/EventBus").player_interacted.connect(_on_player_interacted)
 	# 连接收获信号
-	EventBus.crop_harvested.connect(_on_crop_harvested)
+	get_node("/root/EventBus").crop_harvested.connect(_on_crop_harvested)
 	print("[Farm] Connected to EventBus signals")
 
 func _on_hour_changed(new_hour: int) -> void:
@@ -110,7 +110,7 @@ func _on_player_interacted(target: Node) -> void:
 		return
 	
 	# 尝试种植（通过事件系统）
-	EventBus.player_interacted.emit(target)
+	get_node("/root/EventBus").player_interacted.emit(target)
 
 
 func _on_crop_harvested(crop_type: String, quality: int, quantity: int) -> void:

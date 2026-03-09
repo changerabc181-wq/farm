@@ -85,7 +85,7 @@ func _ready() -> void:
 
 func _connect_signals() -> void:
 	if TimeManager:
-		TimeManager.day_changed.connect(_on_day_changed)
+		get_node("/root/TimeManager").day_changed.connect(_on_day_changed)
 	if EventBus:
 		pass  # 可根据需要连接其他事件
 
@@ -427,7 +427,7 @@ func get_forage_by_type(type: int) -> Array:
 ## 获取当前季节可采集的物品
 func get_seasonal_forage(season: String = "") -> Array:
 	if season == "":
-		season = TimeManager.get_season_name() if TimeManager else "Spring"
+		season = get_node("/root/TimeManager").get_season_name() if TimeManager else "Spring"
 
 	var result := []
 	for forage_id in _forage_database:
@@ -448,7 +448,7 @@ func get_location_forage(location: String) -> Array:
 ## 为场景生成采集点
 func generate_forage_points(location: String, count: int = 10) -> Array:
 	var points := []
-	var season: String = TimeManager.get_season_name() if TimeManager else "Spring"
+	var season: String = get_node("/root/TimeManager").get_season_name() if TimeManager else "Spring"
 
 	# 获取该地点和季节可用的采集物品
 	var available_forage := []
@@ -527,19 +527,19 @@ func collect_forage(pos: Vector2) -> Dictionary:
 		return {"success": false, "message": "Invalid forage data"}
 
 	# 检查季节
-	if TimeManager and not forage_data.seasons.has(TimeManager.get_season_name()):
+	if TimeManager and not forage_data.seasons.has(get_node("/root/TimeManager").get_season_name()):
 		return {"success": false, "message": "Not available this season"}
 
 	# 标记为已采集
 	point.is_collected = true
-	point.day_collected = TimeManager.current_day if TimeManager else 1
+	point.day_collected = get_node("/root/TimeManager").current_day if TimeManager else 1
 
 	# 计算采集数量
 	var quantity: int = randi_range(forage_data.min_quantity, forage_data.max_quantity)
 
 	# 添加到背包
 	if Inventory:
-		var added: bool = Inventory.add_item(forage_data.item_id, quantity)
+		var added: bool = get_node("/root/Inventory").add_item(forage_data.item_id, quantity)
 		if not added:
 			# 背包满了，取消采集
 			point.is_collected = false
@@ -550,8 +550,8 @@ func collect_forage(pos: Vector2) -> Dictionary:
 
 	# 发送通知
 	if EventBus:
-		EventBus.item_added.emit(forage_data.item_id, quantity)
-		EventBus.notification_shown.emit(
+		get_node("/root/EventBus").item_added.emit(forage_data.item_id, quantity)
+		get_node("/root/EventBus").notification_shown.emit(
 			"采集了 %d 个%s" % [quantity, forage_data.name],
 			0
 		)
@@ -601,7 +601,7 @@ func _get_days_until_respawn(point: ForagePoint) -> int:
 	if not point.is_collected:
 		return 0
 
-	var current_day: int = TimeManager.current_day if TimeManager else 1
+	var current_day: int = get_node("/root/TimeManager").current_day if TimeManager else 1
 	var days_since_collection: int = current_day - point.day_collected
 
 	# 处理跨季/跨年的情况
@@ -616,7 +616,7 @@ func _on_day_changed(new_day: int) -> void:
 
 ## 处理刷新
 func _process_respawns() -> void:
-	var current_day: int = TimeManager.current_day if TimeManager else 1
+	var current_day: int = get_node("/root/TimeManager").current_day if TimeManager else 1
 
 	for key in _forage_points:
 		var point: ForagePoint = _forage_points[key]

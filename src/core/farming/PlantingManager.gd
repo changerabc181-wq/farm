@@ -16,8 +16,8 @@ func _ready() -> void:
 func _load_seed_data() -> void:
 	# 从ItemDatabase获取种子信息
 	if ItemDatabase:
-		for item_id in ItemDatabase.get_all_item_ids():
-			var item_data = ItemDatabase.get_item(item_id)
+		for item_id in get_node("/root/ItemDatabase").get_all_item_ids():
+			var item_data = get_node("/root/ItemDatabase").get_item(item_id)
 			if item_data and item_data.get("type") == "seed":
 				var crop_id = item_data.get("crop_id", "")
 				if crop_id != "":
@@ -39,18 +39,18 @@ func try_plant(seed_id: String, soil: Soil) -> bool:
 	var crop_id = seed_to_crop[seed_id]
 	
 	# 检查当前季节是否适合
-	if GrowthSystem and not GrowthSystem.can_plant_in_current_season(crop_id):
-		var current_season = TimeManager.get_season_name() if TimeManager else "未知"
+	if GrowthSystem and not get_node("/root/GrowthSystem").can_plant_in_current_season(crop_id):
+		var current_season = get_node("/root/TimeManager").get_season_name() if TimeManager else "未知"
 		planting_failed.emit("当前季节(" + current_season + ")不适合种植这种作物")
 		return false
 	
 	# 从背包中移除种子
 	if Inventory:
-		if not Inventory.has_item(seed_id, 1):
+		if not get_node("/root/Inventory").has_item(seed_id, 1):
 			planting_failed.emit("背包中没有这个种子")
 			return false
 		
-		Inventory.remove_item(seed_id, 1)
+		get_node("/root/Inventory").remove_item(seed_id, 1)
 	
 	# 创建作物
 	var crop = _create_crop(crop_id)
@@ -65,7 +65,7 @@ func try_plant(seed_id: String, soil: Soil) -> bool:
 	
 	# 注册到生长系统
 	if GrowthSystem:
-		GrowthSystem.register_crop(crop)
+		get_node("/root/GrowthSystem").register_crop(crop)
 	
 	seed_planted.emit(seed_id, soil, true)
 	print("[PlantingManager] Planted ", seed_id, " -> ", crop_id, " at ", soil.global_position)
@@ -77,7 +77,7 @@ func _create_crop(crop_id: String) -> Crop:
 	if GrowthSystem == null:
 		return null
 	
-	var crop_data = GrowthSystem.get_crop_data(crop_id)
+	var crop_data = get_node("/root/GrowthSystem").get_crop_data(crop_id)
 	if crop_data == null:
 		print("[PlantingManager] Crop data not found: ", crop_id)
 		return null
@@ -113,4 +113,4 @@ func can_plant_seed_now(seed_id: String) -> bool:
 		return true
 	
 	var crop_id = seed_to_crop[seed_id]
-	return GrowthSystem.can_plant_in_current_season(crop_id)
+	return get_node("/root/GrowthSystem").can_plant_in_current_season(crop_id)

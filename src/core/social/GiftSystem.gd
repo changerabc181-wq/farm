@@ -138,7 +138,7 @@ func give_gift(npc_id: String, item_id: String) -> Dictionary:
 	result.reaction = reaction
 
 	# 计算好感度变化
-	var friendship_change := FRIENDSHIP_CHANGE[reaction]
+	var friendship_change: int = FRIENDSHIP_CHANGE.get(reaction, 0)
 
 	# 检查是否是生日
 	if is_npc_birthday(npc_id):
@@ -161,7 +161,7 @@ func give_gift(npc_id: String, item_id: String) -> Dictionary:
 	gift_reaction.emit(npc_id, item_id, reaction, friendship_change)
 
 	if EventBus:
-		EventBus.gift_given.emit(npc_id, item_id, reaction)
+		get_node("/root/EventBus").gift_given.emit(npc_id, item_id, reaction)
 
 	return result
 
@@ -260,7 +260,7 @@ func _update_friendship(npc_id: String, change: int) -> void:
 	friendship_updated.emit(npc_id, hearts)
 
 	if EventBus:
-		EventBus.friendship_changed.emit(npc_id, hearts)
+		get_node("/root/EventBus").friendship_changed.emit(npc_id, hearts)
 
 ## 获取好感度值
 func get_friendship(npc_id: String) -> int:
@@ -295,8 +295,8 @@ func is_npc_birthday(npc_id: String) -> bool:
 	if not TimeManager:
 		return false
 
-	var current_season := TimeManager.get_season_name().to_lower()
-	var current_day := TimeManager.get_day()
+	var current_season: String = get_node("/root/TimeManager").get_season_name().to_lower()
+	var current_day: int = get_node("/root/TimeManager").current_day
 
 	var birthday_season: String = birthday.get("season", "").to_lower()
 	var birthday_day: int = birthday.get("day", 0)
@@ -316,7 +316,7 @@ func _get_current_week() -> int:
 	if not TimeManager:
 		return 1
 
-	var day := TimeManager.get_day()
+	var day: int = get_node("/root/TimeManager").current_day
 	return (day - 1) / 7 + 1
 
 ## 检查本周是否已送礼
@@ -384,7 +384,7 @@ func get_save_data() -> Dictionary:
 ## 加载送礼系统数据
 func load_save_data(data: Dictionary) -> void:
 	if data.has("friendship"):
-		_friendship = data["friendship"].duplicate()
+		_friendship_data = data["friendship"].duplicate()
 	if data.has("gift_history"):
 		_gift_history = data["gift_history"].duplicate()
 

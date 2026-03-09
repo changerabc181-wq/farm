@@ -27,8 +27,8 @@ func _ready() -> void:
 func _connect_signals() -> void:
 	# 连接时间管理器信号
 	if TimeManager:
-		TimeManager.day_changed.connect(_on_day_changed)
-		TimeManager.season_changed.connect(_on_season_changed)
+		get_node("/root/TimeManager").day_changed.connect(_on_day_changed)
+		get_node("/root/TimeManager").season_changed.connect(_on_season_changed)
 
 ## 加载作物数据库
 func _load_crop_database() -> void:
@@ -249,7 +249,7 @@ func _on_season_changed(_new_season: int, _season_name: String) -> void:
 	# 季节变化时，检查作物是否会枯萎
 	for crop in _registered_crops:
 		if crop.crop_data and crop.crop_data.dies_out_of_season:
-			if not crop.crop_data.can_grow_in_season(TimeManager.get_season_name()):
+			if not crop.crop_data.can_grow_in_season(get_node("/root/TimeManager").get_season_name()):
 				crop.on_day_passed()  # 这会触发枯萎检查
 
 ## 更新所有作物
@@ -289,7 +289,7 @@ func plant_crop(crop_id: String, position: Vector2, fertilizer: int = 0) -> Crop
 	register_crop(crop)
 
 	# 发射种植事件
-	EventBus.crop_planted.emit(crop_id, position)
+	get_node("/root/EventBus").crop_planted.emit(crop_id, position)
 
 	return crop
 
@@ -324,7 +324,7 @@ func _add_to_inventory(harvest_result: Dictionary) -> void:
 	var quantity: int = harvest_result.get("quantity", 1)
 
 	# 发射添加物品事件
-	EventBus.item_added.emit(crop_id, quantity)
+	get_node("/root/EventBus").item_added.emit(crop_id, quantity)
 
 	print("[GrowthSystem] Added ", quantity, " ", crop_id, " to inventory")
 
@@ -377,12 +377,12 @@ func can_plant_in_current_season(crop_id: String) -> bool:
 	if crop_data == null:
 		return false
 
-	return crop_data.can_grow_in_season(TimeManager.get_season_name())
+	return crop_data.can_grow_in_season(get_node("/root/TimeManager").get_season_name())
 
 ## 获取当前季节可种植的作物列表
 func get_seasonal_crops() -> Array:
 	var seasonal_crops: Array = []
-	var current_season: String = TimeManager.get_season_name()
+	var current_season: String = get_node("/root/TimeManager").get_season_name()
 
 	for crop_id in _crop_data_cache.keys():
 		var crop_data: CropData = _crop_data_cache[crop_id]

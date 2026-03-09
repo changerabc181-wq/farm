@@ -456,7 +456,7 @@ func _calculate_seasonal_modifier(seasons: Array[String]) -> float:
 	# 获取当前季节
 	var current_season: String = ""
 	if TimeManager:
-		current_season = TimeManager.get_season_name()
+		current_season = get_node("/root/TimeManager").get_season_name()
 
 	if current_season in seasons:
 		# 在季节内，价格正常或略高
@@ -493,7 +493,7 @@ func _is_item_in_season(seasons: Array[String]) -> bool:
 
 	var current_season: String = ""
 	if TimeManager:
-		current_season = TimeManager.get_season_name()
+		current_season = get_node("/root/TimeManager").get_season_name()
 
 	return current_season in seasons
 

@@ -278,7 +278,7 @@ func open() -> void:
 	_clear_selection()
 
 	if EventBus:
-		EventBus.ui_opened.emit("cooking")
+		get_node("/root/EventBus").ui_opened.emit("cooking")
 
 ## 关闭界面
 func close() -> void:
@@ -287,7 +287,7 @@ func close() -> void:
 	_selected_recipe_id = ""
 
 	if EventBus:
-		EventBus.ui_closed.emit("cooking")
+		get_node("/root/EventBus").ui_closed.emit("cooking")
 
 	cooking_ui_closed.emit()
 

@@ -40,8 +40,8 @@ func _ready() -> void:
 
 func _connect_event_bus() -> void:
 	if EventBus:
-		EventBus.dialogue_started.connect(_on_event_dialogue_started)
-		EventBus.dialogue_ended.connect(_on_event_dialogue_ended)
+		get_node("/root/EventBus").dialogue_started.connect(_on_event_dialogue_started)
+		get_node("/root/EventBus").dialogue_ended.connect(_on_event_dialogue_ended)
 
 ## 加载对话数据
 func _load_dialogue_data() -> void:
@@ -119,7 +119,7 @@ func start_dialogue(npc_id: String, dialogue_key: String = "") -> bool:
 
 	dialogue_started.emit(npc_id)
 	if EventBus:
-		EventBus.dialogue_started.emit(npc_id)
+		get_node("/root/EventBus").dialogue_started.emit(npc_id)
 
 	print("[DialogueManager] Started dialogue: ", _current_dialogue_id)
 	return true
@@ -176,7 +176,7 @@ func _check_single_condition(condition: Dictionary) -> bool:
 			return current_time >= min_time and current_time < max_time
 
 		"season":
-			var current_season = TimeManager.get_season_name() if TimeManager else "Spring"
+			var current_season = get_node("/root/TimeManager").get_season_name() if TimeManager else "Spring"
 			var expected_season = condition.get("value", "Spring")
 			return current_season == expected_season
 
@@ -233,7 +233,7 @@ func _on_dialogue_finished() -> void:
 
 	dialogue_ended.emit(npc_id)
 	if EventBus:
-		EventBus.dialogue_ended.emit(npc_id)
+		get_node("/root/EventBus").dialogue_ended.emit(npc_id)
 
 	print("[DialogueManager] Dialogue ended")
 
@@ -368,7 +368,7 @@ func add_friendship_points(npc_id: String, points: int) -> void:
 		print("[DialogueManager] Friendship with ", npc_id, " increased to ", data["hearts"], " hearts")
 
 	if EventBus:
-		EventBus.friendship_changed.emit(npc_id, data["hearts"])
+		get_node("/root/EventBus").friendship_changed.emit(npc_id, data["hearts"])
 
 func get_friendship_hearts(npc_id: String) -> int:
 	if _friendship_data.has(npc_id):

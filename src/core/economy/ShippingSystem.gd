@@ -82,13 +82,13 @@ func remove_item(item_id: String, quantity: int = 1, quality: int = -1) -> bool:
 		return false
 
 	var index_to_remove := -1
-	var removed_quantity := 0
+	var removed_quantity: int = 0
 
 	for i in range(_bin_contents.size()):
 		var slot = _bin_contents[i]
 		if slot.item_id == item_id:
 			if quality == -1 or slot.quality == quality:
-				var actual_remove := min(quantity, slot.quantity)
+				var actual_remove: int = min(quantity, slot.quantity)
 				slot.quantity -= actual_remove
 				removed_quantity = actual_remove
 
@@ -226,7 +226,7 @@ func _on_day_changed(_new_day: int) -> void:
 ## 获取结算历史
 func get_shipment_history(count: int = 10) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	var start_index := max(0, _shipment_history.size() - count)
+	var start_index: int = max(0, _shipment_history.size() - count)
 
 	for i in range(start_index, _shipment_history.size()):
 		result.append(_shipment_history[i])

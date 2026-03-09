@@ -158,7 +158,7 @@ func _connect_signals() -> void:
 	if TimeManager:
 		TimeManager.day_changed.connect(_on_day_changed)
 	if EventBus:
-		EventBus.player_interacted.connect(_on_player_interacted)
+		get_node("/root/EventBus").player_interacted.connect(_on_player_interacted)
 
 
 func _on_ladder_down_entered(body: Node2D) -> void:
@@ -189,7 +189,7 @@ func _go_to_floor(floor: int) -> void:
 	# 重置玩家位置
 	if player_spawn:
 		# 这里应该通知玩家移动到出生点
-		EventBus.spawn_point_changed.emit("mine_floor_" + str(floor))
+		get_node("/root/EventBus").spawn_point_changed.emit("mine_floor_" + str(floor))
 
 	floor_changed.emit(current_floor)
 
@@ -197,7 +197,7 @@ func _go_to_floor(floor: int) -> void:
 func _exit_mine() -> void:
 	print("[Mine] Exiting mine to surface")
 	# 切换到地面场景
-	EventBus.scene_transition_started.emit("res://src/world/maps/Farm.tscn")
+	get_node("/root/EventBus").scene_transition_started.emit("res://src/world/maps/Farm.tscn")
 
 
 func _on_day_changed(new_day: int) -> void:
@@ -235,7 +235,7 @@ func _on_ore_mined(ore_type: String, quantity: int, quality: int) -> void:
 	ore_mined.emit(ore_type, quantity, quality)
 
 	# 通知EventBus
-	EventBus.item_added.emit(ore_type, quantity)
+	get_node("/root/EventBus").item_added.emit(ore_type, quantity)
 
 
 func get_player_spawn_position() -> Vector2:

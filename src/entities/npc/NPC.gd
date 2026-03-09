@@ -351,7 +351,7 @@ func load_state(state: Dictionary) -> void:
 func _connect_dialogue_signals() -> void:
 	if EventBus:
 		if not EventBus.dialogue_ended.is_connected(_on_dialogue_ended):
-			EventBus.dialogue_ended.connect(_on_dialogue_ended)
+			get_node("/root/EventBus").dialogue_ended.connect(_on_dialogue_ended)
 
 ## 时间变化回调
 func _on_time_changed(new_time: float) -> void:
@@ -374,7 +374,7 @@ func _on_schedule_changed(new_activity: Dictionary) -> void:
 
 	# 通过 EventBus 发送通知
 	if EventBus:
-		EventBus.npc_activity_changed.emit(npc_id, new_activity)
+		get_node("/root/EventBus").npc_activity_changed.emit(npc_id, new_activity)
 
 ## 到达目的地回调
 func _on_destination_reached(location_id: String) -> void:
@@ -516,99 +516,7 @@ func interact() -> void:
 
 	# 发射对话开始事件
 	if EventBus:
-		EventBus.dialogue_started.emit(npc_id)
-
-## 打开送礼菜单
-func open_gift_menu() -> void:
-	if not interactable:
-		return
-
-	print("[NPC] Gift menu requested for %s" % npc_name)
-
-## 获取问候对话
-func get_greeting_dialogue() -> Array:
-	var npc_data := _get_npc_data_from_json()
-	if npc_data.is_empty():
-		return ["你好！"]
-
-	var dialogues: Dictionary = npc_data.get("dialogues", {})
-	var greetings = dialogues.get("greeting", ["你好！"])
-
-	if typeof(greetings) == TYPE_ARRAY:
-		if greetings.is_empty():
-			return ["你好！"]
-		return [greetings[randi() % greetings.size()]]
-
-	return ["你好！"]
-
-## 获取送礼反应对话
-func get_gift_dialogue(reaction: int) -> String:
-	var npc_data := _get_npc_data_from_json()
-	if npc_data.is_empty():
-		return "..."
-
-	var dialogues: Dictionary = npc_data.get("dialogues", {})
-
-	var key := "gift_neutral"
-	if GiftSystem:
-		match reaction:
-			GiftSystem.ReactionType.LOVE: key = "gift_loved"
-			GiftSystem.ReactionType.LIKE: key = "gift_liked"
-			GiftSystem.ReactionType.DISLIKE: key = "gift_disliked"
-			GiftSystem.ReactionType.HATE: key = "gift_hated"
-
-	var dialogue = dialogues.get(key, "...")
-	if typeof(dialogue) == TYPE_STRING:
-		return dialogue
-	elif typeof(dialogue) == TYPE_ARRAY and not dialogue.is_empty():
-		return dialogue[randi() % dialogue.size()]
-
-	return "..."
-
-## 从JSON获取NPC数据
-func _get_npc_data_from_json() -> Dictionary:
-	var data_path := "res://data/npcs.json"
-	if not ResourceLoader.exists(data_path):
-		return {}
-
-	var file := FileAccess.open(data_path, FileAccess.READ)
-	if not file:
-		return {}
-
-	var json_text := file.get_as_text()
-	file.close()
-
-	var json := JSON.new()
-	if json.parse(json_text) != OK:
-		return {}
-
-	var data: Dictionary = json.get_data()
-	if not data.has("npcs"):
-		return {}
-
-	for npc_data in data["npcs"]:
-		if npc_data.get("id", "") == npc_id:
-			return npc_data
-
-	return {}
-
-## 获取好友度心数
-func get_friendship_hearts() -> int:
-	if GiftSystem:
-		return GiftSystem.get_friendship_hearts(npc_id)
-	return 0
-
-## 检查是否是生日
-func is_birthday() -> bool:
-	if GiftSystem:
-		return GiftSystem.is_npc_birthday(npc_id)
-	return false
-
-## 获取NPC偏好预览
-func get_preference_for_item(item_id: String) -> String:
-	if GiftSystem:
-		return GiftSystem.get_preference_preview(npc_id, item_id)
-	return "一般"
+		get_node("/root/EventBus").dialogue_started.emit(npc_id)
 
 ## 交互处理
 func interact() -> void:
@@ -620,4 +528,4 @@ func interact() -> void:
 
 	# 发射对话开始事件
 	if EventBus:
-		EventBus.dialogue_started.emit(npc_id)
+		get_node("/root/EventBus").dialogue_started.emit(npc_id)

@@ -36,7 +36,7 @@ func use(target: Node) -> bool:
 	# 例如：if target.has_method("take_damage"): target.take_damage(damage)
 	
 	# 消耗体力
-	EventBus.energy_changed.emit(-energy_cost, 0)
+	get_node("/root/EventBus").energy_changed.emit(-energy_cost, 0)
 	
 	tool_used.emit(success, target)
 	

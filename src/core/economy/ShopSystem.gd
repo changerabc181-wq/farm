@@ -68,8 +68,8 @@ func _ready() -> void:
 
 func _connect_signals() -> void:
 	if EventBus:
-		EventBus.shop_opened.connect(_on_event_bus_shop_opened)
-		EventBus.shop_closed.connect(_on_event_bus_shop_closed)
+		get_node("/root/EventBus").shop_opened.connect(_on_event_bus_shop_opened)
+		get_node("/root/EventBus").shop_closed.connect(_on_event_bus_shop_closed)
 
 func _on_event_bus_shop_opened(shop_id: String) -> void:
 	open_shop(shop_id)
@@ -339,7 +339,7 @@ func buy_item(item_id: String, quantity: int = 1) -> bool:
 	var final_price: int = calculate_buy_price(item_id, quantity)
 	item_purchased.emit(item_id, quantity, final_price)
 	if EventBus:
-		EventBus.item_bought.emit(item_id, final_price)
+		get_node("/root/EventBus").item_bought.emit(item_id, final_price)
 
 	print("[ShopSystem] Bought %dx %s for %dG" % [quantity, item_id, final_price])
 	return true
@@ -375,7 +375,7 @@ func sell_item(item_id: String, quantity: int = 1) -> bool:
 	var final_price: int = calculate_sell_price(item_id, quantity)
 	item_sold.emit(item_id, quantity, final_price)
 	if EventBus:
-		EventBus.item_sold.emit(item_id, final_price)
+		get_node("/root/EventBus").item_sold.emit(item_id, final_price)
 
 	print("[ShopSystem] Sold %dx %s for %dG" % [quantity, item_id, final_price])
 	return true

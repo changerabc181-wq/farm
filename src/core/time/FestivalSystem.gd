@@ -341,7 +341,7 @@ func _grant_rewards(rewards: Dictionary) -> void:
 	var gold: int = rewards.get("gold", 0)
 	if gold > 0:
 		GameManager.money += gold
-		EventBus.money_changed.emit(gold)
+		get_node("/root/EventBus").money_changed.emit(gold)
 
 	# 发放物品
 	var items: Dictionary = rewards.get("items", {})
@@ -372,7 +372,7 @@ func _show_festival_notification(festival_id: String, notification_type: String)
 			message = "明天是 " + festival_name + "！"
 
 	if EventBus:
-		EventBus.notification_shown.emit(message, 2)  # type 2 = festival notification
+		get_node("/root/EventBus").notification_shown.emit(message, 2)  # type 2 = festival notification
 
 
 ## 获取节日进度

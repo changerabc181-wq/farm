@@ -267,7 +267,7 @@ func _fishing_success(fish_size: int) -> void:
 	fishing_ended.emit(true, fish_id, fish_size)
 
 	# 添加到背包
-	EventBus.item_added.emit(fish_id, 1)
+	get_node("/root/EventBus").item_added.emit(fish_id, 1)
 
 	print("[FishingRod] Caught fish: ", current_fish_data.get("name"), " (", fish_size, "cm)")
 

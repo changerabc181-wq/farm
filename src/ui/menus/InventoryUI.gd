@@ -341,7 +341,7 @@ func open() -> void:
 	_update_all_slots()
 
 	if EventBus:
-		EventBus.ui_opened.emit("inventory")
+		get_node("/root/EventBus").ui_opened.emit("inventory")
 
 func close() -> void:
 	visible = false
@@ -349,7 +349,7 @@ func close() -> void:
 	_end_drag()
 
 	if EventBus:
-		EventBus.ui_closed.emit("inventory")
+		get_node("/root/EventBus").ui_closed.emit("inventory")
 
 	inventory_closed.emit()
 
