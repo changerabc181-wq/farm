@@ -1,92 +1,55 @@
 extends Area2D
 class_name Kitchen
 
-## Kitchen - 厨房烹饪台
-## 玩家可以在此处进行烹饪
+## Kitchen - 厨房工作台
+## 玩家可以在这里进行烹饪
 
-# 信号
-signal cooking_station_activated
+@export var kitchen_name: String = "厨房"
 
-# 配置
-@export var station_name: String = "厨房"
-@export var auto_open: bool = true
+var is_player_in_range: bool = false
+var current_player: Player = null
 
-# 节点引用
-@onready var interaction_label: Label = $InteractionLabel if has_node("InteractionLabel") else null
-@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
-
-# 状态
-var _player_in_range: bool = false
-var _can_interact: bool = true
+# 烹饪UI
+var cooking_ui: Control = null
 
 func _ready() -> void:
-	_connect_signals()
-	_setup_interaction_label()
-
-func _connect_signals() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
-
-func _setup_interaction_label() -> void:
-	if interaction_label:
-		interaction_label.visible = false
-		interaction_label.text = "[E] 烹饪"
-		interaction_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	print("[Kitchen] Kitchen initialized")
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is Player:
-		_player_in_range = true
-		if interaction_label:
-			interaction_label.visible = true
+		is_player_in_range = true
+		current_player = body
+		_show_interact_prompt()
 
 func _on_body_exited(body: Node2D) -> void:
 	if body is Player:
-		_player_in_range = false
-		if interaction_label:
-			interaction_label.visible = false
+		is_player_in_range = false
+		current_player = null
+		_hide_interact_prompt()
+
+func _show_interact_prompt() -> void:
+	print("[Kitchen] 按 E 键使用厨房")
+
+func _hide_interact_prompt() -> void:
+	pass
 
 func _input(event: InputEvent) -> void:
-	if not _player_in_range or not _can_interact:
+	if not is_player_in_range:
 		return
-
+	
 	if event.is_action_pressed("interact"):
-		activate()
-		get_viewport().set_input_as_handled()
+		_open_cooking_ui()
 
-## 激活烹饪台
-func activate() -> void:
-	cooking_station_activated.emit()
-
-	if auto_open:
-		open_cooking_ui()
-
-## 打开烹饪界面
-func open_cooking_ui() -> void:
-	var cooking_ui = _get_or_create_cooking_ui()
-	if cooking_ui:
-		cooking_ui.open()
-
-## 关闭烹饪界面
-func close_cooking_ui() -> void:
-	var cooking_ui = _get_cooking_ui()
-	if cooking_ui:
-		cooking_ui.close()
-
-## 获取或创建烹饪界面
-func _get_or_create_cooking_ui() -> CookingUI:
-	var cooking_ui = _get_cooking_ui()
+func _open_cooking_ui() -> void:
 	if cooking_ui == null:
-		cooking_ui = CookingUI.new()
-		cooking_ui.name = "CookingUI"
-		get_tree().root.add_child(cooking_ui)
-	return cooking_ui
-
-## 获取烹饪界面
-func _get_cooking_ui() -> CookingUI:
-	return get_tree().root.get_node_or_null("CookingUI") as CookingUI
-
-## 设置是否可交互
-func set_can_interact(value: bool) -> void:
-	_can_interact = value
-	if interaction_label:
-		interaction_label.visible = _player_in_range and _can_interact
+		# 加载烹饪UI场景
+		var cooking_ui_scene = load("res://src/ui/menus/CookingUI.tscn")
+		if cooking_ui_scene:
+			cooking_ui = cooking_ui_scene.instantiate()
+			get_tree().current_scene.add_child(cooking_ui)
+	
+	if cooking_ui:
+		cooking_ui.show()
+		print("[Kitchen] 打开烹饪界面")

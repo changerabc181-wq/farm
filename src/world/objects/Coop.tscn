@@ -1,37 +1,32 @@
-[gd_scene load_steps=3 format=3 uid="uid://coop001"]
+[gd_scene load_steps=3 format=3 uid="uid://coop_001"]
 
 [ext_resource type="Script" path="res://src/world/objects/Coop.gd" id="1_coop"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_coop"]
 size = Vector2(96, 64)
 
-[node name="Coop" type="StaticBody2D"]
-collision_layer = 2
-collision_mask = 1
+[node name="Coop" type="Node2D"]
 script = ExtResource("1_coop")
-building_name = "鸡舍"
-building_type = "coop"
-max_animals = 4
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.9, 0.7, 0.5, 1)
-scale = Vector2(3, 2)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 0)
-shape = SubResource("RectangleShape2D_coop")
 
 [node name="InteractionArea" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 1
+collision_layer = 4
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
-position = Vector2(0, -8)
 shape = SubResource("RectangleShape2D_coop")
-debug_color = Color(0, 0.6, 1, 0.42)
 
 [node name="AnimalContainer" type="Node2D" parent="."]
-position = Vector2(0, 32)
 
-[node name="ProductSpawnPoint" type="Marker2D" parent="."]
-position = Vector2(0, 48)
+[node name="SpawnPoint1" type="Marker2D" parent="."]
+position = Vector2(-24, 16)
+
+[node name="SpawnPoint2" type="Marker2D" parent="."]
+position = Vector2(0, 16)
+
+[node name="SpawnPoint3" type="Marker2D" parent="."]
+position = Vector2(24, 16)
+
+[node name="SpawnPoint4" type="Marker2D" parent="."]
+position = Vector2(-24, -16)

@@ -1,37 +1,65 @@
-extends "res://src/world/objects/AnimalBuilding.gd"
+extends Node2D
 class_name Barn
 
 ## Barn - 牛棚
-## 专门用于饲养牛类动物的建筑
+## 可以容纳最多2头牛的建筑
+
+@export var building_name: String = "牛棚"
+@export var max_animals: int = 2
+
+var animals: Array[Animal] = []
+
+# 节点引用
+@onready var animal_container: Node2D = $AnimalContainer
+@onready var interaction_area: Area2D = $InteractionArea
 
 func _ready() -> void:
-	building_name = "牛棚"
-	building_type = "barn"
-	max_animals = 4
-	super._ready()
+	if interaction_area:
+		interaction_area.body_entered.connect(_on_body_entered)
+		interaction_area.body_exited.connect(_on_body_exited)
+	print("[Barn] Barn initialized")
 
-## 创建牛
-func create_cow(cow_name: String = "") -> Cow:
-	if is_full():
-		print("[Barn] Cannot create cow, barn is full!")
-		return null
+func _on_body_entered(body: Node2D) -> void:
+	if body is Player:
+		print("[Barn] 按 E 键进入牛棚")
 
-	var cow_scene = preload("res://src/entities/animals/Cow.tscn")
-	var cow: Cow = cow_scene.instantiate()
+func _on_body_exited(body: Node2D) -> void:
+	pass
 
-	if cow_name.is_empty():
-		cow_name = "小牛%d" % (animals.size() + 1)
+## 添加动物到牛棚
+func add_animal(animal: Animal) -> bool:
+	if animals.size() >= max_animals:
+		print("[Barn] 牛棚已满")
+		return false
+	
+	animals.append(animal)
+	if animal_container:
+		animal.get_parent().remove_child(animal)
+		animal_container.add_child(animal)
+	
+	print("[Barn] 添加动物: ", animal.animal_name)
+	return true
 
-	cow.animal_name = cow_name
-	cow.animal_id = "cow_%d" % Time.get_unix_time_from_system()
+## 移除动物
+func remove_animal(animal: Animal) -> void:
+	animals.erase(animal)
 
-	add_animal(cow)
-	return cow
+## 获取当前动物数量
+func get_animal_count() -> int:
+	return animals.size()
 
-## 获取所有牛奶
-func get_milk_count() -> int:
-	var count := 0
+## 获取所有产品
+func collect_all_products() -> Dictionary:
+	var collected = {}
 	for animal in animals:
-		if animal is Cow and animal.has_product:
-			count += 1
-	return count
+		if animal.has_product:
+			var product = animal.collect_product()
+			if not product.is_empty():
+				var product_id = product.get("product_id", "")
+				var quality = product.get("quality", 0)
+				if not collected.has(product_id):
+					collected[product_id] = {"count": 0, "qualities": []}
+				collected[product_id]["count"] += 1
+				collected[product_id]["qualities"].append(quality)
+	
+	return collected
