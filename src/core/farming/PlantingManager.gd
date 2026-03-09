@@ -15,11 +15,12 @@ func _ready() -> void:
 ## 加载种子数据
 func _load_seed_data() -> void:
 	# 从ItemDatabase获取种子信息
-	if ItemDatabase:
-		for item_id in get_node("/root/ItemDatabase").get_all_item_ids():
-			var item_data = get_node("/root/ItemDatabase").get_item(item_id)
-			if item_data and item_data.get("type") == "seed":
-				var crop_id = item_data.get("crop_id", "")
+	var item_database = get_node_or_null("/root/ItemDatabase")
+	if item_database:
+		for item_id in item_database.get_all_item_ids():
+			var item_data = item_database.get_item(item_id)
+			if item_data and item_data.type == 0:  # ItemType.SEED = 0
+				var crop_id = item_data.crop_id
 				if crop_id != "":
 					seed_to_crop[item_id] = crop_id
 					print("[PlantingManager] Registered seed: ", item_id, " -> ", crop_id)

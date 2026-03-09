@@ -204,7 +204,7 @@ func on_new_day() -> void:
 	_check_production()
 
 	# 重置状态
-	if TimeManager and TimeManager.current_time >= 18.0:
+	if TimeManager and get_node("/root/TimeManager").current_time >= 18.0:
 		# 夜晚回屋睡觉
 		go_inside()
 	else:

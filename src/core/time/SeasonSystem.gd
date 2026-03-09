@@ -72,7 +72,7 @@ func _ready() -> void:
 func _connect_signals() -> void:
 	if TimeManager:
 		TimeManager.season_changed.connect(_on_time_season_changed)
-		TimeManager.day_changed.connect(_on_day_changed)
+		get_node("/root/TimeManager").day_changed.connect(_on_day_changed)
 
 
 ## 获取当前季节

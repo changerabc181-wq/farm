@@ -183,8 +183,9 @@ func _interact_with_npc() -> void:
 	print("[Player] Interacting with %s" % npc_in_range.npc_name)
 
 	# 发送交互信号
-	if EventBus.has_signal("npc_interacted"):
-		EventBus.emit_signal("npc_interacted", npc_in_range)
+	var event_bus = get_node_or_null("/root/EventBus")
+	if event_bus and event_bus.has_signal("npc_interacted"):
+		event_bus.emit_signal("npc_interacted", npc_in_range)
 
 ## 初始化战斗系统
 func _setup_combat() -> void:

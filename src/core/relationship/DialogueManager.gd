@@ -170,7 +170,7 @@ func _check_single_condition(condition: Dictionary) -> bool:
 			return _player_flags.get(key, false) == expected
 
 		"time":
-			var current_time = TimeManager.current_time if TimeManager else 6.0
+			var current_time = get_node("/root/TimeManager").current_time if TimeManager else 6.0
 			var min_time = condition.get("min", 0.0)
 			var max_time = condition.get("max", 24.0)
 			return current_time >= min_time and current_time < max_time
@@ -181,7 +181,7 @@ func _check_single_condition(condition: Dictionary) -> bool:
 			return current_season == expected_season
 
 		"day":
-			var current_day = TimeManager.current_day if TimeManager else 1
+			var current_day = get_node("/root/TimeManager").current_day if TimeManager else 1
 			var expected_day = condition.get("value", 1)
 			return current_day == expected_day
 

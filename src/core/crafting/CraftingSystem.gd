@@ -51,8 +51,8 @@ func _ready() -> void:
 func _connect_databases() -> void:
 	_item_database = get_node_or_null("/root/ItemDatabase")
 	if _item_database == null:
-		_item_database = ItemDatabase.new()
-		add_child(_item_database)
+		_item_database = get_node_or_null("/root/ItemDatabase")
+		
 
 	_inventory = get_node_or_null("/root/Inventory")
 	if _inventory == null:

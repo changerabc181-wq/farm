@@ -61,7 +61,7 @@ func _ready() -> void:
 
 func _connect_signals() -> void:
 	if TimeManager:
-		TimeManager.day_changed.connect(_on_day_changed)
+		get_node("/root/TimeManager").day_changed.connect(_on_day_changed)
 
 
 func _setup_interaction() -> void:

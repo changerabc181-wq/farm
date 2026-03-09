@@ -52,8 +52,8 @@ func _connect_database() -> void:
 	_item_database = get_node_or_null("/root/ItemDatabase")
 	if _item_database == null:
 		# 创建 ItemDatabase 实例
-		_item_database = ItemDatabase.new()
-		add_child(_item_database)
+		_item_database = get_node_or_null("/root/ItemDatabase")
+		
 
 ## 获取物品数据库
 func get_item_database() -> ItemDatabase:

@@ -47,8 +47,7 @@ func _ready() -> void:
 	print("[GiftSystem] Initialized")
 
 func _connect_signals() -> void:
-	_item_database = ItemDatabase.new()
-	add_child(_item_database)
+	_item_database = get_node_or_null("/root/ItemDatabase")
 
 ## 加载NPC数据
 func _load_npc_data() -> void:

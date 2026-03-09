@@ -85,18 +85,18 @@ func _physics_process(delta: float) -> void:
 ## 连接时间信号
 func _connect_time_signals() -> void:
 	if TimeManager:
-		if not TimeManager.time_changed.is_connected(_on_time_changed):
-			TimeManager.time_changed.connect(_on_time_changed)
-		if not TimeManager.hour_changed.is_connected(_on_hour_changed):
-			TimeManager.hour_changed.connect(_on_hour_changed)
+		if not get_node("/root/TimeManager").time_changed.is_connected(_on_time_changed):
+			get_node("/root/TimeManager").time_changed.connect(_on_time_changed)
+		if not get_node("/root/TimeManager").hour_changed.is_connected(_on_hour_changed):
+			get_node("/root/TimeManager").hour_changed.connect(_on_hour_changed)
 
 ## 更新日程状态
 func _update_schedule() -> void:
 	if schedule and TimeManager:
 		schedule.update(
-			TimeManager.current_time,
-			TimeManager.current_day,
-			TimeManager.current_season
+			get_node("/root/TimeManager").current_time,
+			get_node("/root/TimeManager").current_day,
+			get_node("/root/TimeManager").current_season
 		)
 
 		# 检查是否需要移动到新地点
@@ -350,13 +350,13 @@ func load_state(state: Dictionary) -> void:
 ## 连接对话信号
 func _connect_dialogue_signals() -> void:
 	if EventBus:
-		if not EventBus.dialogue_ended.is_connected(_on_dialogue_ended):
+		if not get_node("/root/EventBus").dialogue_ended.is_connected(_on_dialogue_ended):
 			get_node("/root/EventBus").dialogue_ended.connect(_on_dialogue_ended)
 
 ## 时间变化回调
 func _on_time_changed(new_time: float) -> void:
 	if schedule:
-		schedule.update(new_time, TimeManager.current_day, TimeManager.current_season)
+		schedule.update(new_time, get_node("/root/TimeManager").current_day, get_node("/root/TimeManager").current_season)
 
 ## 小时变化回调
 func _on_hour_changed(_new_hour: int) -> void:
@@ -491,32 +491,20 @@ func _get_npc_data_from_json() -> Dictionary:
 ## 获取好友度心数
 func get_friendship_hearts() -> int:
 	if GiftSystem:
-		return GiftSystem.get_friendship_hearts(npc_id)
+		return get_node("/root/GiftSystem").get_friendship_hearts(npc_id)
 	return 0
 
 ## 检查是否是生日
 func is_birthday() -> bool:
 	if GiftSystem:
-		return GiftSystem.is_npc_birthday(npc_id)
+		return get_node("/root/GiftSystem").is_npc_birthday(npc_id)
 	return false
 
 ## 获取NPC偏好预览
 func get_preference_for_item(item_id: String) -> String:
 	if GiftSystem:
-		return GiftSystem.get_preference_preview(npc_id, item_id)
+		return get_node("/root/GiftSystem").get_preference_preview(npc_id, item_id)
 	return "一般"
-
-## 交互处理
-func interact() -> void:
-	if not can_interact():
-		return
-
-	start_interaction()
-	interacted.emit(self)
-
-	# 发射对话开始事件
-	if EventBus:
-		get_node("/root/EventBus").dialogue_started.emit(npc_id)
 
 ## 交互处理
 func interact() -> void:

@@ -58,8 +58,8 @@ func _connect_systems() -> void:
 	# 获取 ItemDatabase 引用
 	_item_database = get_node_or_null("/root/ItemDatabase")
 	if _item_database == null:
-		_item_database = ItemDatabase.new()
-		add_child(_item_database)
+		_item_database = get_node_or_null("/root/ItemDatabase")
+		
 
 ## 加载食谱数据库
 func load_recipes() -> bool:

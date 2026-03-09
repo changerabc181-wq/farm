@@ -147,9 +147,10 @@ func attack(direction: Vector2 = Vector2.ZERO) -> bool:
 
 	# 消耗体力
 	var energy_cost = get_current_weapon_energy_cost()
-	if energy_cost > 0 and GameManager:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if energy_cost > 0 and game_manager:
 		# 检查是否有足够体力
-		if GameManager.current_stamina < energy_cost:
+		if game_manager.current_stamina < energy_cost:
 			is_attacking = false
 			return false
 		get_node("/root/EventBus").energy_changed.emit(-energy_cost, 0)
@@ -347,8 +348,10 @@ func _on_attack_area_entered(area: Area2D) -> void:
 ## 受伤区域进入回调
 func _on_hitbox_area_entered(area: Area2D) -> void:
 	if area.is_in_group("enemy_attack"):
-		var damage = area.get("damage", 5)
-		var source = area.get("owner", area.get_parent())
+		var damage: int = 5
+		if area.has_meta("damage"):
+			damage = area.get_meta("damage")
+		var source = area.get_parent()
 		take_damage(damage, source)
 
 ## 血量变化回调

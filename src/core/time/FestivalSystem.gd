@@ -46,8 +46,8 @@ func _ready() -> void:
 
 func _connect_signals() -> void:
 	if TimeManager:
-		TimeManager.day_changed.connect(_on_day_changed)
-		TimeManager.hour_changed.connect(_on_hour_changed)
+		get_node("/root/TimeManager").day_changed.connect(_on_day_changed)
+		get_node("/root/TimeManager").hour_changed.connect(_on_hour_changed)
 		TimeManager.season_changed.connect(_on_season_changed)
 
 
@@ -152,7 +152,7 @@ func start_festival(festival_id: String) -> void:
 	var festival_data := _festivals_data[festival_id] as Dictionary
 	_active_festivals[festival_id] = {
 		"data": festival_data,
-		"start_time": TimeManager.current_time,
+		"start_time": get_node("/root/TimeManager").current_time,
 		"activities_completed": [],
 		"rewards_claimed": []
 	}
@@ -439,7 +439,7 @@ func get_available_activities(festival_id: String) -> Array:
 
 ## 信号回调：日期变化
 func _on_day_changed(new_day: int) -> void:
-	var season := TimeManager.current_season
+	var season := get_node("/root/TimeManager").current_season
 
 	# 检查今天是否有节日
 	var today_check := check_festival_today(season, new_day)

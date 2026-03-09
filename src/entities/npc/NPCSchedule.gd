@@ -109,7 +109,7 @@ func _create_default_schedule() -> void:
 		ScheduleEntry.new({
 			"start_time": 6.0,
 			"end_time": 8.0,
-			"activity": ActivityType.HOME,
+			"activity": ActivityType.IDLE,
 			"location_id": default_location + "_home"
 		}),
 		ScheduleEntry.new({
@@ -139,7 +139,7 @@ func _create_default_schedule() -> void:
 		ScheduleEntry.new({
 			"start_time": 21.0,
 			"end_time": 24.0,
-			"activity": ActivityType.HOME,
+			"activity": ActivityType.IDLE,
 			"location_id": default_location + "_home"
 		}),
 		ScheduleEntry.new({

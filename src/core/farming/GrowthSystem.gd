@@ -73,7 +73,10 @@ func _parse_crop_database(data: Dictionary) -> void:
 			crop_data.growth_days.append(int(days))
 
 		# 解析季节
-		crop_data.seasons = crop_data_dict.get("season", ["Spring"])
+		var seasons: Array = crop_data_dict.get("season", ["Spring"])
+		crop_data.seasons.clear()
+		for season in seasons:
+			crop_data.seasons.append(str(season))
 
 		crop_data.regrow = crop_data_dict.get("regrow", false)
 		crop_data.regrow_days = crop_data_dict.get("regrow_days", 0)

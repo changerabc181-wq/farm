@@ -75,7 +75,7 @@ func _setup_planting_manager() -> void:
 
 func _connect_time_signals() -> void:
 	if TimeManager:
-		TimeManager.hour_changed.connect(_on_hour_changed)
+		get_node("/root/TimeManager").hour_changed.connect(_on_hour_changed)
 		TimeManager.day_changed.connect(_on_day_changed)
 		TimeManager.season_changed.connect(_on_season_changed)
 		print("[Farm] Connected to TimeManager signals")

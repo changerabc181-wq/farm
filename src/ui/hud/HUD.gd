@@ -17,8 +17,8 @@ func _ready() -> void:
 
 func _connect_signals() -> void:
 	if TimeManager:
-		TimeManager.time_changed.connect(_on_time_changed)
-		TimeManager.day_changed.connect(_on_day_changed)
+		get_node("/root/TimeManager").time_changed.connect(_on_time_changed)
+		get_node("/root/TimeManager").day_changed.connect(_on_day_changed)
 	if GameManager:
 		GameManager.stamina_changed.connect(_on_stamina_changed)
 	if MoneySystem:
