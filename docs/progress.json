@@ -42,12 +42,12 @@
     "phase6_advanced": {
       "name": "进阶功能",
       "status": "in_progress",
-      "progress": 30,
+      "progress": 50,
       "tasks_total": 6,
-      "tasks_done": 0,
+      "tasks_done": 2,
       "tasks": {
-        "cooking": { "status": "pending", "priority": "high", "estimate": "4h" },
-        "animals": { "status": "pending", "priority": "high", "estimate": "6h" },
+        "cooking": { "status": "completed", "priority": "high", "estimate": "4h" },
+        "animals": { "status": "completed", "priority": "high", "estimate": "6h" },
         "festivals": { "status": "pending", "priority": "medium", "estimate": "8h" },
         "housing": { "status": "pending", "priority": "medium", "estimate": "6h" },
         "achievements": { "status": "pending", "priority": "low", "estimate": "4h" },
@@ -58,10 +58,10 @@
   
   "current_sprint": {
     "week": 1,
-    "focus": ["cooking", "animals", "bug_fixes"],
+    "focus": ["festivals", "content", "bug_fixes"],
     "goals": [
-      "完善烹饪系统与UI连接",
-      "添加鸡舍和牛棚到农场",
+      "完成节日系统基础架构",
+      "添加更多作物和鱼类",
       "测试所有核心系统"
     ]
   },
@@ -69,36 +69,36 @@
   "next_actions": [
     {
       "id": 1,
-      "task": "完善烹饪系统",
-      "file": "src/core/crafting/CookingSystem.gd",
-      "priority": "high",
+      "task": "创建节日系统基础",
+      "file": "src/core/time/FestivalSystem.gd",
+      "priority": "medium",
       "status": "pending"
     },
     {
       "id": 2,
-      "task": "添加厨房场景",
-      "file": "src/world/objects/Kitchen.tscn",
+      "task": "添加更多作物数据",
+      "file": "data/crops.json",
       "priority": "high",
       "status": "pending"
     },
     {
       "id": 3,
-      "task": "完善动物系统",
-      "file": "src/entities/animals/Animal.gd",
+      "task": "添加更多鱼类数据",
+      "file": "data/fish.json",
       "priority": "high",
       "status": "pending"
     },
     {
       "id": 4,
-      "task": "添加鸡舍场景",
-      "file": "src/world/objects/Coop.tscn",
+      "task": "添加更多任务",
+      "file": "data/quests.json",
       "priority": "high",
       "status": "pending"
     },
     {
       "id": 5,
-      "task": "添加牛棚场景",
-      "file": "src/world/objects/Barn.tscn",
+      "task": "测试存档系统",
+      "file": "tests/",
       "priority": "high",
       "status": "pending"
     }
