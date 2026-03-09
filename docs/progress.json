@@ -1,0 +1,115 @@
+{
+  "project": "田园物语 (Pastoral Tales)",
+  "last_updated": "2026-03-09",
+  "overall_progress": "85%",
+  
+  "phases": {
+    "phase1_core": {
+      "name": "核心框架",
+      "status": "completed",
+      "progress": 100,
+      "tasks_total": 6,
+      "tasks_done": 6
+    },
+    "phase2_farm": {
+      "name": "农场系统",
+      "status": "completed",
+      "progress": 100,
+      "tasks_total": 7,
+      "tasks_done": 7
+    },
+    "phase3_economy": {
+      "name": "经济系统",
+      "status": "completed",
+      "progress": 90,
+      "tasks_total": 4,
+      "tasks_done": 3
+    },
+    "phase4_social": {
+      "name": "社交系统",
+      "status": "completed",
+      "progress": 100,
+      "tasks_total": 7,
+      "tasks_done": 7
+    },
+    "phase5_explore": {
+      "name": "探索系统",
+      "status": "completed",
+      "progress": 100,
+      "tasks_total": 6,
+      "tasks_done": 6
+    },
+    "phase6_advanced": {
+      "name": "进阶功能",
+      "status": "in_progress",
+      "progress": 30,
+      "tasks_total": 6,
+      "tasks_done": 0,
+      "tasks": {
+        "cooking": { "status": "pending", "priority": "high", "estimate": "4h" },
+        "animals": { "status": "pending", "priority": "high", "estimate": "6h" },
+        "festivals": { "status": "pending", "priority": "medium", "estimate": "8h" },
+        "housing": { "status": "pending", "priority": "medium", "estimate": "6h" },
+        "achievements": { "status": "pending", "priority": "low", "estimate": "4h" },
+        "content": { "status": "ongoing", "priority": "high", "estimate": "continuous" }
+      }
+    }
+  },
+  
+  "current_sprint": {
+    "week": 1,
+    "focus": ["cooking", "animals", "bug_fixes"],
+    "goals": [
+      "完善烹饪系统与UI连接",
+      "添加鸡舍和牛棚到农场",
+      "测试所有核心系统"
+    ]
+  },
+  
+  "next_actions": [
+    {
+      "id": 1,
+      "task": "完善烹饪系统",
+      "file": "src/core/crafting/CookingSystem.gd",
+      "priority": "high",
+      "status": "pending"
+    },
+    {
+      "id": 2,
+      "task": "添加厨房场景",
+      "file": "src/world/objects/Kitchen.tscn",
+      "priority": "high",
+      "status": "pending"
+    },
+    {
+      "id": 3,
+      "task": "完善动物系统",
+      "file": "src/entities/animals/Animal.gd",
+      "priority": "high",
+      "status": "pending"
+    },
+    {
+      "id": 4,
+      "task": "添加鸡舍场景",
+      "file": "src/world/objects/Coop.tscn",
+      "priority": "high",
+      "status": "pending"
+    },
+    {
+      "id": 5,
+      "task": "添加牛棚场景",
+      "file": "src/world/objects/Barn.tscn",
+      "priority": "high",
+      "status": "pending"
+    }
+  ],
+  
+  "bugs": [],
+  
+  "metrics": {
+    "gdscript_files": 98,
+    "data_files": 10,
+    "code_lines": 24000,
+    "test_coverage": "basic"
+  }
+}
