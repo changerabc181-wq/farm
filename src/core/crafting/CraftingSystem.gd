@@ -1,5 +1,4 @@
 extends Node
-class_name CraftingSystem
 
 ## CraftingSystem - 制作系统
 ## 管理配方数据、检查材料、执行制作
@@ -45,11 +44,9 @@ var _is_loaded: bool = false
 var _item_database: ItemDatabase = null
 var _inventory: Inventory = null
 
-
 func _ready() -> void:
 	_connect_databases()
 	load_recipes()
-
 
 func _connect_databases() -> void:
 	_item_database = get_node_or_null("/root/ItemDatabase")
@@ -61,7 +58,6 @@ func _connect_databases() -> void:
 	if _inventory == null:
 		_inventory = Inventory.new()
 		add_child(_inventory)
-
 
 ## 加载配方数据
 func load_recipes() -> bool:
@@ -95,7 +91,6 @@ func load_recipes() -> bool:
 	print("[CraftingSystem] Loaded %d recipes" % _recipes.size())
 	return true
 
-
 ## 解析配方数据
 func _parse_recipes(data: Dictionary) -> void:
 	if not data.has("recipes"):
@@ -109,7 +104,6 @@ func _parse_recipes(data: Dictionary) -> void:
 			_recipes[recipe.id] = recipe
 			if recipe.unlocked_by_default:
 				_unlocked_recipes.append(recipe.id)
-
 
 ## 从字典创建配方
 func _create_recipe_from_dict(data: Dictionary) -> Recipe:
@@ -146,7 +140,6 @@ func _create_recipe_from_dict(data: Dictionary) -> Recipe:
 
 	return recipe
 
-
 ## 解析配方类型字符串
 func _parse_category(category_str: String) -> int:
 	match category_str.to_lower():
@@ -157,7 +150,6 @@ func _parse_category(category_str: String) -> int:
 		"decoration": return RecipeCategory.DECORATION
 		"alchemy": return RecipeCategory.ALCHEMY
 		_: return RecipeCategory.TOOL
-
 
 ## 创建默认配方
 func _create_default_recipes() -> void:
@@ -204,21 +196,17 @@ func _create_default_recipes() -> void:
 	_is_loaded = true
 	print("[CraftingSystem] Created default recipes with %d entries" % _recipes.size())
 
-
 ## 获取配方
 func get_recipe(recipe_id: String) -> Recipe:
 	return _recipes.get(recipe_id, null)
-
 
 ## 检查配方是否存在
 func has_recipe(recipe_id: String) -> bool:
 	return _recipes.has(recipe_id)
 
-
 ## 获取所有配方
 func get_all_recipes() -> Array:
 	return _recipes.values()
-
 
 ## 获取已解锁的配方
 func get_unlocked_recipes() -> Array:
@@ -227,7 +215,6 @@ func get_unlocked_recipes() -> Array:
 		if _recipes.has(recipe_id):
 			result.append(_recipes[recipe_id])
 	return result
-
 
 ## 按类型获取配方
 func get_recipes_by_category(category: int) -> Array:
@@ -238,7 +225,6 @@ func get_recipes_by_category(category: int) -> Array:
 			result.append(recipe)
 	return result
 
-
 ## 按工作台类型获取配方
 func get_recipes_by_workbench(workbench_type: String) -> Array:
 	var result := []
@@ -248,7 +234,6 @@ func get_recipes_by_workbench(workbench_type: String) -> Array:
 			result.append(recipe)
 	return result
 
-
 ## 获取无需工作台的配方
 func get_portable_recipes() -> Array:
 	var result := []
@@ -257,7 +242,6 @@ func get_portable_recipes() -> Array:
 		if recipe.workbench_required == "" and recipe.unlocked_by_default:
 			result.append(recipe)
 	return result
-
 
 ## 检查是否可以制作
 func can_craft(recipe_id: String, check_inventory: bool = true) -> Dictionary:
@@ -302,11 +286,9 @@ func can_craft(recipe_id: String, check_inventory: bool = true) -> Dictionary:
 	result.can_craft = true
 	return result
 
-
 ## 检查配方是否解锁
 func is_recipe_unlocked(recipe_id: String) -> bool:
 	return _unlocked_recipes.has(recipe_id)
-
 
 ## 解锁配方
 func unlock_recipe(recipe_id: String) -> bool:
@@ -321,7 +303,6 @@ func unlock_recipe(recipe_id: String) -> bool:
 	recipe_unlocked.emit(recipe_id)
 	print("[CraftingSystem] Recipe unlocked: " + recipe_id)
 	return true
-
 
 ## 制作物品
 func craft(recipe_id: String, workbench_type: String = "") -> bool:
@@ -362,7 +343,6 @@ func craft(recipe_id: String, workbench_type: String = "") -> bool:
 
 	return true
 
-
 ## 批量制作
 func craft_batch(recipe_id: String, count: int, workbench_type: String = "") -> int:
 	var crafted := 0
@@ -372,7 +352,6 @@ func craft_batch(recipe_id: String, count: int, workbench_type: String = "") -> 
 		else:
 			break
 	return crafted
-
 
 ## 获取可制作数量
 func get_craftable_count(recipe_id: String) -> int:
@@ -393,7 +372,6 @@ func get_craftable_count(recipe_id: String) -> int:
 		min_count = mini(min_count, craftable)
 
 	return min_count
-
 
 ## 获取配方材料信息（用于UI显示）
 func get_ingredient_info(recipe_id: String) -> Array:
@@ -423,13 +401,11 @@ func get_ingredient_info(recipe_id: String) -> Array:
 
 	return result
 
-
 ## 获取存档数据
 func get_save_data() -> Dictionary:
 	return {
 		"unlocked_recipes": _unlocked_recipes.duplicate()
 	}
-
 
 ## 加载存档数据
 func load_save_data(data: Dictionary) -> void:
@@ -438,7 +414,6 @@ func load_save_data(data: Dictionary) -> void:
 	for recipe_id in saved_recipes:
 		if has_recipe(recipe_id):
 			_unlocked_recipes.append(recipe_id)
-
 
 ## 获取类型名称
 func get_category_name(category: int) -> String:

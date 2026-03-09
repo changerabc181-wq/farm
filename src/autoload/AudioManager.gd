@@ -1,5 +1,4 @@
 extends Node
-class_name AudioManager
 
 ## AudioManager - 音频管理器
 ## 负责背景音乐、音效的播放和管理

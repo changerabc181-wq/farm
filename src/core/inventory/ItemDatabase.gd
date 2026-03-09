@@ -1,5 +1,4 @@
 extends Node
-class_name ItemDatabase
 
 ## ItemDatabase - 物品数据库
 ## 从 JSON 加载物品数据，提供物品查询功能

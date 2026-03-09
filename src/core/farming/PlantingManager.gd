@@ -1,5 +1,4 @@
 extends Node
-class_name PlantingManager
 
 ## PlantingManager - 种植管理器
 ## 处理种子的种植逻辑

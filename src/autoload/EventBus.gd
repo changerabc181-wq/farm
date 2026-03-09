@@ -1,5 +1,4 @@
 extends Node
-class_name EventBus
 
 ## EventBus - 事件总线
 ## 全局事件系统，用于解耦各个模块之间的通信

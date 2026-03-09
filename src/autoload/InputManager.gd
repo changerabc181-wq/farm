@@ -1,5 +1,4 @@
 extends Node
-class_name InputManager
 
 ## InputManager - 输入管理器
 ## 负责处理玩家输入，支持键盘和手柄

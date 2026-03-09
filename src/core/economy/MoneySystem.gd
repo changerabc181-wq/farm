@@ -1,5 +1,4 @@
 extends Node
-class_name MoneySystem
 
 ## MoneySystem - 货币系统
 ## 管理玩家的金钱、收入、支出和交易记录
@@ -40,22 +39,18 @@ enum ExpenseType {
 	OTHER            # 其他
 }
 
-
 func _ready() -> void:
 	print("[MoneySystem] Initialized with starting money: ", _money)
-
 
 ## 获取当前金钱
 func get_money() -> int:
 	return _money
-
 
 ## 设置金钱（仅用于加载存档）
 func set_money(amount: int) -> void:
 	var delta: int = amount - _money
 	_money = amount
 	money_changed.emit(_money, delta)
-
 
 ## 添加金钱（收入）
 func add_money(amount: int, source: IncomeSource, description: String = "") -> bool:
@@ -80,7 +75,6 @@ func add_money(amount: int, source: IncomeSource, description: String = "") -> b
 	print("[MoneySystem] +$", amount, " (", IncomeSource.keys()[source], ") - ", description)
 
 	return true
-
 
 ## 扣除金钱（支出）
 func spend_money(amount: int, expense_type: ExpenseType, description: String = "") -> bool:
@@ -110,11 +104,9 @@ func spend_money(amount: int, expense_type: ExpenseType, description: String = "
 
 	return true
 
-
 ## 检查是否有足够的金钱
 func can_afford(amount: int) -> bool:
 	return _money >= amount
-
 
 ## 出售作物获得金钱
 func sell_crop(crop_id: String, crop_name: String, quality: int, base_price: int, quantity: int = 1) -> int:
@@ -127,12 +119,12 @@ func sell_crop(crop_id: String, crop_name: String, quality: int, base_price: int
 
 	if add_money(total_price, IncomeSource.CROP_SALE, description):
 		# 发射事件信号
-		if EventBus:
-			EventBus.item_sold.emit(crop_id, total_price)
+		var event_bus = get_node_or_null("/root/EventBus")
+		if event_bus and event_bus.has_signal("item_sold"):
+			event_bus.item_sold.emit(crop_id, total_price)
 		return total_price
 
 	return 0
-
 
 ## 领取任务奖励
 func claim_quest_reward(quest_id: String, quest_name: String, amount: int) -> bool:
@@ -142,7 +134,6 @@ func claim_quest_reward(quest_id: String, quest_name: String, amount: int) -> bo
 	var description: String = "Quest: " + quest_name
 	return add_money(amount, IncomeSource.QUEST_REWARD, description)
 
-
 ## 购买种子
 func buy_seeds(seed_id: String, seed_name: String, price: int, quantity: int = 1) -> bool:
 	var total_cost: int = price * quantity
@@ -150,11 +141,9 @@ func buy_seeds(seed_id: String, seed_name: String, price: int, quantity: int = 1
 
 	return spend_money(total_cost, ExpenseType.SEED_PURCHASE, description)
 
-
 ## 购买工具
 func buy_tool(tool_id: String, tool_name: String, price: int) -> bool:
 	return spend_money(price, ExpenseType.TOOL_PURCHASE, tool_name)
-
 
 ## 获取交易记录
 func get_transactions(count: int = 10) -> Array[Dictionary]:
@@ -166,11 +155,9 @@ func get_transactions(count: int = 10) -> Array[Dictionary]:
 
 	return result
 
-
 ## 获取所有交易记录
 func get_all_transactions() -> Array[Dictionary]:
 	return _transactions.duplicate()
-
 
 ## 获取统计信息
 func get_stats() -> Dictionary:
@@ -180,7 +167,6 @@ func get_stats() -> Dictionary:
 		"total_spent": _total_spent,
 		"transaction_count": _transactions.size()
 	}
-
 
 ## 记录交易
 func _record_transaction(transaction: Dictionary) -> void:
@@ -192,7 +178,6 @@ func _record_transaction(transaction: Dictionary) -> void:
 
 	transaction_recorded.emit(transaction)
 
-
 ## 获取品质名称
 func _get_quality_name(quality: int) -> String:
 	match quality:
@@ -202,7 +187,6 @@ func _get_quality_name(quality: int) -> String:
 		3: return "Perfect"
 		_: return "Unknown"
 
-
 ## 序列化保存
 func save_state() -> Dictionary:
 	return {
@@ -211,7 +195,6 @@ func save_state() -> Dictionary:
 		"total_spent": _total_spent,
 		"transactions": _transactions.slice(-20)  # 只保存最近20条记录
 	}
-
 
 ## 反序列化加载
 func load_state(data: Dictionary) -> void:
@@ -225,7 +208,6 @@ func load_state(data: Dictionary) -> void:
 		_transactions.append(t)
 
 	print("[MoneySystem] Loaded state: $", _money, " (Earned: $", _total_earned, ", Spent: $", _total_spent, ")")
-
 
 ## 重置到初始状态
 func reset() -> void:

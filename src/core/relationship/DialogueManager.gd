@@ -1,5 +1,4 @@
 extends Node
-class_name DialogueManager
 
 ## DialogueManager - 对话管理器
 ## 负责加载对话数据、条件检测、触发对话、处理分支
@@ -34,18 +33,15 @@ var _dialogue_box: DialogueBox = null
 # 数据路径
 const DIALOGUE_DATA_PATH: String = "res://data/dialogues.json"
 
-
 func _ready() -> void:
 	print("[DialogueManager] Initialized")
 	_load_dialogue_data()
 	_connect_event_bus()
 
-
 func _connect_event_bus() -> void:
 	if EventBus:
 		EventBus.dialogue_started.connect(_on_event_dialogue_started)
 		EventBus.dialogue_ended.connect(_on_event_dialogue_ended)
-
 
 ## 加载对话数据
 func _load_dialogue_data() -> void:
@@ -66,7 +62,6 @@ func _load_dialogue_data() -> void:
 	else:
 		push_warning("[DialogueManager] Dialogue data file not found at: " + DIALOGUE_DATA_PATH)
 
-
 ## 设置 DialogueBox 引用
 func set_dialogue_box(dialogue_box: DialogueBox) -> void:
 	if _dialogue_box:
@@ -77,12 +72,10 @@ func set_dialogue_box(dialogue_box: DialogueBox) -> void:
 	if _dialogue_box:
 		_connect_dialogue_box_signals()
 
-
 func _connect_dialogue_box_signals() -> void:
 	if _dialogue_box:
 		_dialogue_box.dialogue_finished.connect(_on_dialogue_finished)
 		_dialogue_box.choice_selected.connect(_on_choice_selected)
-
 
 func _disconnect_dialogue_box_signals() -> void:
 	if _dialogue_box:
@@ -90,7 +83,6 @@ func _disconnect_dialogue_box_signals() -> void:
 			_dialogue_box.dialogue_finished.disconnect(_on_dialogue_finished)
 		if _dialogue_box.choice_selected.is_connected(_on_choice_selected):
 			_dialogue_box.choice_selected.disconnect(_on_choice_selected)
-
 
 ## 开始与 NPC 对话
 func start_dialogue(npc_id: String, dialogue_key: String = "") -> bool:
@@ -132,7 +124,6 @@ func start_dialogue(npc_id: String, dialogue_key: String = "") -> bool:
 	print("[DialogueManager] Started dialogue: ", _current_dialogue_id)
 	return true
 
-
 ## 查找可用的对话
 func _find_dialogue(npc_id: String, preferred_key: String = "") -> Dictionary:
 	var npc_dialogues = _dialogue_data.get(npc_id, {})
@@ -161,14 +152,12 @@ func _find_dialogue(npc_id: String, preferred_key: String = "") -> Dictionary:
 
 	return best_dialogue
 
-
 ## 检查对话条件
 func _check_conditions(conditions: Array) -> bool:
 	for condition in conditions:
 		if not _check_single_condition(condition):
 			return false
 	return true
-
 
 ## 检查单个条件
 func _check_single_condition(condition: Dictionary) -> bool:
@@ -226,13 +215,11 @@ func _check_single_condition(condition: Dictionary) -> bool:
 
 	return true
 
-
 ## 获取 NPC 名称
 func _get_npc_name(npc_id: String) -> String:
 	if _npc_data.has(npc_id):
 		return _npc_data[npc_id].get("name", npc_id)
 	return npc_id
-
 
 ## 对话结束回调
 func _on_dialogue_finished() -> void:
@@ -249,7 +236,6 @@ func _on_dialogue_finished() -> void:
 		EventBus.dialogue_ended.emit(npc_id)
 
 	print("[DialogueManager] Dialogue ended")
-
 
 ## 选项选择回调
 func _on_choice_selected(choice_index: int) -> void:
@@ -279,7 +265,6 @@ func _on_choice_selected(choice_index: int) -> void:
 	if choice_data.has("next"):
 		_show_branch(choice_data["next"])
 
-
 ## 显示分支对话
 func _show_branch(branch_id: String) -> void:
 	var current_dialogue = _get_current_dialogue()
@@ -304,7 +289,6 @@ func _show_branch(branch_id: String) -> void:
 			"lines": branch_data["lines"]
 		})
 
-
 ## 获取当前对话数据
 func _get_current_dialogue() -> Dictionary:
 	if _current_npc_id.is_empty() or _current_dialogue_id.is_empty():
@@ -317,12 +301,10 @@ func _get_current_dialogue() -> Dictionary:
 
 	return {}
 
-
 ## 触发效果
 func _trigger_effects(effects: Array) -> void:
 	for effect in effects:
 		_trigger_single_effect(effect)
-
 
 ## 触发单个效果
 func _trigger_single_effect(effect: Dictionary) -> void:
@@ -371,7 +353,6 @@ func _trigger_single_effect(effect: Dictionary) -> void:
 
 	effect_triggered.emit(effect_type, effect)
 
-
 ## 好感度系统
 func add_friendship_points(npc_id: String, points: int) -> void:
 	if not _friendship_data.has(npc_id):
@@ -389,43 +370,35 @@ func add_friendship_points(npc_id: String, points: int) -> void:
 	if EventBus:
 		EventBus.friendship_changed.emit(npc_id, data["hearts"])
 
-
 func get_friendship_hearts(npc_id: String) -> int:
 	if _friendship_data.has(npc_id):
 		return _friendship_data[npc_id].get("hearts", 0)
 	return 0
-
 
 func get_friendship_points(npc_id: String) -> int:
 	if _friendship_data.has(npc_id):
 		return _friendship_data[npc_id].get("points", 0)
 	return 0
 
-
 ## 设置玩家标志
 func set_flag(key: String, value: Variant) -> void:
 	_player_flags[key] = value
 
-
 func get_flag(key: String, default: Variant = false) -> Variant:
 	return _player_flags.get(key, default)
-
 
 func has_flag(key: String) -> bool:
 	return _player_flags.has(key)
 
-
 ## 检查是否在对话中
 func is_in_dialogue() -> bool:
 	return _is_in_dialogue
-
 
 ## 强制结束对话
 func force_end_dialogue() -> void:
 	if _dialogue_box:
 		_dialogue_box.hide_dialogue()
 	_on_dialogue_finished()
-
 
 ## 保存状态
 func save_state() -> Dictionary:
@@ -434,34 +407,28 @@ func save_state() -> Dictionary:
 		"friendship": _friendship_data.duplicate()
 	}
 
-
 ## 加载状态
 func load_state(data: Dictionary) -> void:
 	_player_flags = data.get("flags", {})
 	_friendship_data = data.get("friendship", {})
 	print("[DialogueManager] State loaded")
 
-
 ## 事件总线回调
 func _on_event_dialogue_started(npc_id: String) -> void:
 	# 由 DialogueManager 自身触发，这里不需要额外处理
 	pass
 
-
 func _on_event_dialogue_ended(npc_id: String) -> void:
 	# 由 DialogueManager 自身触发，这里不需要额外处理
 	pass
-
 
 ## 获取 NPC 数据
 func get_npc_data(npc_id: String) -> Dictionary:
 	return _npc_data.get(npc_id, {})
 
-
 ## 获取所有 NPC 列表
 func get_all_npcs() -> Dictionary:
 	return _npc_data.duplicate()
-
 
 ## 获取 NPC 好感度信息
 func get_npc_friendship_info(npc_id: String) -> Dictionary:

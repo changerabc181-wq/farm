@@ -1,5 +1,4 @@
 extends Node
-class_name GameManager
 
 ## GameManager - 游戏主管理器
 ## 负责游戏整体状态管理和协调各个系统
@@ -40,8 +39,9 @@ func _ready() -> void:
 
 func _connect_signals() -> void:
 	# 连接其他系统的信号
-	if TimeManager:
-		TimeManager.day_changed.connect(_on_day_changed)
+	var time_manager = get_node_or_null("/root/TimeManager")
+	if time_manager and time_manager.has_signal("day_changed"):
+		time_manager.day_changed.connect(_on_day_changed)
 
 func start_game() -> void:
 	current_state = GameState.PLAYING
@@ -64,14 +64,16 @@ func resume_game() -> void:
 		print("[GameManager] Game resumed")
 
 func save_game(slot: int = 0) -> void:
-	if SaveManager:
-		SaveManager.save_game(slot)
+	var save_manager = get_node_or_null("/root/SaveManager")
+	if save_manager:
+		save_manager.save_game(slot)
 		game_saved.emit()
 		print("[GameManager] Game saved to slot ", slot)
 
 func load_game(slot: int = 0) -> void:
-	if SaveManager:
-		SaveManager.load_game(slot)
+	var save_manager = get_node_or_null("/root/SaveManager")
+	if save_manager:
+		save_manager.load_game(slot)
 		game_loaded.emit()
 		print("[GameManager] Game loaded from slot ", slot)
 
@@ -116,45 +118,47 @@ func restore_stamina(amount: float) -> void:
 
 ## 背包管理
 func add_item(item_id: String, quantity: int = 1) -> bool:
+	var event_bus = get_node_or_null("/root/EventBus")
 	# 检查是否已有该物品
 	for slot in inventory:
 		if slot.get("item_id", "") == item_id:
 			var new_quantity = slot.get("quantity", 0) + quantity
 			slot["quantity"] = new_quantity
-			if EventBus:
-				EventBus.item_added.emit(item_id, quantity)
+			if event_bus and event_bus.has_signal("item_added"):
+				event_bus.item_added.emit(item_id, quantity)
 			print("[GameManager] Added %dx %s to existing stack" % [quantity, item_id])
 			return true
 
 	# 检查是否有空槽
 	if inventory.size() >= MAX_INVENTORY_SLOTS:
-		if EventBus:
-			EventBus.inventory_full.emit()
+		if event_bus and event_bus.has_signal("inventory_full"):
+			event_bus.inventory_full.emit()
 		print("[GameManager] Inventory full, cannot add %s" % item_id)
 		return false
 
 	# 创建新槽位
 	inventory.append({"item_id": item_id, "quantity": quantity})
-	if EventBus:
-		EventBus.item_added.emit(item_id, quantity)
+	if event_bus and event_bus.has_signal("item_added"):
+		event_bus.item_added.emit(item_id, quantity)
 	print("[GameManager] Added %dx %s as new stack" % [quantity, item_id])
 	return true
 
 func remove_item(item_id: String, quantity: int = 1) -> bool:
+	var event_bus = get_node_or_null("/root/EventBus")
 	for i in range(inventory.size()):
 		var slot = inventory[i]
 		if slot.get("item_id", "") == item_id:
 			var current_quantity = slot.get("quantity", 0)
 			if current_quantity > quantity:
 				slot["quantity"] = current_quantity - quantity
-				if EventBus:
-					EventBus.item_removed.emit(item_id, quantity)
+				if event_bus and event_bus.has_signal("item_removed"):
+					event_bus.item_removed.emit(item_id, quantity)
 				print("[GameManager] Removed %dx %s" % [quantity, item_id])
 				return true
 			elif current_quantity == quantity:
 				inventory.remove_at(i)
-				if EventBus:
-					EventBus.item_removed.emit(item_id, quantity)
+				if event_bus and event_bus.has_signal("item_removed"):
+					event_bus.item_removed.emit(item_id, quantity)
 				print("[GameManager] Removed all %s" % item_id)
 				return true
 			else:

@@ -1,5 +1,4 @@
 extends Node
-class_name ForagingSystem
 
 ## ForagingSystem - 采集系统
 ## 管理野生资源的生成、刷新和采集
@@ -84,19 +83,16 @@ func _ready() -> void:
 	_is_initialized = true
 	print("[ForagingSystem] Initialized with %d forage types" % _forage_database.size())
 
-
 func _connect_signals() -> void:
 	if TimeManager:
 		TimeManager.day_changed.connect(_on_day_changed)
 	if EventBus:
 		pass  # 可根据需要连接其他事件
 
-
 ## 加载可采集物品数据库
 func _load_forage_database() -> void:
 	# 默认可采集物品
 	_create_default_database()
-
 
 ## 创建默认数据库
 func _create_default_database() -> void:
@@ -386,7 +382,6 @@ func _create_default_database() -> void:
 		var data := _create_forage_data(forage_data)
 		_forage_database[data.id] = data
 
-
 ## 从字典创建可采集物品数据
 func _create_forage_data(data: Dictionary) -> ForageData:
 	var forage := ForageData.new()
@@ -412,16 +407,13 @@ func _create_forage_data(data: Dictionary) -> ForageData:
 
 	return forage
 
-
 ## 获取可采集物品数据
 func get_forage_data(forage_id: String) -> ForageData:
 	return _forage_database.get(forage_id, null)
 
-
 ## 获取所有可采集物品ID
 func get_all_forage_ids() -> Array:
 	return _forage_database.keys()
-
 
 ## 按类型获取可采集物品
 func get_forage_by_type(type: int) -> Array:
@@ -431,7 +423,6 @@ func get_forage_by_type(type: int) -> Array:
 		if forage.type == type:
 			result.append(forage)
 	return result
-
 
 ## 获取当前季节可采集的物品
 func get_seasonal_forage(season: String = "") -> Array:
@@ -445,7 +436,6 @@ func get_seasonal_forage(season: String = "") -> Array:
 			result.append(forage)
 	return result
 
-
 ## 获取指定地点的可采集物品
 func get_location_forage(location: String) -> Array:
 	var result := []
@@ -454,7 +444,6 @@ func get_location_forage(location: String) -> Array:
 		if forage.locations.has(location):
 			result.append(forage)
 	return result
-
 
 ## 为场景生成采集点
 func generate_forage_points(location: String, count: int = 10) -> Array:
@@ -480,7 +469,6 @@ func generate_forage_points(location: String, count: int = 10) -> Array:
 
 	return points
 
-
 ## 根据稀有度随机选择可采集物品
 func _select_random_forage(available: Array) -> ForageData:
 	if available.is_empty():
@@ -501,7 +489,6 @@ func _select_random_forage(available: Array) -> ForageData:
 
 	return available[0] as ForageData
 
-
 ## 注册采集点
 func register_forage_point(pos: Vector2, forage_id: String, location: String = "forest") -> void:
 	var key := _position_to_key(pos)
@@ -517,13 +504,11 @@ func register_forage_point(pos: Vector2, forage_id: String, location: String = "
 	forage_item_spawned.emit(forage_id, pos)
 	print("[ForagingSystem] Registered forage point: ", forage_id, " at ", pos)
 
-
 ## 注销采集点
 func unregister_forage_point(pos: Vector2) -> void:
 	var key := _position_to_key(pos)
 	if _forage_points.has(key):
 		_forage_points.erase(key)
-
 
 ## 采集物品
 func collect_forage(pos: Vector2) -> Dictionary:
@@ -582,7 +567,6 @@ func collect_forage(pos: Vector2) -> Dictionary:
 		"energy_cost": forage_data.energy_cost
 	}
 
-
 ## 检查是否可以采集
 func can_collect(pos: Vector2) -> bool:
 	var key := _position_to_key(pos)
@@ -591,7 +575,6 @@ func can_collect(pos: Vector2) -> bool:
 
 	var point: ForagePoint = _forage_points[key]
 	return not point.is_collected
-
 
 ## 获取采集点信息
 func get_forage_point_info(pos: Vector2) -> Dictionary:
@@ -613,7 +596,6 @@ func get_forage_point_info(pos: Vector2) -> Dictionary:
 		"days_until_respawn": _get_days_until_respawn(point)
 	}
 
-
 ## 计算距离刷新的天数
 func _get_days_until_respawn(point: ForagePoint) -> int:
 	if not point.is_collected:
@@ -628,11 +610,9 @@ func _get_days_until_respawn(point: ForagePoint) -> int:
 
 	return max(0, point.respawn_days - days_since_collection)
 
-
 ## 每日更新处理刷新
 func _on_day_changed(new_day: int) -> void:
 	_process_respawns()
-
 
 ## 处理刷新
 func _process_respawns() -> void:
@@ -648,7 +628,6 @@ func _process_respawns() -> void:
 
 			if days_since_collection >= point.respawn_days:
 				_respawn_forage_point(point)
-
 
 ## 刷新采集点
 func _respawn_forage_point(point: ForagePoint) -> void:
@@ -668,23 +647,19 @@ func _respawn_forage_point(point: ForagePoint) -> void:
 	forage_respawned.emit(point.position)
 	print("[ForagingSystem] Respawned forage at: ", point.position)
 
-
 ## 注册场景节点引用
 func register_forage_node(pos: Vector2, node: Node2D) -> void:
 	var key := _position_to_key(pos)
 	_forage_nodes[key] = node
-
 
 ## 注销场景节点引用
 func unregister_forage_node(pos: Vector2) -> void:
 	var key := _position_to_key(pos)
 	_forage_nodes.erase(key)
 
-
 ## 位置转键值
 func _position_to_key(pos: Vector2) -> String:
 	return "%d_%d" % [int(pos.x), int(pos.y)]
-
 
 ## 保存状态
 func save_state() -> Dictionary:
@@ -696,7 +671,6 @@ func save_state() -> Dictionary:
 	return {
 		"forage_points": points_data
 	}
-
 
 ## 加载状态
 func load_state(data: Dictionary) -> void:
@@ -710,7 +684,6 @@ func load_state(data: Dictionary) -> void:
 		_forage_points[key] = point
 
 	print("[ForagingSystem] Loaded %d forage points" % _forage_points.size())
-
 
 ## 获取类型名称
 func get_type_name(type: int) -> String:

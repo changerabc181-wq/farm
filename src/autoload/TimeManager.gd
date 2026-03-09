@@ -1,5 +1,4 @@
 extends Node
-class_name TimeManager
 
 ## TimeManager - 时间管理器
 ## 负责游戏内时间流逝、昼夜循环、季节系统
@@ -34,7 +33,8 @@ func _ready() -> void:
 	print("[TimeManager] Starting time: ", _format_time(current_time))
 
 func _process(delta: float) -> void:
-	if is_paused or not GameManager.is_game_active:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if is_paused or (game_manager and not game_manager.is_game_active):
 		return
 	
 	_update_time(delta)

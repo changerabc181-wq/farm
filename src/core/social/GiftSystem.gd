@@ -1,5 +1,4 @@
 extends Node
-class_name GiftSystem
 
 ## GiftSystem - 送礼系统
 ## 处理礼物偏好、好感度变化、送礼反应等

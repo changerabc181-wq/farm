@@ -1,5 +1,4 @@
 extends Node
-class_name NPCManager
 
 ## NPCManager - NPC管理器
 ## 管理所有NPC的生成、位置调度和状态同步

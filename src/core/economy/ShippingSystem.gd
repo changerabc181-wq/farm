@@ -1,5 +1,4 @@
 extends Node
-class_name ShippingSystem
 
 ## ShippingSystem - 运输系统
 ## 管理出货箱、次日结算、批量出售功能
@@ -24,18 +23,16 @@ const MAX_HISTORY: int = 30
 const MAX_BIN_SLOTS: int = 36
 const MAX_STACK: int = 999
 
-
 func _ready() -> void:
 	print("[ShippingSystem] Initialized")
 	_connect_signals()
 
-
 func _connect_signals() -> void:
 	# 监听天数变化，触发结算
-	if TimeManager:
-		TimeManager.day_changed.connect(_on_day_changed)
+	var time_manager = get_node_or_null("/root/TimeManager")
+	if time_manager and time_manager.has_signal("day_changed"):
+		time_manager.day_changed.connect(_on_day_changed)
 		print("[ShippingSystem] Connected to TimeManager.day_changed")
-
 
 ## 添加物品到出货箱
 func add_item(item_id: String, quantity: int = 1, quality: int = 0) -> bool:
@@ -44,7 +41,8 @@ func add_item(item_id: String, quantity: int = 1, quality: int = 0) -> bool:
 		return false
 
 	# 检查物品是否存在
-	if ItemDatabase and not ItemDatabase.has_item(item_id):
+	var item_database = get_node_or_null("/root/ItemDatabase")
+	if item_database and not item_database.has_item(item_id):
 		push_warning("[ShippingSystem] Item not found: ", item_id)
 		return false
 
@@ -52,8 +50,8 @@ func add_item(item_id: String, quantity: int = 1, quality: int = 0) -> bool:
 	var added := false
 	for slot in _bin_contents:
 		if slot.item_id == item_id and slot.quality == quality:
-			var new_quantity := min(slot.quantity + quantity, MAX_STACK)
-			var actual_added := new_quantity - slot.quantity
+			var new_quantity: int = min(slot.quantity + quantity, MAX_STACK)
+			var actual_added: int = new_quantity - slot.quantity
 			if actual_added > 0:
 				slot.quantity = new_quantity
 				added = true
@@ -76,7 +74,6 @@ func add_item(item_id: String, quantity: int = 1, quality: int = 0) -> bool:
 	bin_contents_changed.emit(_bin_contents.duplicate())
 	print("[ShippingSystem] Added ", quantity, "x ", item_id, " (quality: ", quality, ") to bin")
 	return true
-
 
 ## 从出货箱移除物品
 func remove_item(item_id: String, quantity: int = 1, quality: int = -1) -> bool:
@@ -110,18 +107,15 @@ func remove_item(item_id: String, quantity: int = 1, quality: int = -1) -> bool:
 	print("[ShippingSystem] Removed ", removed_quantity, "x ", item_id, " from bin")
 	return true
 
-
 ## 清空出货箱
 func clear_bin() -> void:
 	_bin_contents.clear()
 	bin_contents_changed.emit(_bin_contents.duplicate())
 	print("[ShippingSystem] Bin cleared")
 
-
 ## 获取出货箱内容
 func get_bin_contents() -> Array[Dictionary]:
 	return _bin_contents.duplicate()
-
 
 ## 获取出货箱物品总数
 func get_total_items() -> int:
@@ -130,11 +124,9 @@ func get_total_items() -> int:
 		total += slot.quantity
 	return total
 
-
 ## 获取出货箱格子数
 func get_slot_count() -> int:
 	return _bin_contents.size()
-
 
 ## 计算当前出货箱总价值
 func calculate_total_value() -> Dictionary:
@@ -142,12 +134,13 @@ func calculate_total_value() -> Dictionary:
 	var total_items := 0
 	var breakdown: Array[Dictionary] = []
 
+	var item_database = get_node_or_null("/root/ItemDatabase")
 	for slot in _bin_contents:
-		var item_data = ItemDatabase.get_item(slot.item_id) if ItemDatabase else null
+		var item_data = item_database.get_item(slot.item_id) if item_database else null
 		if item_data:
 			# 品质加成: 0=普通(100%), 1=良好(125%), 2=优质(150%), 3=完美(200%)
-			var quality_multiplier := 1.0 + (slot.quality * 0.25)
-			var item_value := int(item_data.sell_price * quality_multiplier) * slot.quantity
+			var quality_multiplier: float = 1.0 + (slot.quality * 0.25)
+			var item_value: int = int(item_data.sell_price * quality_multiplier) * slot.quantity
 
 			total_value += item_value
 			total_items += slot.quantity
@@ -167,7 +160,6 @@ func calculate_total_value() -> Dictionary:
 		"breakdown": breakdown
 	}
 
-
 ## 执行结算（次日自动调用或手动触发）
 func process_shipment() -> Dictionary:
 	if _bin_contents.is_empty():
@@ -175,8 +167,8 @@ func process_shipment() -> Dictionary:
 		return {"success": false, "reason": "empty"}
 
 	var value_info = calculate_total_value()
-	var total_money := value_info.total_value
-	var total_items := value_info.total_items
+	var total_money: int = value_info.total_value
+	var total_items: int = value_info.total_items
 	var breakdown: Array = value_info.breakdown
 
 	if total_money <= 0:
@@ -193,10 +185,11 @@ func process_shipment() -> Dictionary:
 	}
 
 	# 发放金钱
-	if MoneySystem:
-		MoneySystem.add_money(
+	var money_system = get_node_or_null("/root/MoneySystem")
+	if money_system:
+		money_system.add_money(
 			total_money,
-			MoneySystem.IncomeSource.CROP_SALE,
+			0,  # IncomeSource.CROP_SALE
 			"Shipment: %d items" % total_items
 		)
 
@@ -224,13 +217,11 @@ func process_shipment() -> Dictionary:
 
 	return summary
 
-
 ## 天数变化时触发结算
 func _on_day_changed(_new_day: int) -> void:
 	# 在新的一天开始时处理出货箱结算
 	print("[ShippingSystem] New day - processing shipment...")
 	process_shipment()
-
 
 ## 获取结算历史
 func get_shipment_history(count: int = 10) -> Array[Dictionary]:
@@ -242,18 +233,16 @@ func get_shipment_history(count: int = 10) -> Array[Dictionary]:
 
 	return result
 
-
 ## 获取所有结算历史
 func get_all_shipment_history() -> Array[Dictionary]:
 	return _shipment_history.duplicate()
 
-
 ## 获取当前日期字符串
 func _get_current_date_string() -> String:
-	if TimeManager:
-		return TimeManager.get_formatted_date()
+	var time_manager = get_node_or_null("/root/TimeManager")
+	if time_manager:
+		return time_manager.get_formatted_date()
 	return "Unknown Date"
-
 
 ## 批量添加物品
 func add_items_batch(items: Array[Dictionary]) -> Dictionary:
@@ -275,14 +264,12 @@ func add_items_batch(items: Array[Dictionary]) -> Dictionary:
 		"failed": failed_count
 	}
 
-
 ## 序列化保存
 func save_state() -> Dictionary:
 	return {
 		"bin_contents": _bin_contents.duplicate(),
 		"shipment_history": _shipment_history.slice(-10)  # 只保存最近10条记录
 	}
-
 
 ## 反序列化加载
 func load_state(data: Dictionary) -> void:
@@ -298,7 +285,6 @@ func load_state(data: Dictionary) -> void:
 
 	print("[ShippingSystem] Loaded state: ", _bin_contents.size(), " items in bin, ",
 		_shipment_history.size(), " history records")
-
 
 ## 重置到初始状态
 func reset() -> void:

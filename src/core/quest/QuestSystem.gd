@@ -1,5 +1,4 @@
 extends Node
-class_name QuestSystem
 
 ## QuestSystem - 任务系统
 ## 管理任务的接受、进度追踪、完成和奖励发放
@@ -81,12 +80,10 @@ var _completed_quests: Array[String] = []
 # 追踪的最大任务数量
 const MAX_TRACKED_QUESTS: int = 5
 
-
 func _ready() -> void:
 	print("[QuestSystem] Initialized")
 	_load_quest_database()
 	_connect_signals()
-
 
 func _load_quest_database() -> void:
 	var file_path: String = "res://data/quests.json"
@@ -120,7 +117,6 @@ func _load_quest_database() -> void:
 
 	print("[QuestSystem] Loaded %d quests" % _quest_database.size())
 
-
 func _parse_quest(data: Dictionary) -> QuestData:
 	var quest: QuestData = QuestData.new()
 	quest.id = data.get("id", "")
@@ -152,7 +148,6 @@ func _parse_quest(data: Dictionary) -> QuestData:
 
 	return quest
 
-
 func _parse_objective_type(type_str: String) -> ObjectiveType:
 	match type_str.to_lower():
 		"collect": return ObjectiveType.COLLECT
@@ -167,7 +162,6 @@ func _parse_objective_type(type_str: String) -> ObjectiveType:
 		"custom": return ObjectiveType.CUSTOM
 		_: return ObjectiveType.COLLECT
 
-
 func _connect_signals() -> void:
 	# 连接背包事件（收集任务）
 	if EventBus:
@@ -180,7 +174,6 @@ func _connect_signals() -> void:
 	# 连接时间事件（检查时间限制）
 	if TimeManager:
 		TimeManager.day_changed.connect(_on_day_changed)
-
 
 ## 获取所有可用任务
 func get_available_quests() -> Array[QuestData]:
@@ -196,7 +189,6 @@ func get_available_quests() -> Array[QuestData]:
 
 	return available
 
-
 ## 获取所有活跃任务
 func get_active_quests() -> Array[QuestData]:
 	var active: Array[QuestData] = []
@@ -207,18 +199,15 @@ func get_active_quests() -> Array[QuestData]:
 
 	return active
 
-
 ## 获取任务数据
 func get_quest(quest_id: String) -> QuestData:
 	return _quest_database.get(quest_id, null)
-
 
 ## 获取任务状态
 func get_quest_state(quest_id: String) -> QuestState:
 	if _player_progress.has(quest_id):
 		return _player_progress[quest_id].state
 	return QuestState.LOCKED
-
 
 ## 检查是否可以接受任务
 func can_accept_quest(quest_id: String) -> bool:
@@ -245,7 +234,6 @@ func can_accept_quest(quest_id: String) -> bool:
 			return false
 
 	return true
-
 
 ## 接受任务
 func accept_quest(quest_id: String) -> bool:
@@ -280,7 +268,6 @@ func accept_quest(quest_id: String) -> bool:
 
 	return true
 
-
 ## 检查初始进度（针对收集类目标）
 func _check_initial_progress(quest_id: String) -> void:
 	var quest: QuestData = get_quest(quest_id)
@@ -298,13 +285,11 @@ func _check_initial_progress(quest_id: String) -> void:
 			if current > 0:
 				update_objective_progress(quest_id, i, current)
 
-
 ## 获取物品数量
 func _get_item_count(item_id: String) -> int:
 	if Inventory:
 		return Inventory.get_item_count(item_id)
 	return 0
-
 
 ## 更新目标进度
 func update_objective_progress(quest_id: String, objective_index: int, amount: int = 1) -> void:
@@ -340,7 +325,6 @@ func update_objective_progress(quest_id: String, objective_index: int, amount: i
 	# 检查整个任务是否完成
 	_check_quest_completion(quest_id)
 
-
 ## 设置目标进度（用于特殊目标如对话、访问等）
 func set_objective_progress(quest_id: String, objective_index: int, value: int) -> void:
 	if not _player_progress.has(quest_id):
@@ -370,7 +354,6 @@ func set_objective_progress(quest_id: String, objective_index: int, value: int) 
 	# 检查整个任务是否完成
 	_check_quest_completion(quest_id)
 
-
 ## 检查任务是否完成
 func _check_quest_completion(quest_id: String) -> void:
 	if not _player_progress.has(quest_id):
@@ -391,7 +374,6 @@ func _check_quest_completion(quest_id: String) -> void:
 	progress.state = QuestState.COMPLETED
 	quest_completed.emit(quest_id)
 	print("[QuestSystem] Quest completed: " + quest_id)
-
 
 ## 提交任务并获取奖励
 func turn_in_quest(quest_id: String) -> bool:
@@ -427,7 +409,6 @@ func turn_in_quest(quest_id: String) -> bool:
 
 	return true
 
-
 ## 发放奖励
 func _grant_rewards(rewards: Dictionary) -> void:
 	# 金钱奖励
@@ -451,7 +432,6 @@ func _grant_rewards(rewards: Dictionary) -> void:
 		print("[QuestSystem] Reward: %d experience" % experience)
 		# TODO: 实现经验系统后添加
 
-
 ## 放弃任务
 func abandon_quest(quest_id: String) -> bool:
 	if not _player_progress.has(quest_id):
@@ -472,7 +452,6 @@ func abandon_quest(quest_id: String) -> bool:
 	print("[QuestSystem] Abandoned quest: " + quest_id)
 	return true
 
-
 ## 标记任务失败
 func fail_quest(quest_id: String, reason: String = "") -> void:
 	if not _player_progress.has(quest_id):
@@ -489,11 +468,9 @@ func fail_quest(quest_id: String, reason: String = "") -> void:
 	quest_failed.emit(quest_id, reason)
 	print("[QuestSystem] Quest failed: %s, reason: %s" % [quest_id, reason])
 
-
 ## 获取任务进度
 func get_quest_progress(quest_id: String) -> QuestProgress:
 	return _player_progress.get(quest_id, null)
-
 
 ## 获取目标进度
 func get_objective_progress(quest_id: String, objective_index: int) -> int:
@@ -501,7 +478,6 @@ func get_objective_progress(quest_id: String, objective_index: int) -> int:
 	if progress and objective_index < progress.objective_progress.size():
 		return progress.objective_progress[objective_index]
 	return 0
-
 
 ## 获取目标是否完成
 func is_objective_completed(quest_id: String, objective_index: int) -> bool:
@@ -515,7 +491,6 @@ func is_objective_completed(quest_id: String, objective_index: int) -> bool:
 		return false
 
 	return progress.objective_progress[objective_index] >= quest.objectives[objective_index].required
-
 
 ## 获取任务完成百分比
 func get_quest_completion_percent(quest_id: String) -> float:
@@ -532,7 +507,6 @@ func get_quest_completion_percent(quest_id: String) -> float:
 
 	return float(completed) / float(quest.objectives.size()) * 100.0
 
-
 ## 获取目标描述
 func get_objective_description(quest_id: String, objective_index: int) -> String:
 	var quest: QuestData = get_quest(quest_id)
@@ -547,7 +521,6 @@ func get_objective_description(quest_id: String, objective_index: int) -> String
 
 	# 根据目标类型生成描述
 	return _generate_objective_description(objective)
-
 
 ## 生成目标描述
 func _generate_objective_description(objective: Dictionary) -> String:
@@ -581,7 +554,6 @@ func _generate_objective_description(objective: Dictionary) -> String:
 
 	return "完成目标"
 
-
 ## 获取目标显示名称
 func _get_target_display_name(target: String) -> String:
 	if ItemDatabase:
@@ -589,7 +561,6 @@ func _get_target_display_name(target: String) -> String:
 		if item:
 			return item.name
 	return target
-
 
 ## 获取NPC名称
 func _get_npc_name(npc_id: String) -> String:
@@ -602,9 +573,7 @@ func _get_npc_name(npc_id: String) -> String:
 		"blacksmith": return "铁匠"
 		_: return npc_id
 
-
 # ===== 事件处理 =====
-
 
 func _on_item_added(item_id: String, quantity: int) -> void:
 	# 检查所有活跃任务的收集目标
@@ -625,7 +594,6 @@ func _on_item_added(item_id: String, quantity: int) -> void:
 				if new_items > 0:
 					update_objective_progress(quest_id, i, new_items)
 
-
 func _on_dialogue_ended(npc_id: String) -> void:
 	# 检查对话目标
 	for quest_id in _active_quests:
@@ -637,7 +605,6 @@ func _on_dialogue_ended(npc_id: String) -> void:
 			var objective: Dictionary = quest.objectives[i]
 			if objective.type == ObjectiveType.TALK_TO and objective.target == npc_id:
 				set_objective_progress(quest_id, i, 1)
-
 
 func _on_gift_given(npc_id: String, _item_id: String, _reaction: int) -> void:
 	# 检查送礼目标
@@ -651,7 +618,6 @@ func _on_gift_given(npc_id: String, _item_id: String, _reaction: int) -> void:
 			if objective.type == ObjectiveType.GIFT_TO and objective.target == npc_id:
 				set_objective_progress(quest_id, i, 1)
 
-
 func _on_friendship_changed(npc_id: String, hearts: int) -> void:
 	# 检查好感度目标
 	for quest_id in _active_quests:
@@ -664,7 +630,6 @@ func _on_friendship_changed(npc_id: String, hearts: int) -> void:
 			if objective.type == ObjectiveType.REACH_HEARTS and objective.get("npc_id", "") == npc_id:
 				set_objective_progress(quest_id, i, hearts)
 
-
 func _on_crop_harvested(crop_type: String, _quality: int, quantity: int) -> void:
 	# 检查收获目标
 	for quest_id in _active_quests:
@@ -676,7 +641,6 @@ func _on_crop_harvested(crop_type: String, _quality: int, quantity: int) -> void
 			var objective: Dictionary = quest.objectives[i]
 			if objective.type == ObjectiveType.HARVEST and objective.target == crop_type:
 				update_objective_progress(quest_id, i, quantity)
-
 
 func _on_day_changed(_new_day: int) -> void:
 	# 检查任务时间限制
@@ -692,7 +656,6 @@ func _on_day_changed(_new_day: int) -> void:
 			if days_passed >= quest.time_limit:
 				fail_quest(quest_id, "时间已用尽")
 
-
 ## 计算已过去的天数
 func _calculate_days_passed(progress: QuestProgress) -> int:
 	if not TimeManager:
@@ -705,9 +668,7 @@ func _calculate_days_passed(progress: QuestProgress) -> int:
 
 	return days
 
-
 # ===== 存档系统支持 =====
-
 
 ## 保存状态
 func save_state() -> Dictionary:
@@ -729,7 +690,6 @@ func save_state() -> Dictionary:
 		"active_quests": _active_quests,
 		"completed_quests": _completed_quests
 	}
-
 
 ## 加载状态
 func load_state(data: Dictionary) -> void:
@@ -760,21 +720,17 @@ func load_state(data: Dictionary) -> void:
 
 	print("[QuestSystem] Loaded %d quest progress records" % _player_progress.size())
 
-
 ## 获取任务总数
 func get_total_quest_count() -> int:
 	return _quest_database.size()
-
 
 ## 获取已完成任务数量
 func get_completed_quest_count() -> int:
 	return _completed_quests.size()
 
-
 ## 检查任务是否已完成
 func is_quest_completed(quest_id: String) -> bool:
 	return _completed_quests.has(quest_id)
-
 
 ## 解锁任务（用于剧情触发等）
 func unlock_quest(quest_id: String) -> void:

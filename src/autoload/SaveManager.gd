@@ -1,5 +1,4 @@
 extends Node
-class_name SaveManager
 
 ## SaveManager - 存档管理器
 ## 负责游戏存档的保存和读取
@@ -22,9 +21,10 @@ func _ready() -> void:
 	_ensure_save_directory()
 	_session_start_time = Time.get_unix_time_from_system()
 
-func _process(_delta: float) -> void:
-	if GameManager and GameManager.is_game_active:
-		_play_time += _delta
+func _process(delta: float) -> void:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager and game_manager.is_game_active:
+		_play_time += delta
 
 func _ensure_save_directory() -> void:
 	var dir: DirAccess = DirAccess.open("user://")
@@ -113,26 +113,31 @@ func get_save_info(slot: int) -> Dictionary:
 
 func _gather_save_data() -> Dictionary:
 	var save_data: Dictionary = {}
+	var time_manager = get_node_or_null("/root/TimeManager")
+	var money_system = get_node_or_null("/root/MoneySystem")
+	var shipping_system = get_node_or_null("/root/ShippingSystem")
+	var gift_system = get_node_or_null("/root/GiftSystem")
+	var quest_system = get_node_or_null("/root/QuestSystem")
 
 	# 保存时间数据
-	if TimeManager:
-		save_data["time"] = TimeManager.save_state()
+	if time_manager:
+		save_data["time"] = time_manager.save_state()
 
 	# 保存金钱数据
-	if MoneySystem:
-		save_data["money"] = MoneySystem.save_state()
+	if money_system:
+		save_data["money"] = money_system.save_state()
 
 	# 保存出货箱数据
-	if ShippingSystem:
-		save_data["shipping"] = ShippingSystem.save_state()
+	if shipping_system:
+		save_data["shipping"] = shipping_system.save_state()
 
 	# 保存送礼系统数据
-	if GiftSystem:
-		save_data["gift"] = GiftSystem.get_save_data()
+	if gift_system:
+		save_data["gift"] = gift_system.get_save_data()
 
 	# 保存任务系统数据
-	if QuestSystem:
-		save_data["quest"] = QuestSystem.save_state()
+	if quest_system:
+		save_data["quest"] = quest_system.save_state()
 
 	# 保存动物建筑数据
 	var animal_buildings_data := _gather_animal_buildings_data()
@@ -145,9 +150,10 @@ func _gather_save_data() -> Dictionary:
 		save_data["player"] = player_data
 
 	# 保存游戏管理器数据
-	if GameManager:
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
 		save_data["game"] = {
-			"state": GameManager.current_state
+			"state": game_manager.current_state
 		}
 
 	# 元数据
@@ -187,25 +193,31 @@ func _find_player() -> Node:
 	return null
 
 func _apply_save_data(data: Dictionary) -> void:
+	var time_manager = get_node_or_null("/root/TimeManager")
+	var money_system = get_node_or_null("/root/MoneySystem")
+	var shipping_system = get_node_or_null("/root/ShippingSystem")
+	var gift_system = get_node_or_null("/root/GiftSystem")
+	var quest_system = get_node_or_null("/root/QuestSystem")
+	
 	# 加载时间数据
-	if data.has("time") and TimeManager:
-		TimeManager.load_state(data["time"])
+	if data.has("time") and time_manager:
+		time_manager.load_state(data["time"])
 
 	# 加载金钱数据
-	if data.has("money") and MoneySystem:
-		MoneySystem.load_state(data["money"])
+	if data.has("money") and money_system:
+		money_system.load_state(data["money"])
 
 	# 加载出货箱数据
-	if data.has("shipping") and ShippingSystem:
-		ShippingSystem.load_state(data["shipping"])
+	if data.has("shipping") and shipping_system:
+		shipping_system.load_state(data["shipping"])
 
 	# 加载送礼系统数据
-	if data.has("gift") and GiftSystem:
-		GiftSystem.load_save_data(data["gift"])
+	if data.has("gift") and gift_system:
+		gift_system.load_save_data(data["gift"])
 
 	# 加载任务系统数据
-	if data.has("quest") and QuestSystem:
-		QuestSystem.load_state(data["quest"])
+	if data.has("quest") and quest_system:
+		quest_system.load_state(data["quest"])
 
 	# 加载动物建筑数据
 	if data.has("animal_buildings"):

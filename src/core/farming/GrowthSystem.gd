@@ -1,5 +1,4 @@
 extends Node
-class_name GrowthSystem
 
 ## GrowthSystem - 生长系统
 ## 管理所有作物的生长、收获和数据
@@ -20,19 +19,16 @@ var _crop_data_cache: Dictionary = {}
 ## 是否已初始化
 var _is_initialized: bool = false
 
-
 func _ready() -> void:
 	print("[GrowthSystem] Initialized")
 	_load_crop_database()
 	_connect_signals()
-
 
 func _connect_signals() -> void:
 	# 连接时间管理器信号
 	if TimeManager:
 		TimeManager.day_changed.connect(_on_day_changed)
 		TimeManager.season_changed.connect(_on_season_changed)
-
 
 ## 加载作物数据库
 func _load_crop_database() -> void:
@@ -57,7 +53,6 @@ func _load_crop_database() -> void:
 			push_error("[GrowthSystem] Failed to parse crop database: " + json.get_error_message())
 	else:
 		push_error("[GrowthSystem] Failed to open crop database")
-
 
 ## 解析作物数据库
 func _parse_crop_database(data: Dictionary) -> void:
@@ -96,7 +91,6 @@ func _parse_crop_database(data: Dictionary) -> void:
 		crop_data.max_harvest = crop_data_dict.get("max_harvest", 1)
 
 		_crop_data_cache[crop_data.crop_id] = crop_data
-
 
 ## 创建默认作物数据库
 func _create_default_crop_database() -> void:
@@ -207,16 +201,13 @@ func _create_default_crop_database() -> void:
 	# 解析刚创建的数据
 	_parse_crop_database(default_data)
 
-
 ## 获取作物数据
 func get_crop_data(crop_id: String) -> CropData:
 	return _crop_data_cache.get(crop_id, null)
 
-
 ## 获取所有作物ID
 func get_all_crop_ids() -> Array:
 	return _crop_data_cache.keys()
-
 
 ## 注册作物
 func register_crop(crop: Crop) -> void:
@@ -228,7 +219,6 @@ func register_crop(crop: Crop) -> void:
 		crop_registered.emit(crop)
 		print("[GrowthSystem] Registered crop: ", crop.crop_id)
 
-
 ## 移除作物
 func remove_crop(crop: Crop) -> void:
 	if crop == null:
@@ -239,11 +229,9 @@ func remove_crop(crop: Crop) -> void:
 		crop_removed.emit(crop)
 		print("[GrowthSystem] Removed crop: ", crop.crop_id)
 
-
 ## 获取所有注册的作物
 func get_all_crops() -> Array[Crop]:
 	return _registered_crops.duplicate()
-
 
 ## 获取特定位置的作物
 func get_crop_at_position(pos: Vector2) -> Crop:
@@ -252,11 +240,9 @@ func get_crop_at_position(pos: Vector2) -> Crop:
 			return crop
 	return null
 
-
 ## 一天过去时的处理
 func _on_day_changed(_new_day: int) -> void:
 	update_all_crops()
-
 
 ## 季节变化时的处理
 func _on_season_changed(_new_season: int, _season_name: String) -> void:
@@ -265,7 +251,6 @@ func _on_season_changed(_new_season: int, _season_name: String) -> void:
 		if crop.crop_data and crop.crop_data.dies_out_of_season:
 			if not crop.crop_data.can_grow_in_season(TimeManager.get_season_name()):
 				crop.on_day_passed()  # 这会触发枯萎检查
-
 
 ## 更新所有作物
 func update_all_crops() -> int:
@@ -279,7 +264,6 @@ func update_all_crops() -> int:
 	day_updated.emit(updated_count)
 	print("[GrowthSystem] Updated ", updated_count, " crops")
 	return updated_count
-
 
 ## 种植作物
 func plant_crop(crop_id: String, position: Vector2, fertilizer: int = 0) -> Crop:
@@ -309,7 +293,6 @@ func plant_crop(crop_id: String, position: Vector2, fertilizer: int = 0) -> Crop
 
 	return crop
 
-
 ## 收获作物
 func harvest_crop(crop: Crop) -> Dictionary:
 	if crop == null:
@@ -335,7 +318,6 @@ func harvest_crop(crop: Crop) -> Dictionary:
 
 	return harvest_result
 
-
 ## 添加收获物到背包
 func _add_to_inventory(harvest_result: Dictionary) -> void:
 	var crop_id: String = harvest_result.get("crop_id", "")
@@ -345,7 +327,6 @@ func _add_to_inventory(harvest_result: Dictionary) -> void:
 	EventBus.item_added.emit(crop_id, quantity)
 
 	print("[GrowthSystem] Added ", quantity, " ", crop_id, " to inventory")
-
 
 ## 创建收获特效
 func _spawn_harvest_effect(pos: Vector2, harvest_result: Dictionary) -> void:
@@ -366,7 +347,6 @@ func _spawn_harvest_effect(pos: Vector2, harvest_result: Dictionary) -> void:
 	else:
 		print("[GrowthSystem] Harvest effect scene not found")
 
-
 ## 浇水作物
 func water_crop(crop: Crop) -> bool:
 	if crop == null:
@@ -374,7 +354,6 @@ func water_crop(crop: Crop) -> bool:
 
 	crop.water()
 	return true
-
 
 ## 获取可收获的作物数量
 func get_harvestable_count() -> int:
@@ -384,7 +363,6 @@ func get_harvestable_count() -> int:
 			count += 1
 	return count
 
-
 ## 获取所有可收获的作物
 func get_harvestable_crops() -> Array[Crop]:
 	var harvestable: Array[Crop] = []
@@ -393,7 +371,6 @@ func get_harvestable_crops() -> Array[Crop]:
 			harvestable.append(crop)
 	return harvestable
 
-
 ## 检查作物是否可以种植在当前季节
 func can_plant_in_current_season(crop_id: String) -> bool:
 	var crop_data: CropData = get_crop_data(crop_id)
@@ -401,7 +378,6 @@ func can_plant_in_current_season(crop_id: String) -> bool:
 		return false
 
 	return crop_data.can_grow_in_season(TimeManager.get_season_name())
-
 
 ## 获取当前季节可种植的作物列表
 func get_seasonal_crops() -> Array:
@@ -415,7 +391,6 @@ func get_seasonal_crops() -> Array:
 
 	return seasonal_crops
 
-
 ## 保存所有作物状态
 func save_state() -> Dictionary:
 	var crops_data: Array = []
@@ -427,7 +402,6 @@ func save_state() -> Dictionary:
 	return {
 		"crops": crops_data
 	}
-
 
 ## 加载作物状态
 func load_state(data: Dictionary) -> void:

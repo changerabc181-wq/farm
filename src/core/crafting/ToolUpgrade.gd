@@ -1,5 +1,4 @@
 extends Node
-class_name ToolUpgrade
 
 ## ToolUpgrade - 工具升级系统
 ## 管理工具升级、材料需求和升级效果

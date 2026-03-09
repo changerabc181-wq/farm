@@ -1,5 +1,4 @@
 extends Node
-class_name Inventory
 
 ## Inventory - 背包系统
 ## 管理玩家物品存储、堆叠、移动等操作

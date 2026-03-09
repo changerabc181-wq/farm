@@ -1,5 +1,4 @@
 extends CanvasLayer
-class_name SceneTransition
 
 ## SceneTransition - 场景切换管理器
 ## 提供淡入淡出效果的场景切换功能
@@ -40,7 +39,6 @@ func _ready() -> void:
 	
 	print("[SceneTransition] Initialized")
 
-
 ## 切换到指定场景（带淡入淡出效果）
 static func transition_to(scene_path: String, spawn_point: String = "") -> void:
 	if instance == null:
@@ -53,11 +51,9 @@ static func transition_to(scene_path: String, spawn_point: String = "") -> void:
 	
 	instance._perform_transition(scene_path, spawn_point)
 
-
 ## 立即切换场景（无动画）
 static func change_scene_immediate(scene_path: String) -> void:
 	get_tree().change_scene_to_file(scene_path)
-
 
 ## 执行场景切换动画
 func _perform_transition(scene_path: String, spawn_point: String) -> void:
@@ -69,7 +65,6 @@ func _perform_transition(scene_path: String, spawn_point: String) -> void:
 	_tween = create_tween()
 	_tween.tween_property(_fade_rect, "modulate:a", 1.0, FADE_DURATION)
 	_tween.tween_callback(_on_fade_out_complete.bind(scene_path, spawn_point))
-
 
 ## 淡出完成回调
 func _on_fade_out_complete(scene_path: String, spawn_point: String) -> void:
@@ -88,13 +83,11 @@ func _on_fade_out_complete(scene_path: String, spawn_point: String) -> void:
 	await get_tree().process_frame
 	_fade_in()
 
-
 ## 淡入动画
 func _fade_in() -> void:
 	_tween = create_tween()
 	_tween.tween_property(_fade_rect, "modulate:a", 0.0, FADE_DURATION)
 	_tween.tween_callback(_on_fade_in_complete)
-
 
 ## 淡入完成回调
 func _on_fade_in_complete() -> void:
@@ -102,7 +95,6 @@ func _on_fade_in_complete() -> void:
 	transition_completed.emit()
 	EventBus.scene_transition_completed.emit()
 	print("[SceneTransition] Transition completed")
-
 
 ## 设置玩家出生点（在新场景中调用）
 static func set_spawn_point(spawn_point: String) -> void:
