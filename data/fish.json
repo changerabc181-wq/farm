@@ -13,15 +13,9 @@
 			"energy": 13,
 			"locations": ["lake", "river"],
 			"seasons": ["spring", "summer", "fall"],
-			"time_ranges": [
-				{"start": 6, "end": 19}
-			],
+			"time_ranges": [{"start": 6, "end": 19}],
 			"weather": ["sunny", "cloudy", "rainy"],
-			"behavior": {
-				"speed": 2.0,
-				"erratic": false,
-				"rest_time": 2.0
-			},
+			"behavior": {"speed": 2.0, "erratic": false, "rest_time": 2.0},
 			"icon": "res://assets/sprites/items/fish/carp.png"
 		},
 		{
@@ -37,16 +31,9 @@
 			"energy": 18,
 			"locations": ["lake", "river"],
 			"seasons": ["spring", "summer", "fall"],
-			"time_ranges": [
-				{"start": 6, "end": 12},
-				{"start": 18, "end": 26}
-			],
+			"time_ranges": [{"start": 6, "end": 12}, {"start": 18, "end": 26}],
 			"weather": ["sunny", "cloudy"],
-			"behavior": {
-				"speed": 3.0,
-				"erratic": false,
-				"rest_time": 1.5
-			},
+			"behavior": {"speed": 3.0, "erratic": false, "rest_time": 1.5},
 			"icon": "res://assets/sprites/items/fish/bass.png"
 		},
 		{
@@ -62,15 +49,9 @@
 			"energy": 25,
 			"locations": ["river", "beach"],
 			"seasons": ["fall"],
-			"time_ranges": [
-				{"start": 6, "end": 19}
-			],
+			"time_ranges": [{"start": 6, "end": 19}],
 			"weather": ["sunny", "cloudy", "rainy"],
-			"behavior": {
-				"speed": 4.0,
-				"erratic": true,
-				"rest_time": 1.0
-			},
+			"behavior": {"speed": 4.0, "erratic": true, "rest_time": 1.0},
 			"icon": "res://assets/sprites/items/fish/salmon.png"
 		},
 		{
@@ -86,15 +67,9 @@
 			"energy": 35,
 			"locations": ["beach"],
 			"seasons": ["summer", "fall"],
-			"time_ranges": [
-				{"start": 6, "end": 19}
-			],
+			"time_ranges": [{"start": 6, "end": 19}],
 			"weather": ["sunny", "cloudy"],
-			"behavior": {
-				"speed": 5.0,
-				"erratic": true,
-				"rest_time": 0.8
-			},
+			"behavior": {"speed": 5.0, "erratic": true, "rest_time": 0.8},
 			"icon": "res://assets/sprites/items/fish/tuna.png"
 		},
 		{
@@ -110,15 +85,9 @@
 			"energy": 8,
 			"locations": ["beach"],
 			"seasons": ["spring", "summer", "fall", "winter"],
-			"time_ranges": [
-				{"start": 6, "end": 26}
-			],
+			"time_ranges": [{"start": 6, "end": 26}],
 			"weather": ["sunny", "cloudy", "rainy"],
-			"behavior": {
-				"speed": 2.5,
-				"erratic": false,
-				"rest_time": 2.5
-			},
+			"behavior": {"speed": 2.5, "erratic": false, "rest_time": 2.5},
 			"icon": "res://assets/sprites/items/fish/sardine.png"
 		},
 		{
@@ -134,15 +103,9 @@
 			"energy": 20,
 			"locations": ["lake", "river"],
 			"seasons": ["spring", "summer", "fall"],
-			"time_ranges": [
-				{"start": 18, "end": 26}
-			],
+			"time_ranges": [{"start": 18, "end": 26}],
 			"weather": ["cloudy", "rainy"],
-			"behavior": {
-				"speed": 2.0,
-				"erratic": false,
-				"rest_time": 3.0
-			},
+			"behavior": {"speed": 2.0, "erratic": false, "rest_time": 3.0},
 			"icon": "res://assets/sprites/items/fish/catfish.png"
 		},
 		{
@@ -158,15 +121,9 @@
 			"energy": 15,
 			"locations": ["beach"],
 			"seasons": ["summer"],
-			"time_ranges": [
-				{"start": 12, "end": 19}
-			],
+			"time_ranges": [{"start": 12, "end": 19}],
 			"weather": ["sunny"],
-			"behavior": {
-				"speed": 3.5,
-				"erratic": true,
-				"rest_time": 1.2
-			},
+			"behavior": {"speed": 3.5, "erratic": true, "rest_time": 1.2},
 			"icon": "res://assets/sprites/items/fish/pufferfish.png"
 		},
 		{
@@ -182,15 +139,9 @@
 			"energy": 40,
 			"locations": ["beach"],
 			"seasons": ["winter"],
-			"time_ranges": [
-				{"start": 19, "end": 26}
-			],
+			"time_ranges": [{"start": 19, "end": 26}],
 			"weather": ["cloudy", "rainy"],
-			"behavior": {
-				"speed": 4.5,
-				"erratic": true,
-				"rest_time": 0.5
-			},
+			"behavior": {"speed": 4.5, "erratic": true, "rest_time": 0.5},
 			"icon": "res://assets/sprites/items/fish/anglerfish.png"
 		},
 		{
@@ -206,15 +157,9 @@
 			"energy": 5,
 			"locations": ["pond"],
 			"seasons": ["spring", "summer", "fall"],
-			"time_ranges": [
-				{"start": 6, "end": 19}
-			],
+			"time_ranges": [{"start": 6, "end": 19}],
 			"weather": ["sunny"],
-			"behavior": {
-				"speed": 1.5,
-				"erratic": false,
-				"rest_time": 3.0
-			},
+			"behavior": {"speed": 1.5, "erratic": false, "rest_time": 3.0},
 			"icon": "res://assets/sprites/items/fish/goldfish.png"
 		},
 		{
@@ -230,15 +175,9 @@
 			"energy": 30,
 			"locations": ["beach", "lake"],
 			"seasons": ["winter"],
-			"time_ranges": [
-				{"start": 6, "end": 19}
-			],
+			"time_ranges": [{"start": 6, "end": 19}],
 			"weather": ["sunny", "cloudy"],
-			"behavior": {
-				"speed": 3.0,
-				"erratic": true,
-				"rest_time": 1.5
-			},
+			"behavior": {"speed": 3.0, "erratic": true, "rest_time": 1.5},
 			"icon": "res://assets/sprites/items/fish/icefish.png"
 		},
 		{
@@ -254,15 +193,9 @@
 			"energy": 22,
 			"locations": ["beach", "river"],
 			"seasons": ["spring", "fall"],
-			"time_ranges": [
-				{"start": 19, "end": 26}
-			],
+			"time_ranges": [{"start": 19, "end": 26}],
 			"weather": ["rainy"],
-			"behavior": {
-				"speed": 3.5,
-				"erratic": true,
-				"rest_time": 1.0
-			},
+			"behavior": {"speed": 3.5, "erratic": true, "rest_time": 1.0},
 			"icon": "res://assets/sprites/items/fish/eel.png"
 		},
 		{
@@ -278,36 +211,107 @@
 			"energy": 28,
 			"locations": ["river", "lake"],
 			"seasons": ["spring", "fall"],
-			"time_ranges": [
-				{"start": 6, "end": 12},
-				{"start": 18, "end": 22}
-			],
+			"time_ranges": [{"start": 6, "end": 12}, {"start": 18, "end": 22}],
 			"weather": ["sunny", "cloudy"],
-			"behavior": {
-				"speed": 4.0,
-				"erratic": true,
-				"rest_time": 1.0
-			},
+			"behavior": {"speed": 4.0, "erratic": true, "rest_time": 1.0},
 			"icon": "res://assets/sprites/items/fish/rainbow_trout.png"
+		},
+		{
+			"id": "perch",
+			"name": "鲈鱼",
+			"name_en": "Perch",
+			"description": "常见的淡水食用鱼。",
+			"rarity": "common",
+			"difficulty": 2,
+			"min_size": 25,
+			"max_size": 50,
+			"base_price": 35,
+			"energy": 12,
+			"locations": ["lake", "river"],
+			"seasons": ["spring", "summer"],
+			"time_ranges": [{"start": 6, "end": 19}],
+			"weather": ["sunny", "cloudy"],
+			"behavior": {"speed": 2.5, "erratic": false, "rest_time": 2.0},
+			"icon": "res://assets/sprites/items/fish/perch.png"
+		},
+		{
+			"id": "swordfish",
+			"name": "剑鱼",
+			"name_en": "Swordfish",
+			"description": "凶猛的深海鱼类，有锋利的长吻。",
+			"rarity": "legendary",
+			"difficulty": 5,
+			"min_size": 100,
+			"max_size": 200,
+			"base_price": 400,
+			"energy": 50,
+			"locations": ["beach"],
+			"seasons": ["summer"],
+			"time_ranges": [{"start": 6, "end": 19}],
+			"weather": ["sunny"],
+			"behavior": {"speed": 5.5, "erratic": true, "rest_time": 0.5},
+			"icon": "res://assets/sprites/items/fish/swordfish.png"
+		},
+		{
+			"id": "crucian_carp",
+			"name": "鲫鱼",
+			"name_en": "Crucian Carp",
+			"description": "最常见的淡水小鱼。",
+			"rarity": "common",
+			"difficulty": 1,
+			"min_size": 15,
+			"max_size": 35,
+			"base_price": 15,
+			"energy": 6,
+			"locations": ["lake", "river", "pond"],
+			"seasons": ["spring", "summer", "fall", "winter"],
+			"time_ranges": [{"start": 6, "end": 26}],
+			"weather": ["sunny", "cloudy", "rainy"],
+			"behavior": {"speed": 1.5, "erratic": false, "rest_time": 3.0},
+			"icon": "res://assets/sprites/items/fish/crucian_carp.png"
+		},
+		{
+			"id": "squid",
+			"name": "鱿鱼",
+			"name_en": "Squid",
+			"description": "软体动物，有十条触手。",
+			"rarity": "uncommon",
+			"difficulty": 3,
+			"min_size": 30,
+			"max_size": 60,
+			"base_price": 85,
+			"energy": 18,
+			"locations": ["beach"],
+			"seasons": ["winter"],
+			"time_ranges": [{"start": 18, "end": 26}],
+			"weather": ["sunny", "cloudy"],
+			"behavior": {"speed": 3.0, "erratic": true, "rest_time": 1.5},
+			"icon": "res://assets/sprites/items/fish/squid.png"
+		},
+		{
+			"id": "mackerel",
+			"name": "鲭鱼",
+			"name_en": "Mackerel",
+			"description": "游动迅速的海鱼，适合烤制。",
+			"rarity": "common",
+			"difficulty": 2,
+			"min_size": 30,
+			"max_size": 55,
+			"base_price": 45,
+			"energy": 15,
+			"locations": ["beach"],
+			"seasons": ["spring", "fall", "winter"],
+			"time_ranges": [{"start": 6, "end": 19}],
+			"weather": ["sunny", "cloudy"],
+			"behavior": {"speed": 3.0, "erratic": false, "rest_time": 1.8},
+			"icon": "res://assets/sprites/items/fish/mackerel.png"
 		}
 	],
 	"locations": {
-		"lake": {
-			"name": "湖泊",
-			"description": "平静的湖水，适合垂钓淡水鱼。"
-		},
-		"river": {
-			"name": "河流",
-			"description": "流动的河水，有各种洄游鱼类。"
-		},
-		"beach": {
-			"name": "海滩",
-			"description": "广阔的海洋，可以钓到深海鱼类。"
-		},
-		"pond": {
-			"name": "池塘",
-			"description": "农场边的小池塘，有小型观赏鱼。"
-		}
+		"lake": {"name": "湖泊", "description": "平静的湖水，适合垂钓淡水鱼。"},
+		"river": {"name": "河流", "description": "流动的河水，有各种洄游鱼类。"},
+		"beach": {"name": "海滩", "description": "广阔的海洋，可以钓到深海鱼类。"},
+		"pond": {"name": "池塘", "description": "农场边的小池塘，有小型观赏鱼。"}
 	},
 	"rarity_weights": {
 		"common": 60,
@@ -316,35 +320,10 @@
 		"legendary": 3
 	},
 	"difficulty_settings": {
-		"1": {
-			"bar_speed": 1.0,
-			"fish_speed": 1.0,
-			"capture_zone_size": 0.25,
-			"struggle_intensity": 0.3
-		},
-		"2": {
-			"bar_speed": 1.2,
-			"fish_speed": 1.5,
-			"capture_zone_size": 0.22,
-			"struggle_intensity": 0.4
-		},
-		"3": {
-			"bar_speed": 1.5,
-			"fish_speed": 2.0,
-			"capture_zone_size": 0.18,
-			"struggle_intensity": 0.5
-		},
-		"4": {
-			"bar_speed": 1.8,
-			"fish_speed": 2.5,
-			"capture_zone_size": 0.15,
-			"struggle_intensity": 0.6
-		},
-		"5": {
-			"bar_speed": 2.2,
-			"fish_speed": 3.0,
-			"capture_zone_size": 0.12,
-			"struggle_intensity": 0.7
-		}
+		"1": {"bar_speed": 1.0, "fish_speed": 1.0, "capture_zone_size": 0.25, "struggle_intensity": 0.3},
+		"2": {"bar_speed": 1.2, "fish_speed": 1.5, "capture_zone_size": 0.22, "struggle_intensity": 0.4},
+		"3": {"bar_speed": 1.5, "fish_speed": 2.0, "capture_zone_size": 0.18, "struggle_intensity": 0.5},
+		"4": {"bar_speed": 1.8, "fish_speed": 2.5, "capture_zone_size": 0.15, "struggle_intensity": 0.6},
+		"5": {"bar_speed": 2.2, "fish_speed": 3.0, "capture_zone_size": 0.12, "struggle_intensity": 0.7}
 	}
 }
