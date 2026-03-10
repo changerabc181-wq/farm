@@ -308,5 +308,6 @@ func load_state(data: Dictionary) -> void:
 
 ## 从数据库加载作物数据
 func _load_crop_data() -> void:
-	if GrowthSystem:
-		crop_data = get_node("/root/GrowthSystem").get_crop_data(crop_id)
+	var growth_system = get_node_or_null("/root/GrowthSystem")
+	if growth_system:
+		crop_data = growth_system.get_crop_data(crop_id)

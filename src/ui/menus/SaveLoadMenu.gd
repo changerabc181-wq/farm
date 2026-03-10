@@ -117,8 +117,9 @@ func _update_title() -> void:
 		title_label.text = "加载游戏"
 
 func _refresh_slots() -> void:
+	var save_manager = get_node_or_null("/root/SaveManager")
 	for i in range(SLOT_COUNT):
-		var info: Dictionary = SaveManager.get_save_info(i)
+		var info: Dictionary = save_manager.get_save_info(i) if save_manager else {}
 		var button: Button = slot_buttons[i]
 		var delete_button: Button = delete_buttons[i]
 
@@ -133,7 +134,7 @@ func _refresh_slots() -> void:
 				info.get("date", "Unknown"),
 				time_str
 			]
-			button.disabled = (mode == Mode.LOAD and not SaveManager.has_save(i))
+			button.disabled = (mode == Mode.LOAD and save_manager and not save_manager.has_save(i))
 			delete_button.disabled = false
 			delete_button.visible = true
 		else:
@@ -155,7 +156,8 @@ func _on_slot_pressed(slot: int) -> void:
 		_load_game(slot)
 
 func _save_game(slot: int) -> void:
-	var success: bool = SaveManager.save_game(slot)
+	var save_manager = get_node_or_null("/root/SaveManager")
+	var success: bool = save_manager.save_game(slot) if save_manager else false
 	if success:
 		save_completed.emit(slot)
 		_refresh_slots()
@@ -164,7 +166,8 @@ func _save_game(slot: int) -> void:
 		_show_message("保存失败！")
 
 func _load_game(slot: int) -> void:
-	var success: bool = SaveManager.load_game(slot)
+	var save_manager = get_node_or_null("/root/SaveManager")
+	var success: bool = save_manager.load_game(slot) if save_manager else false
 	if success:
 		load_completed.emit(slot)
 		_show_message("已加载存档 %d" % (slot + 1))
@@ -184,7 +187,9 @@ func _on_delete_pressed(slot: int) -> void:
 	dialog.popup_centered()
 
 func _confirm_delete(slot: int) -> void:
-	SaveManager.delete_save(slot)
+	var save_manager = get_node_or_null("/root/SaveManager")
+	if save_manager:
+		save_manager.delete_save(slot)
 	_refresh_slots()
 	_show_message("存档 %d 已删除" % (slot + 1))
 

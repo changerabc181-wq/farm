@@ -12,11 +12,12 @@ func _ready() -> void:
 	_update_display()
 
 func _connect_signals() -> void:
-	if TimeManager:
-		get_node("/root/TimeManager").time_changed.connect(_on_time_changed)
-		TimeManager.day_changed.connect(_on_day_changed)
-		TimeManager.season_changed.connect(_on_season_changed)
-		TimeManager.year_changed.connect(_on_year_changed)
+	var time_manager = get_node_or_null("/root/TimeManager")
+	if time_manager:
+		time_manager.time_changed.connect(_on_time_changed)
+		time_manager.day_changed.connect(_on_day_changed)
+		time_manager.season_changed.connect(_on_season_changed)
+		time_manager.year_changed.connect(_on_year_changed)
 
 func _on_time_changed(_new_time: float) -> void:
 	_update_time_display()
@@ -35,9 +36,11 @@ func _update_display() -> void:
 	_update_date_display()
 
 func _update_time_display() -> void:
-	if time_label and TimeManager:
-		time_label.text = TimeManager.get_formatted_time()
+	var time_manager = get_node_or_null("/root/TimeManager")
+	if time_label and time_manager:
+		time_label.text = time_manager.get_formatted_time()
 
 func _update_date_display() -> void:
-	if date_label and TimeManager:
-		date_label.text = TimeManager.get_formatted_date()
+	var time_manager = get_node_or_null("/root/TimeManager")
+	if date_label and time_manager:
+		date_label.text = time_manager.get_formatted_date()

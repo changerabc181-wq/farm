@@ -127,7 +127,7 @@ func check_festival_tomorrow(season: int, day: int) -> Dictionary:
 	var check_season := season
 
 	# 处理跨季情况
-	if tomorrow_day > TimeManager.DAYS_PER_SEASON:
+	if tomorrow_day > 28:
 		tomorrow_day = 1
 		check_season = (season + 1) % 4
 
@@ -340,7 +340,7 @@ func _grant_rewards(rewards: Dictionary) -> void:
 	# 发放金币
 	var gold: int = rewards.get("gold", 0)
 	if gold > 0:
-		GameManager.money += gold
+		get_node_or_null("/root/GameManager").money if get_node_or_null("/root/GameManager") else 0 += gold
 		get_node("/root/EventBus").money_changed.emit(gold)
 
 	# 发放物品

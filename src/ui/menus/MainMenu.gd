@@ -115,23 +115,40 @@ func _add_spacer(height: float) -> void:
 func _update_load_button_state() -> void:
 	# 检查是否有存档
 	var has_any_save: bool = false
-	for i in range(SaveManager.MAX_SAVE_SLOTS):
-		if SaveManager.has_save(i):
-			has_any_save = true
-			break
-	load_game_button.disabled = not has_any_save
+	var save_manager = get_node_or_null("/root/SaveManager")
+	if save_manager:
+		for i in range(10):  # MAX_SAVE_SLOTS
+			if save_manager.has_save(i):
+				has_any_save = true
+				break
+	if load_game_button:
+		load_game_button.disabled = not has_any_save
 
 func _on_new_game_pressed() -> void:
+	print("[MainMenu] 新游戏按钮被点击")
 	new_game_requested.emit()
+	# 直接切换到农场场景
+	_start_new_game()
+
+func _start_new_game() -> void:
+	print("[MainMenu] 开始新游戏...")
+	# 初始化游戏状态
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.start_game()
+	# 切换到农场场景
+	get_tree().change_scene_to_file("res://src/world/maps/Farm.tscn")
 
 func _on_load_game_pressed() -> void:
 	_open_load_menu()
 
 func _on_settings_pressed() -> void:
 	settings_requested.emit()
+	# TODO: 打开设置界面
 
 func _on_quit_pressed() -> void:
 	quit_game_requested.emit()
+	get_tree().quit()
 
 func _open_load_menu() -> void:
 	if save_load_menu:

@@ -321,7 +321,7 @@ func buy_item(item_id: String, quantity: int = 1) -> bool:
 
 	# 检查金钱
 	if GameManager:
-		if GameManager.money < total_price:
+		if get_node_or_null("/root/GameManager").money if get_node_or_null("/root/GameManager") else 0 < total_price:
 			purchase_failed.emit("not_enough_money")
 			return false
 

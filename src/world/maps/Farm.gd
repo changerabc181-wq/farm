@@ -27,7 +27,9 @@ func _ready() -> void:
 	_setup_planting_manager()
 	_connect_time_signals()
 	_connect_event_signals()
-	GameManager.start_game()
+	var game_manager = get_node_or_null("/root/GameManager")
+	if game_manager:
+		game_manager.start_game()
 
 func _setup_tilemap() -> void:
 	# 设置TileSet（如果没有的话）
@@ -68,24 +70,28 @@ func _setup_soil_plots() -> void:
 		print("[Farm] Found ", soil_plots.size(), " soil plots")
 
 func _setup_planting_manager() -> void:
-	planting_manager = PlantingManager.new()
+	var PlantingManagerScript = load("res://src/core/farming/PlantingManager.gd")
+	planting_manager = PlantingManagerScript.new()
 	planting_manager.name = "PlantingManager"
 	add_child(planting_manager)
 	print("[Farm] Planting manager initialized")
 
 func _connect_time_signals() -> void:
-	if TimeManager:
-		get_node("/root/TimeManager").hour_changed.connect(_on_hour_changed)
-		TimeManager.day_changed.connect(_on_day_changed)
-		TimeManager.season_changed.connect(_on_season_changed)
+	var time_manager = get_node_or_null("/root/TimeManager")
+	if time_manager:
+		time_manager.hour_changed.connect(_on_hour_changed)
+		time_manager.day_changed.connect(_on_day_changed)
+		time_manager.season_changed.connect(_on_season_changed)
 		print("[Farm] Connected to TimeManager signals")
 
 func _connect_event_signals() -> void:
-	# 连接交互信号
-	get_node("/root/EventBus").player_interacted.connect(_on_player_interacted)
-	# 连接收获信号
-	get_node("/root/EventBus").crop_harvested.connect(_on_crop_harvested)
-	print("[Farm] Connected to EventBus signals")
+	var event_bus = get_node_or_null("/root/EventBus")
+	if event_bus:
+		# 连接交互信号
+		event_bus.player_interacted.connect(_on_player_interacted)
+		# 连接收获信号
+		event_bus.crop_harvested.connect(_on_crop_harvested)
+		print("[Farm] Connected to EventBus signals")
 
 func _on_hour_changed(new_hour: int) -> void:
 	print("[Farm] Hour changed to: ", new_hour)
@@ -118,8 +124,9 @@ func _on_crop_harvested(crop_type: String, quality: int, quantity: int) -> void:
 	# 获取作物的基础价格（从配置中获取或使用默认值）
 	var base_price: int = _get_crop_base_price(crop_type)
 
-	if base_price > 0 and MoneySystem:
-		var total_earned: int = MoneySystem.sell_crop(
+	var money_system = get_node_or_null("/root/MoneySystem")
+	if base_price > 0 and money_system:
+		var total_earned: int = money_system.sell_crop(
 			crop_type,
 			crop_type.capitalize(),
 			quality,

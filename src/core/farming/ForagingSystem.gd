@@ -606,7 +606,7 @@ func _get_days_until_respawn(point: ForagePoint) -> int:
 
 	# 处理跨季/跨年的情况
 	if days_since_collection < 0:
-		days_since_collection += TimeManager.DAYS_PER_SEASON if TimeManager else 28
+		days_since_collection += 28 if TimeManager else 28
 
 	return max(0, point.respawn_days - days_since_collection)
 
@@ -624,7 +624,7 @@ func _process_respawns() -> void:
 		if point.is_collected:
 			var days_since_collection: int = current_day - point.day_collected
 			if days_since_collection < 0:
-				days_since_collection += TimeManager.DAYS_PER_SEASON if TimeManager else 28
+				days_since_collection += 28 if TimeManager else 28
 
 			if days_since_collection >= point.respawn_days:
 				_respawn_forage_point(point)

@@ -224,7 +224,7 @@ func _update_total_price() -> void:
 ## 更新金钱显示
 func _update_money_display() -> void:
 	if GameManager:
-		money_label.text = "金币: %dG" % GameManager.money
+		money_label.text = "金币: %dG" % get_node_or_null("/root/GameManager").money if get_node_or_null("/root/GameManager") else 0
 
 ## 显示消息
 func show_message(message: String, is_error: bool = false) -> void:
