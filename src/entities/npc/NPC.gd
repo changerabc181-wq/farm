@@ -351,9 +351,10 @@ func load_state(state: Dictionary) -> void:
 
 ## 连接对话信号
 func _connect_dialogue_signals() -> void:
-	if EventBus:
-		if not get_node("/root/EventBus").dialogue_ended.is_connected(_on_dialogue_ended):
-			get_node("/root/EventBus").dialogue_ended.connect(_on_dialogue_ended)
+	var event_bus = get_node_or_null("/root/EventBus")
+	if event_bus:
+		if not event_bus.dialogue_ended.is_connected(_on_dialogue_ended):
+			event_bus.dialogue_ended.connect(_on_dialogue_ended)
 
 ## 时间变化回调
 func _on_time_changed(new_time: float) -> void:
@@ -376,8 +377,9 @@ func _on_schedule_changed(new_activity: Dictionary) -> void:
 	activity_changed.emit(new_activity.get("activity", "idle"))
 
 	# 通过 EventBus 发送通知
-	if EventBus:
-		get_node("/root/EventBus").npc_activity_changed.emit(npc_id, new_activity)
+	var event_bus = get_node_or_null("/root/EventBus")
+	if event_bus:
+		event_bus.npc_activity_changed.emit(npc_id, new_activity)
 
 ## 到达目的地回调
 func _on_destination_reached(location_id: String) -> void:
@@ -449,12 +451,13 @@ func get_gift_dialogue(reaction: int) -> String:
 	var dialogues: Dictionary = npc_data.get("dialogues", {})
 
 	var key := "gift_neutral"
-	if GiftSystem:
+	var gift_system = get_node_or_null("/root/GiftSystem")
+	if gift_system:
 		match reaction:
-			GiftSystem.ReactionType.LOVE: key = "gift_loved"
-			GiftSystem.ReactionType.LIKE: key = "gift_liked"
-			GiftSystem.ReactionType.DISLIKE: key = "gift_disliked"
-			GiftSystem.ReactionType.HATE: key = "gift_hated"
+			gift_system.ReactionType.LOVE: key = "gift_loved"
+			gift_system.ReactionType.LIKE: key = "gift_liked"
+			gift_system.ReactionType.DISLIKE: key = "gift_disliked"
+			gift_system.ReactionType.HATE: key = "gift_hated"
 
 	var dialogue = dialogues.get(key, "...")
 	if typeof(dialogue) == TYPE_STRING:
@@ -493,20 +496,23 @@ func _get_npc_data_from_json() -> Dictionary:
 
 ## 获取好友度心数
 func get_friendship_hearts() -> int:
-	if GiftSystem:
-		return get_node("/root/GiftSystem").get_friendship_hearts(npc_id)
+	var gift_system = get_node_or_null("/root/GiftSystem")
+	if gift_system:
+		return gift_system.get_friendship_hearts(npc_id)
 	return 0
 
 ## 检查是否是生日
 func is_birthday() -> bool:
-	if GiftSystem:
-		return get_node("/root/GiftSystem").is_npc_birthday(npc_id)
+	var gift_system = get_node_or_null("/root/GiftSystem")
+	if gift_system:
+		return gift_system.is_npc_birthday(npc_id)
 	return false
 
 ## 获取NPC偏好预览
 func get_preference_for_item(item_id: String) -> String:
-	if GiftSystem:
-		return get_node("/root/GiftSystem").get_preference_preview(npc_id, item_id)
+	var gift_system = get_node_or_null("/root/GiftSystem")
+	if gift_system:
+		return gift_system.get_preference_preview(npc_id, item_id)
 	return "一般"
 
 ## 交互处理
@@ -518,5 +524,6 @@ func interact() -> void:
 	interacted.emit(self)
 
 	# 发射对话开始事件
-	if EventBus:
-		get_node("/root/EventBus").dialogue_started.emit(npc_id)
+	var event_bus = get_node_or_null("/root/EventBus")
+	if event_bus:
+		event_bus.dialogue_started.emit(npc_id)

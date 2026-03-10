@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://c8yvxg3ulq3a"]
+[gd_scene load_steps=7 format=3 uid="uid://c8yvxg3ulq3a"]
 
 [ext_resource type="Script" path="res://src/world/maps/Farm.gd" id="1_farm"]
 [ext_resource type="PackedScene" uid="uid://dp5y8hqm2x8nr" path="res://src/entities/player/Player.tscn" id="2_player"]
 [ext_resource type="Script" path="res://src/world/transitions/SceneTransition.gd" id="3_transition"]
 [ext_resource type="PackedScene" uid="uid://soil_tile_001" path="res://src/core/farming/Soil.tscn" id="4_soil"]
+[ext_resource type="PackedScene" path="res://src/world/objects/ShippingBin.tscn" id="5_shipping"]
 
 [sub_resource type="TileSet" id="TileSet_farm"]
 
@@ -96,5 +97,5 @@ grid_position = Vector2i(2, 2)
 position = Vector2(596, 464)
 grid_position = Vector2i(3, 2)
 
-[node name="ShippingBin" parent="." instance=ExtResource("res://src/world/objects/ShippingBin.tscn")]
+[node name="ShippingBin" parent="." instance=ExtResource("5_shipping")]
 position = Vector2(400, 300)
