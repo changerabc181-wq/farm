@@ -41,6 +41,8 @@ PlantingManager="*res://src/core/farming/PlantingManager.gd"
 NPCManager="*res://src/core/relationship/NPCManager.gd"
 HouseUpgradeSystem="*res://src/core/building/HouseUpgradeSystem.gd"
 FurnitureDatabase="*res://src/core/building/FurnitureDatabase.gd"
+FestivalSystem="*res://src/core/time/FestivalSystem.gd"
+AchievementSystem="*res://src/core/achievement/AchievementSystem.gd"
 
 [display]
 

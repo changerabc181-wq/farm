@@ -111,16 +111,17 @@ func _interact() -> void:
 
 ## 显示出货箱状态
 func _show_bin_status() -> void:
-	if not ShippingSystem:
+	var shipping_system = get_node_or_null("/root/ShippingSystem")
+	if not shipping_system:
 		push_warning("[ShippingBin] ShippingSystem not available")
 		return
 
-	var contents = ShippingSystem.get_bin_contents()
-	var value_info = ShippingSystem.calculate_total_value()
+	var contents = shipping_system.get_bin_contents()
+	var value_info = shipping_system.calculate_total_value()
 
 	print("=== Shipping Bin ===")
-	print("Items: ", ShippingSystem.get_total_items())
-	print("Slots used: ", ShippingSystem.get_slot_count(), "/", ShippingSystem.MAX_BIN_SLOTS)
+	print("Items: ", shipping_system.get_total_items())
+	print("Slots used: ", shipping_system.get_slot_count(), "/", shipping_system.MAX_BIN_SLOTS)
 	print("Total value: $", value_info.total_value)
 	print("Items will be sold tomorrow at 6:00 AM")
 
@@ -129,18 +130,20 @@ func _show_bin_status() -> void:
 	else:
 		print("Contents:")
 		for slot in contents:
-			var item_data = ItemDatabase.get_item(slot.item_id) if ItemDatabase else null
+			var item_database = get_node_or_null("/root/ItemDatabase")
+			var item_data = item_database.get_item(slot.item_id) if item_database else null
 			var item_name = item_data.name if item_data else slot.item_id
 			print("  - ", item_name, " x", slot.quantity, " (Q", slot.quality, ")")
 
 
 ## 添加物品到出货箱
 func add_item_to_bin(item_id: String, quantity: int = 1, quality: int = 0) -> bool:
-	if not ShippingSystem:
+	var shipping_system = get_node_or_null("/root/ShippingSystem")
+	if not shipping_system:
 		push_warning("[ShippingBin] ShippingSystem not available")
 		return false
 
-	return ShippingSystem.add_item(item_id, quantity, quality)
+	return shipping_system.add_item(item_id, quantity, quality)
 
 
 ## 检查是否可以交互
