@@ -3,33 +3,12 @@
     "created": "2026-03-10",
     "api_provider": "dashscope",
     "model": "qwen-image-2.0-pro",
-    "status": "in_progress"
+    "status": "completed"
   },
   "todo": {
     "crops": {},
     "items": {},
-    "dead_crops": [
-      "turnip",
-      "potato",
-      "tomato",
-      "corn",
-      "pumpkin",
-      "cauliflower",
-      "green_bean",
-      "strawberry",
-      "melon",
-      "blueberry",
-      "hot_pepper",
-      "radish",
-      "eggplant",
-      "cranberry",
-      "grape",
-      "sweet_potato",
-      "carrot",
-      "winter_root",
-      "cabbage",
-      "winter_melon"
-    ]
+    "dead_crops": []
   },
   "completed": {
     "crops": {
@@ -236,7 +215,28 @@
         "seed"
       ]
     },
-    "dead_crops": []
+    "dead_crops": [
+      "turnip",
+      "potato",
+      "tomato",
+      "corn",
+      "pumpkin",
+      "cauliflower",
+      "green_bean",
+      "strawberry",
+      "melon",
+      "blueberry",
+      "hot_pepper",
+      "radish",
+      "eggplant",
+      "cranberry",
+      "grape",
+      "sweet_potato",
+      "carrot",
+      "winter_root",
+      "cabbage",
+      "winter_melon"
+    ]
   },
   "prompts": {
     "crop_stage_0": "Pixel art {name} ({id}) plant, tiny seedling just sprouting from soil, top-down view for farming game, 32x32 pixel sprite style, Stardew Valley inspired, {color} colors, transparent background, detailed pixel art, game asset",

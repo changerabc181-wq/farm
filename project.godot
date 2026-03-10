@@ -39,6 +39,8 @@ ForagingSystem="*res://src/core/farming/ForagingSystem.gd"
 QuestSystem="*res://src/core/quest/QuestSystem.gd"
 PlantingManager="*res://src/core/farming/PlantingManager.gd"
 NPCManager="*res://src/core/relationship/NPCManager.gd"
+HouseUpgradeSystem="*res://src/core/building/HouseUpgradeSystem.gd"
+FurnitureDatabase="*res://src/core/building/FurnitureDatabase.gd"
 
 [display]
 
