@@ -75,7 +75,19 @@ func equip_tool(tool_type: ToolType) -> void:
 	# 显示新工具
 	if tool_type != ToolType.NONE and tools.has(tool_type):
 		tools[tool_type].visible = true
-		tools[tool_type].position = Vector2(16, 0)  # 工具显示在玩家右侧
+		
+		# 根据玩家方向调整工具位置
+		var tool_offset = Vector2(16, 0)
+		if player and player.has_method("get"):
+			var current_direction = player.get("current_direction")
+			if current_direction != null:
+				match current_direction:
+					0: tool_offset = Vector2(0, 16)   # DOWN
+					1: tool_offset = Vector2(0, -16)  # UP
+					2: tool_offset = Vector2(-16, 0)  # LEFT
+					3: tool_offset = Vector2(16, 0)   # RIGHT
+		
+		tools[tool_type].position = tool_offset
 	
 	tool_changed.emit(tool_type, _get_tool_name(tool_type))
 	print("[ToolManager] Equipped: ", _get_tool_name(tool_type))

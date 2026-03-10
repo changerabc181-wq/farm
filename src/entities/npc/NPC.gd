@@ -84,19 +84,21 @@ func _physics_process(delta: float) -> void:
 
 ## 连接时间信号
 func _connect_time_signals() -> void:
-	if TimeManager:
-		if not get_node("/root/TimeManager").time_changed.is_connected(_on_time_changed):
-			get_node("/root/TimeManager").time_changed.connect(_on_time_changed)
-		if not get_node("/root/TimeManager").hour_changed.is_connected(_on_hour_changed):
-			get_node("/root/TimeManager").hour_changed.connect(_on_hour_changed)
+	var time_manager = get_node_or_null("/root/TimeManager")
+	if time_manager:
+		if not time_manager.time_changed.is_connected(_on_time_changed):
+			time_manager.time_changed.connect(_on_time_changed)
+		if not time_manager.hour_changed.is_connected(_on_hour_changed):
+			time_manager.hour_changed.connect(_on_hour_changed)
 
 ## 更新日程状态
 func _update_schedule() -> void:
-	if schedule and TimeManager:
+	var time_manager = get_node_or_null("/root/TimeManager")
+	if schedule and time_manager:
 		schedule.update(
-			get_node("/root/TimeManager").current_time,
-			get_node("/root/TimeManager").current_day,
-			get_node("/root/TimeManager").current_season
+			time_manager.current_time,
+			time_manager.current_day,
+			time_manager.current_season
 		)
 
 		# 检查是否需要移动到新地点
@@ -355,8 +357,9 @@ func _connect_dialogue_signals() -> void:
 
 ## 时间变化回调
 func _on_time_changed(new_time: float) -> void:
-	if schedule:
-		schedule.update(new_time, get_node("/root/TimeManager").current_day, get_node("/root/TimeManager").current_season)
+	var time_manager = get_node_or_null("/root/TimeManager")
+	if schedule and time_manager:
+		schedule.update(new_time, time_manager.current_day, time_manager.current_season)
 
 ## 小时变化回调
 func _on_hour_changed(_new_hour: int) -> void:

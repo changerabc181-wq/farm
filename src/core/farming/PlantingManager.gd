@@ -38,9 +38,9 @@ func try_plant(seed_id: String, soil: Soil) -> bool:
 		return false
 	
 	var crop_id = seed_to_crop[seed_id]
+	var growth_system = get_node_or_null("/root/GrowthSystem")
 	
 	# 检查当前季节是否适合
-	var growth_system = get_node_or_null("/root/GrowthSystem")
 	if growth_system and not growth_system.can_plant_in_current_season(crop_id):
 		var time_manager = get_node_or_null("/root/TimeManager")
 		var current_season = time_manager.get_season_name() if time_manager else "未知"
@@ -68,7 +68,6 @@ func try_plant(seed_id: String, soil: Soil) -> bool:
 	soil.get_parent().add_child(crop)
 	
 	# 注册到生长系统
-	var growth_system = get_node_or_null("/root/GrowthSystem")
 	if growth_system:
 		growth_system.register_crop(crop)
 	

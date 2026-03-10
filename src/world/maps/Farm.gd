@@ -115,8 +115,7 @@ func _on_player_interacted(target: Node) -> void:
 				hoe_tool.use(soil)
 		return
 	
-	# 尝试种植（通过事件系统）
-	get_node("/root/EventBus").player_interacted.emit(target)
+	# 其他交互由各自的系统处理
 
 
 func _on_crop_harvested(crop_type: String, quality: int, quantity: int) -> void:

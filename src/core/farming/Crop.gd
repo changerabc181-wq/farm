@@ -75,7 +75,8 @@ func on_day_passed() -> void:
 
 	# 检查是否在正确季节
 	if crop_data and crop_data.dies_out_of_season:
-		if not crop_data.can_grow_in_season(get_node("/root/TimeManager").get_season_name()):
+		var time_manager = get_node_or_null("/root/TimeManager")
+		if time_manager and not crop_data.can_grow_in_season(time_manager.get_season_name()):
 			_die()
 			return
 
@@ -97,7 +98,9 @@ func on_day_passed() -> void:
 func water() -> void:
 	is_watered = true
 	_update_sprite()  # 更新视觉效果显示浇水状态
-	get_node("/root/EventBus").soil_watered.emit(soil_position)
+	var event_bus = get_node_or_null("/root/EventBus")
+	if event_bus:
+		event_bus.soil_watered.emit(soil_position)
 
 
 ## 生长逻辑
@@ -194,7 +197,9 @@ func harvest() -> Dictionary:
 
 	# 发射信号
 	crop_harvested.emit(crop_id, quality, quantity)
-	get_node("/root/EventBus").crop_harvested.emit(crop_id, quality, quantity)
+	var event_bus = get_node_or_null("/root/EventBus")
+	if event_bus:
+		event_bus.crop_harvested.emit(crop_id, quality, quantity)
 
 	# 检查是否可以重复收获
 	if crop_data.regrow:

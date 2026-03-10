@@ -74,6 +74,9 @@ func _physics_process(_delta: float) -> void:
 
 	# 处理战斗输入
 	_handle_combat_input()
+	
+	# 处理工具切换输入
+	_handle_tool_input()
 
 func _get_input_direction() -> Vector2:
 	var direction := Vector2.ZERO
