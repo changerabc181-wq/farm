@@ -33,6 +33,8 @@ const PALETTE := {
 @onready var pos_y_edit: LineEdit = $CanvasLayer/Panel/PosYEdit
 @onready var location_type_edit: LineEdit = $CanvasLayer/Panel/LocationTypeEdit
 @onready var apply_button: Button = $CanvasLayer/Panel/ApplyButton
+@onready var undo_button: Button = $CanvasLayer/Panel/UndoButton
+@onready var redo_button: Button = $CanvasLayer/Panel/RedoButton
 
 var layout_root: Node2D
 
@@ -41,6 +43,10 @@ var selected_tool: String = "select"
 var selected_node: Node2D = null
 var drag_offset: Vector2 = Vector2.ZERO
 var is_dragging: bool = false
+var drag_start_position: Vector2 = Vector2.ZERO
+var undo_stack: Array[String] = []
+var redo_stack: Array[String] = []
+const MAX_HISTORY := 50
 
 func _ready() -> void:
 	_load_farm_preview()
@@ -70,6 +76,8 @@ func _bind_buttons() -> void:
 	$CanvasLayer/Panel/LoadButton.pressed.connect(load_layout)
 	$CanvasLayer/Panel/ClearButton.pressed.connect(clear_layout)
 	apply_button.pressed.connect(_apply_selected_properties)
+	undo_button.pressed.connect(undo)
+	redo_button.pressed.connect(redo)
 
 func _on_palette_button_pressed(tool_name: String) -> void:
 	selected_tool = tool_name
@@ -77,6 +85,20 @@ func _on_palette_button_pressed(tool_name: String) -> void:
 	_update_selection_box()
 	_update_property_fields()
 	_update_info()
+
+func _snapshot_current_layout() -> String:
+	return JSON.stringify(_collect_layout_data())
+
+func _push_undo_snapshot() -> void:
+	undo_stack.append(_snapshot_current_layout())
+	if undo_stack.size() > MAX_HISTORY:
+		undo_stack.pop_front()
+	redo_stack.clear()
+	_update_history_buttons()
+
+func _update_history_buttons() -> void:
+	undo_button.disabled = undo_stack.is_empty()
+	redo_button.disabled = redo_stack.is_empty()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -87,10 +109,13 @@ func _unhandled_input(event: InputEvent) -> void:
 				_update_property_fields()
 				if selected_node:
 					is_dragging = true
+					drag_start_position = selected_node.position
 					drag_offset = selected_node.position - _snap(world_pos)
 			else:
 				_place_item(world_pos)
 		else:
+			if is_dragging and selected_node and selected_node.position != drag_start_position:
+				_push_undo_snapshot()
 			is_dragging = false
 	elif event is InputEventMouseMotion and is_dragging and selected_node:
 		selected_node.position = _snap(_mouse_world_position()) + drag_offset
@@ -99,25 +124,34 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 		var target := _find_node_at(_mouse_world_position())
 		if target:
+			_push_undo_snapshot()
 			target.queue_free()
 			if target == selected_node:
 				selected_node = null
 			_update_selection_box()
 			_update_property_fields()
+			_update_info()
 	elif event is InputEventKey and event.pressed:
 		if event.keycode == KEY_DELETE and selected_node:
+			_push_undo_snapshot()
 			selected_node.queue_free()
 			selected_node = null
 			_update_selection_box()
 			_update_property_fields()
+			_update_info()
 		elif event.keycode == KEY_S and event.ctrl_pressed:
 			save_layout()
 		elif event.keycode == KEY_L and event.ctrl_pressed:
 			load_layout()
+		elif event.keycode == KEY_Z and event.ctrl_pressed:
+			undo()
+		elif event.keycode == KEY_Y and event.ctrl_pressed:
+			redo()
 
 func _place_item(world_pos: Vector2) -> void:
 	if not PALETTE.has(selected_tool):
 		return
+	_push_undo_snapshot()
 	var definition: Dictionary = PALETTE[selected_tool]
 	var node := _build_node_from_definition(definition, _snap(world_pos), selected_tool)
 	if node:
@@ -148,30 +182,24 @@ func _build_node_from_definition(definition: Dictionary, position: Vector2, base
 	node.position = position
 	return node
 
-func save_layout() -> void:
+func _collect_layout_data() -> Dictionary:
 	var data := {
 		"grid_size": grid_size,
 		"objects": []
 	}
 	for child in layout_root.get_children():
 		data.objects.append(_serialize_node(child))
+	return data
+
+func save_layout() -> void:
 	var file := FileAccess.open(LAYOUT_PATH, FileAccess.WRITE)
 	if file:
-		file.store_string(JSON.stringify(data, "\t"))
+		file.store_string(JSON.stringify(_collect_layout_data(), "\t"))
 		file.close()
 		info_label.text = "已保存到 %s" % LAYOUT_PATH
 
-func load_layout() -> void:
+func _apply_layout_data(data: Dictionary) -> void:
 	clear_layout(false)
-	var file := FileAccess.open(LAYOUT_PATH, FileAccess.READ)
-	if file == null:
-		info_label.text = "未找到布局文件，已载入空布局"
-		return
-	var json := JSON.new()
-	if json.parse(file.get_as_text()) != OK:
-		info_label.text = "布局文件解析失败"
-		return
-	var data: Dictionary = json.data
 	grid_size = int(data.get("grid_size", 32))
 	for obj in data.get("objects", []):
 		var node := _deserialize_node(obj)
@@ -181,13 +209,30 @@ func load_layout() -> void:
 	_update_selection_box()
 	_update_property_fields()
 	_update_info()
+	_update_history_buttons()
+
+func load_layout() -> void:
+	var file := FileAccess.open(LAYOUT_PATH, FileAccess.READ)
+	if file == null:
+		info_label.text = "未找到布局文件，已载入空布局"
+		return
+	var json := JSON.new()
+	if json.parse(file.get_as_text()) != OK:
+		info_label.text = "布局文件解析失败"
+		return
+	undo_stack.clear()
+	redo_stack.clear()
+	_apply_layout_data(json.data)
 
 func clear_layout(update_label: bool = true) -> void:
+	if update_label:
+		_push_undo_snapshot()
 	for child in layout_root.get_children():
 		child.queue_free()
 	selected_node = null
 	_update_selection_box()
 	_update_property_fields()
+	_update_history_buttons()
 	if update_label:
 		info_label.text = "布局已清空"
 
@@ -306,17 +351,48 @@ func _update_property_fields() -> void:
 func _apply_selected_properties() -> void:
 	if selected_node == null:
 		return
+	var old_position := selected_node.position
+	var old_location_type := selected_node.get("location_type") if location_type_edit.editable else null
 	var x := int(pos_x_edit.text) if pos_x_edit.text != "" else int(selected_node.position.x)
 	var y := int(pos_y_edit.text) if pos_y_edit.text != "" else int(selected_node.position.y)
-	selected_node.position = _snap(Vector2(x, y))
-	if location_type_edit.editable and location_type_edit.text != "":
-		selected_node.set("location_type", location_type_edit.text)
+	var new_position := _snap(Vector2(x, y))
+	var new_location_type := location_type_edit.text
+	var changed := new_position != old_position
+	if location_type_edit.editable and new_location_type != "" and new_location_type != str(old_location_type):
+		changed = true
+	if changed:
+		_push_undo_snapshot()
+	selected_node.position = new_position
+	if location_type_edit.editable and new_location_type != "":
+		selected_node.set("location_type", new_location_type)
 	_update_selection_box()
 	_update_property_fields()
 	_update_info()
+
+func undo() -> void:
+	if undo_stack.is_empty():
+		return
+	redo_stack.append(_snapshot_current_layout())
+	var snapshot := undo_stack.pop_back()
+	_restore_snapshot(snapshot)
+	info_label.text = "已撤销"
+
+func redo() -> void:
+	if redo_stack.is_empty():
+		return
+	undo_stack.append(_snapshot_current_layout())
+	var snapshot := redo_stack.pop_back()
+	_restore_snapshot(snapshot)
+	info_label.text = "已重做"
+
+func _restore_snapshot(snapshot: String) -> void:
+	var json := JSON.new()
+	if json.parse(snapshot) != OK:
+		return
+	_apply_layout_data(json.data)
 
 func _update_info() -> void:
 	var selected_text := "当前工具: %s" % selected_tool
 	if selected_node:
 		selected_text = "选中: %s | 位置: (%d, %d)" % [selected_node.name, int(selected_node.position.x), int(selected_node.position.y)]
-	info_label.text = "左键放置/选择，右键删除，Delete 删除，Ctrl+S 保存，Ctrl+L 载入\n%s" % selected_text
+	info_label.text = "左键放置/选择，右键删除，Delete 删除，Ctrl+S 保存，Ctrl+L 载入，Ctrl+Z 撤销，Ctrl+Y 重做\n%s" % selected_text
