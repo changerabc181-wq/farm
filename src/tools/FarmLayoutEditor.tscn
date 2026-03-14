@@ -14,7 +14,7 @@ layer = 10
 offset_left = 12.0
 offset_top = 12.0
 offset_right = 240.0
-offset_bottom = 700.0
+offset_bottom = 820.0
 
 [node name="Title" type="Label" parent="CanvasLayer/Panel"]
 offset_left = 12.0
@@ -86,11 +86,67 @@ offset_right = 210.0
 offset_bottom = 608.0
 text = "Clear"
 
-[node name="InfoLabel" type="Label" parent="CanvasLayer/Panel"]
+[node name="PropertyTitle" type="Label" parent="CanvasLayer/Panel"]
 offset_left = 12.0
 offset_top = 620.0
 offset_right = 214.0
-offset_bottom = 680.0
+offset_bottom = 642.0
+text = "Properties"
+
+[node name="PosXLabel" type="Label" parent="CanvasLayer/Panel"]
+offset_left = 12.0
+offset_top = 646.0
+offset_right = 60.0
+offset_bottom = 668.0
+text = "X"
+
+[node name="PosXEdit" type="LineEdit" parent="CanvasLayer/Panel"]
+offset_left = 40.0
+offset_top = 644.0
+offset_right = 102.0
+offset_bottom = 668.0
+placeholder_text = "0"
+
+[node name="PosYLabel" type="Label" parent="CanvasLayer/Panel"]
+offset_left = 112.0
+offset_top = 646.0
+offset_right = 160.0
+offset_bottom = 668.0
+text = "Y"
+
+[node name="PosYEdit" type="LineEdit" parent="CanvasLayer/Panel"]
+offset_left = 136.0
+offset_top = 644.0
+offset_right = 210.0
+offset_bottom = 668.0
+placeholder_text = "0"
+
+[node name="LocationTypeLabel" type="Label" parent="CanvasLayer/Panel"]
+offset_left = 12.0
+offset_top = 674.0
+offset_right = 110.0
+offset_bottom = 696.0
+text = "Fish Type"
+
+[node name="LocationTypeEdit" type="LineEdit" parent="CanvasLayer/Panel"]
+offset_left = 90.0
+offset_top = 672.0
+offset_right = 210.0
+offset_bottom = 696.0
+placeholder_text = "pond"
+
+[node name="ApplyButton" type="Button" parent="CanvasLayer/Panel"]
+offset_left = 12.0
+offset_top = 700.0
+offset_right = 210.0
+offset_bottom = 732.0
+text = "Apply Properties"
+
+[node name="InfoLabel" type="Label" parent="CanvasLayer/Panel"]
+offset_left = 12.0
+offset_top = 738.0
+offset_right = 214.0
+offset_bottom = 810.0
 autowrap_mode = 3
 text = "Editor status"
 

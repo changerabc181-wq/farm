@@ -29,6 +29,10 @@ const PALETTE := {
 @onready var farm_preview: Node2D = $FarmPreview
 @onready var selection_box: ColorRect = $CanvasLayer/SelectionBox
 @onready var info_label: Label = $CanvasLayer/Panel/InfoLabel
+@onready var pos_x_edit: LineEdit = $CanvasLayer/Panel/PosXEdit
+@onready var pos_y_edit: LineEdit = $CanvasLayer/Panel/PosYEdit
+@onready var location_type_edit: LineEdit = $CanvasLayer/Panel/LocationTypeEdit
+@onready var apply_button: Button = $CanvasLayer/Panel/ApplyButton
 
 var layout_root: Node2D
 
@@ -65,11 +69,13 @@ func _bind_buttons() -> void:
 	$CanvasLayer/Panel/SaveButton.pressed.connect(save_layout)
 	$CanvasLayer/Panel/LoadButton.pressed.connect(load_layout)
 	$CanvasLayer/Panel/ClearButton.pressed.connect(clear_layout)
+	apply_button.pressed.connect(_apply_selected_properties)
 
 func _on_palette_button_pressed(tool_name: String) -> void:
 	selected_tool = tool_name
 	selected_node = null
 	_update_selection_box()
+	_update_property_fields()
 	_update_info()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -78,6 +84,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.pressed:
 			if selected_tool == "select":
 				selected_node = _find_node_at(world_pos)
+				_update_property_fields()
 				if selected_node:
 					is_dragging = true
 					drag_offset = selected_node.position - _snap(world_pos)
@@ -96,11 +103,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			if target == selected_node:
 				selected_node = null
 			_update_selection_box()
+			_update_property_fields()
 	elif event is InputEventKey and event.pressed:
 		if event.keycode == KEY_DELETE and selected_node:
 			selected_node.queue_free()
 			selected_node = null
 			_update_selection_box()
+			_update_property_fields()
 		elif event.keycode == KEY_S and event.ctrl_pressed:
 			save_layout()
 		elif event.keycode == KEY_L and event.ctrl_pressed:
@@ -115,6 +124,7 @@ func _place_item(world_pos: Vector2) -> void:
 		layout_root.add_child(node)
 		selected_node = node
 		_update_selection_box()
+		_update_property_fields()
 		_update_info()
 
 func _build_node_from_definition(definition: Dictionary, position: Vector2, base_name: String) -> Node2D:
@@ -169,6 +179,7 @@ func load_layout() -> void:
 			layout_root.add_child(node)
 	selected_node = null
 	_update_selection_box()
+	_update_property_fields()
 	_update_info()
 
 func clear_layout(update_label: bool = true) -> void:
@@ -176,6 +187,7 @@ func clear_layout(update_label: bool = true) -> void:
 		child.queue_free()
 	selected_node = null
 	_update_selection_box()
+	_update_property_fields()
 	if update_label:
 		info_label.text = "布局已清空"
 
@@ -263,17 +275,48 @@ func _update_selection_box() -> void:
 	if selected_node == null:
 		selection_box.visible = false
 		return
-		
+
 	selection_box.visible = true
-	var rect := Rect2(selected_node.position - Vector2(24, 24), Vector2(48, 48))
-	if selected_node.get_child_count() > 0 and selected_node.get_child(0) is ColorRect:
-		var color_rect: ColorRect = selected_node.get_child(0)
-		rect = Rect2(selected_node.position - color_rect.size / 2.0, color_rect.size)
+	var rect := _get_node_rect(selected_node)
 	selection_box.position = rect.position
 	selection_box.size = rect.size
 
+func _get_node_rect(node: Node2D) -> Rect2:
+	if node.get_child_count() > 0 and node.get_child(0) is ColorRect:
+		var color_rect: ColorRect = node.get_child(0)
+		return Rect2(node.position - color_rect.size / 2.0, color_rect.size)
+	return Rect2(node.position - Vector2(24, 24), Vector2(48, 48))
+
+func _update_property_fields() -> void:
+	if selected_node == null:
+		pos_x_edit.text = ""
+		pos_y_edit.text = ""
+		location_type_edit.text = ""
+		location_type_edit.editable = false
+		return
+	pos_x_edit.text = str(int(selected_node.position.x))
+	pos_y_edit.text = str(int(selected_node.position.y))
+	if selected_node.get_script() != null and selected_node.get_script().resource_path.ends_with("FishingSpot.gd"):
+		location_type_edit.editable = true
+		location_type_edit.text = str(selected_node.get("location_type"))
+	else:
+		location_type_edit.editable = false
+		location_type_edit.text = ""
+
+func _apply_selected_properties() -> void:
+	if selected_node == null:
+		return
+	var x := int(pos_x_edit.text) if pos_x_edit.text != "" else int(selected_node.position.x)
+	var y := int(pos_y_edit.text) if pos_y_edit.text != "" else int(selected_node.position.y)
+	selected_node.position = _snap(Vector2(x, y))
+	if location_type_edit.editable and location_type_edit.text != "":
+		selected_node.set("location_type", location_type_edit.text)
+	_update_selection_box()
+	_update_property_fields()
+	_update_info()
+
 func _update_info() -> void:
-	var selected_text := selected_tool
+	var selected_text := "当前工具: %s" % selected_tool
 	if selected_node:
-		selected_text = "选中: %s @ %s" % [selected_node.name, selected_node.position]
-	info_label.text = "工具: %s | 左键放置/选择，右键删除，Ctrl+S 保存，Ctrl+L 载入\n%s" % [selected_tool, selected_text]
+		selected_text = "选中: %s | 位置: (%d, %d)" % [selected_node.name, int(selected_node.position.x), int(selected_node.position.y)]
+	info_label.text = "左键放置/选择，右键删除，Delete 删除，Ctrl+S 保存，Ctrl+L 载入\n%s" % selected_text
