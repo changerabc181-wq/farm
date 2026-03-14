@@ -7,6 +7,15 @@ class_name Farm
 const TimeDisplayScene = preload("res://src/ui/hud/TimeDisplay.tscn")
 const ToolDisplayScene = preload("res://src/ui/hud/ToolDisplay.tscn")
 const HoeScene = preload("res://src/entities/tools/Hoe.tscn")
+const FARM_LAYOUT_PATH := "res://data/farm_layout.json"
+const LAYOUT_SCENES := {
+	"shipping_bin": preload("res://src/world/objects/ShippingBin.tscn"),
+	"workbench": preload("res://src/world/objects/Workbench.tscn"),
+	"fishing_spot": preload("res://src/world/objects/FishingSpot.tscn"),
+	"coop": preload("res://src/world/objects/Coop.tscn"),
+	"barn": preload("res://src/world/objects/Barn.tscn"),
+	"ore": preload("res://src/world/objects/Ore.tscn")
+}
 
 @onready var tile_map: TileMap = $TileMap
 @onready var player_spawn: Marker2D = $PlayerSpawn
@@ -17,10 +26,13 @@ var ui_canvas: CanvasLayer
 var hoe_tool: Hoe
 var soil_plots: Array[Soil] = []
 var planting_manager: PlantingManager = null
+var layout_root: Node2D
 
 func _ready() -> void:
 	print("[Farm] Scene loaded")
 	_setup_tilemap()
+	_setup_layout_root()
+	_apply_layout_from_file()
 	_setup_ui()
 	_setup_tools()
 	_setup_soil_plots()
@@ -38,6 +50,78 @@ func _setup_tilemap() -> void:
 		tile_map.tile_set = tile_set
 
 	print("[Farm] TileMap setup complete")
+
+func _setup_layout_root() -> void:
+	layout_root = get_node_or_null("LayoutRoot")
+	if layout_root == null:
+		layout_root = Node2D.new()
+		layout_root.name = "LayoutRoot"
+		add_child(layout_root)
+
+func _apply_layout_from_file() -> void:
+	if layout_root == null:
+		return
+	for child in layout_root.get_children():
+		child.queue_free()
+
+	var file := FileAccess.open(FARM_LAYOUT_PATH, FileAccess.READ)
+	if file == null:
+		print("[Farm] No farm layout file found, using empty layout")
+		return
+
+	var json := JSON.new()
+	if json.parse(file.get_as_text()) != OK:
+		push_warning("[Farm] Failed to parse farm_layout.json")
+		return
+
+	var data: Dictionary = json.data
+	for object_data in data.get("objects", []):
+		var node := _build_layout_node(object_data)
+		if node:
+			layout_root.add_child(node)
+	print("[Farm] Loaded layout objects: ", layout_root.get_child_count())
+
+func _build_layout_node(object_data: Dictionary) -> Node2D:
+	var kind := object_data.get("kind", "")
+	if kind == "rect":
+		return _build_rect_node(object_data)
+	if kind == "scene":
+		return _build_scene_node(object_data)
+	return null
+
+func _build_rect_node(object_data: Dictionary) -> Node2D:
+	var node := Node2D.new()
+	node.name = object_data.get("name", "RectObject")
+	var size_dict: Dictionary = object_data.get("size", {})
+	var color_dict: Dictionary = object_data.get("color", {})
+	var rect := ColorRect.new()
+	rect.size = Vector2(size_dict.get("x", 32.0), size_dict.get("y", 32.0))
+	rect.position = -rect.size / 2.0
+	rect.color = Color(
+		color_dict.get("r", 1.0),
+		color_dict.get("g", 1.0),
+		color_dict.get("b", 1.0),
+		color_dict.get("a", 1.0)
+	)
+	node.add_child(rect)
+	var pos_dict: Dictionary = object_data.get("position", {})
+	node.position = Vector2(pos_dict.get("x", 0.0), pos_dict.get("y", 0.0))
+	return node
+
+func _build_scene_node(object_data: Dictionary) -> Node2D:
+	var scene_key: String = object_data.get("scene_key", "")
+	var packed: PackedScene = LAYOUT_SCENES.get(scene_key)
+	if packed == null:
+		push_warning("[Farm] Unknown scene key: " + scene_key)
+		return null
+	var node := packed.instantiate()
+	node.name = object_data.get("name", scene_key)
+	var pos_dict: Dictionary = object_data.get("position", {})
+	node.position = Vector2(pos_dict.get("x", 0.0), pos_dict.get("y", 0.0))
+	var properties: Dictionary = object_data.get("properties", {})
+	for key in properties.keys():
+		node.set(key, properties[key])
+	return node
 
 func _setup_ui() -> void:
 	# 创建UI画布层

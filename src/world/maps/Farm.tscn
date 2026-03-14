@@ -1,15 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://c8yvxg3ulq3a"]
+[gd_scene load_steps=6 format=3 uid="uid://c8yvxg3ulq3a"]
 
 [ext_resource type="Script" path="res://src/world/maps/Farm.gd" id="1_farm"]
 [ext_resource type="PackedScene" uid="uid://dp5y8hqm2x8nr" path="res://src/entities/player/Player.tscn" id="2_player"]
 [ext_resource type="Script" path="res://src/world/transitions/SceneTransition.gd" id="3_transition"]
 [ext_resource type="PackedScene" uid="uid://soil_tile_001" path="res://src/core/farming/Soil.tscn" id="4_soil"]
-[ext_resource type="PackedScene" path="res://src/world/objects/ShippingBin.tscn" id="5_shipping"]
-[ext_resource type="PackedScene" path="res://src/world/objects/Coop.tscn" id="6_coop"]
-[ext_resource type="PackedScene" path="res://src/world/objects/Barn.tscn" id="7_barn"]
-[ext_resource type="PackedScene" path="res://src/world/objects/Workbench.tscn" id="8_workbench"]
-[ext_resource type="PackedScene" path="res://src/world/objects/FishingSpot.tscn" id="9_fishing"]
-[ext_resource type="PackedScene" path="res://src/world/objects/Ore.tscn" id="10_ore"]
 
 [sub_resource type="TileSet" id="TileSet_farm"]
 
@@ -102,109 +96,4 @@ grid_position = Vector2i(2, 2)
 position = Vector2(596, 464)
 grid_position = Vector2i(3, 2)
 
-[node name="FarmDecor" type="Node2D" parent="."]
-
-[node name="GroundTint" type="ColorRect" parent="FarmDecor"]
-offset_left = 120.0
-offset_top = 120.0
-offset_right = 1160.0
-offset_bottom = 620.0
-color = Color(0.3, 0.55, 0.28, 0.35)
-
-[node name="MainPath" type="ColorRect" parent="FarmDecor"]
-offset_left = 360.0
-offset_top = 280.0
-offset_right = 700.0
-offset_bottom = 328.0
-color = Color(0.63, 0.52, 0.34, 0.9)
-
-[node name="SouthPath" type="ColorRect" parent="FarmDecor"]
-offset_left = 520.0
-offset_top = 328.0
-offset_right = 576.0
-offset_bottom = 540.0
-color = Color(0.63, 0.52, 0.34, 0.9)
-
-[node name="Pond" type="ColorRect" parent="FarmDecor"]
-offset_left = 160.0
-offset_top = 390.0
-offset_right = 330.0
-offset_bottom = 530.0
-color = Color(0.24, 0.55, 0.8, 0.85)
-
-[node name="PondShore" type="ColorRect" parent="FarmDecor"]
-offset_left = 150.0
-offset_top = 380.0
-offset_right = 340.0
-offset_bottom = 540.0
-color = Color(0.76, 0.68, 0.45, 0.45)
-
-[node name="HousePad" type="ColorRect" parent="FarmDecor"]
-offset_left = 760.0
-offset_top = 140.0
-offset_right = 1010.0
-offset_bottom = 290.0
-color = Color(0.72, 0.64, 0.46, 0.75)
-
-[node name="HouseBody" type="ColorRect" parent="FarmDecor"]
-offset_left = 790.0
-offset_top = 130.0
-offset_right = 980.0
-offset_bottom = 250.0
-color = Color(0.72, 0.47, 0.29, 0.95)
-
-[node name="HouseRoof" type="ColorRect" parent="FarmDecor"]
-offset_left = 775.0
-offset_top = 100.0
-offset_right = 995.0
-offset_bottom = 145.0
-color = Color(0.52, 0.18, 0.15, 0.95)
-
-[node name="HouseDoor" type="ColorRect" parent="FarmDecor"]
-offset_left = 870.0
-offset_top = 205.0
-offset_right = 900.0
-offset_bottom = 250.0
-color = Color(0.28, 0.16, 0.1, 1)
-
-[node name="FenceTop" type="ColorRect" parent="FarmDecor"]
-offset_left = 430.0
-offset_top = 360.0
-offset_right = 690.0
-offset_bottom = 368.0
-color = Color(0.62, 0.43, 0.22, 1)
-
-[node name="FenceLeft" type="ColorRect" parent="FarmDecor"]
-offset_left = 430.0
-offset_top = 360.0
-offset_right = 438.0
-offset_bottom = 505.0
-color = Color(0.62, 0.43, 0.22, 1)
-
-[node name="FenceRight" type="ColorRect" parent="FarmDecor"]
-offset_left = 690.0
-offset_top = 360.0
-offset_right = 698.0
-offset_bottom = 505.0
-color = Color(0.62, 0.43, 0.22, 1)
-
-[node name="ShippingBin" parent="." instance=ExtResource("5_shipping")]
-position = Vector2(400, 300)
-
-[node name="Workbench" parent="." instance=ExtResource("8_workbench")]
-position = Vector2(468, 308)
-
-[node name="FishingSpot" parent="." instance=ExtResource("9_fishing")]
-position = Vector2(245, 460)
-
-[node name="Coop" parent="." instance=ExtResource("6_coop")]
-position = Vector2(260, 220)
-
-[node name="Barn" parent="." instance=ExtResource("7_barn")]
-position = Vector2(1010, 430)
-
-[node name="OreNorth" parent="." instance=ExtResource("10_ore")]
-position = Vector2(1080, 180)
-
-[node name="OreSouth" parent="." instance=ExtResource("10_ore")]
-position = Vector2(1120, 510)
+[node name="LayoutRoot" type="Node2D" parent="."]
