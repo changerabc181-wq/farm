@@ -28,3 +28,7 @@ Thumbs.db
 build/
 dist/
 *.tmp
+
+# Runtime artifacts
+logs/
+__pycache__/
