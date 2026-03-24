@@ -132,3 +132,85 @@
 2. **今日** → T2、T3、T4（核心功能完成）
 3. **明日** → T5、T8、T9（UI/交互完善）
 4. **资源就绪后** → T6、T7、T10-T12（批量生成精灵）
+
+---
+
+## 🗺️ 地图系统问题（补充审查）
+
+### 🔴 核心问题：TileSet 尺寸完全不匹配
+
+**`VillageTilesetBuilder.gd` 设计 vs 实际生成的图片：**
+
+| 属性 | Builder 设计值 | 实际生成的 PNG |
+|------|-------------|--------------|
+| 瓦片尺寸 | **64×64** px | **16×16** px |
+| 网格 | **5×5 = 25 tiles** | **8×8 = 64 tiles** |
+| 图片总尺寸 | **320×320** px | **1024×1024** px |
+
+→ **VillageBuilder 调用的 TileSet 会全部显示为空白**（因为读取的 atlas 区域完全错误）
+
+**根本原因：** 生成的是 16×16 像素风格游戏瓦片（星露谷标准），Builder 代码用的是 64×64 设计。两者完全不兼容。
+
+### 🟡 各地图状态
+
+| 地图 | TileSet 状态 | Builder | 问题 |
+|------|------------|--------|------|
+| Village | 使用 Builder | ✅ 存在 | ❌ 尺寸不匹配 64px vs 16px |
+| Farm | 空白 SubResource | ❌ 不存在 | ❌ 需要新建 Builder |
+| Forest | 空 TileSet | ❌ 不存在 | ❌ 需要新建 Builder |
+| Beach | 空白 SubResource | ❌ 不存在 | ❌ 需要新建 Builder |
+| Mine | 空 TileSet | ❌ 不存在 | ❌ 需要新建 Builder |
+| PlayerHouse | 空白 SubResource | ❌ 不存在 | ❌ 需要新建 Builder |
+
+### ✅ Village NPC 头像问题（已发现）
+- Village.tscn 引用 `npc_mayor.png` 等 5 个占位符（213 字节）
+- 替换为新生成的 `portraits/mayor.png` 等即可
+
+---
+
+## 🗺️ 地图任务优先级
+
+### T13: 修复 Village TileSet Builder 🔥 最高优先级
+**文件**: `src/world/maps/VillageTilesetBuilder.gd`
+**问题**: TILE_SIZE = 64 应该是 **16**，COLUMNS/ROWS = 5 应该是 **8**，ATLAS_PATH 正确
+**操作**: 修改常量后 `VillageBuilder` 重新构建即可验证
+**验收**: Village 地图有正确的地面、建筑瓦片显示
+
+### T14: 创建 Farm TileSet Builder 🟡
+**文件**: 需新建 `src/world/maps/FarmTilesetBuilder.gd`
+**操作**: 参考 VillageTilesetBuilder 格式，创建使用 `farm_tiles.png` 的 Builder
+**ATLAS**: `res://assets/tiles/farm_tiles.png`，TILE_SIZE = 16，8×8 网格
+
+### T15: 创建 Forest TileSet Builder 🟡
+**文件**: 需新建 `src/world/maps/ForestTilesetBuilder.gd`
+**操作**: 使用 `forest_tiles.png`
+
+### T16: 创建 Beach TileSet Builder 🟡
+**文件**: 需新建 `src/world/maps/BeachTilesetBuilder.gd`
+**操作**: 使用 `beach_tiles.png`
+
+### T17: 创建 Mine TileSet Builder 🟡
+**文件**: 需新建 `src/world/maps/MineTilesetBuilder.gd`
+**操作**: 使用 `mine_tiles.png`
+
+### T18: 创建 Indoor TileSet Builder 🟡
+**文件**: 需新建 `src/world/maps/IndoorTilesetBuilder.gd`
+**操作**: 使用 `indoors_tiles.png`，用于 PlayerHouse
+
+### T19: Village NPC 头像替换 🟢
+**操作**: 将 Village.tscn 中的 `npc_mayor.png` → `portraits/mayor.png` 等 5 个
+
+### T20: Nature Elements 精灵接入 🟢
+**文件**: `nature_elements.png`（橡树、松树、矿石等）
+**操作**: 创建 NatureTilesetBuilder 接入 Forest/Beach 地图
+
+---
+
+## 📊 修复后的验证步骤
+
+1. 启动 Godot，打开 Village.tscn
+2. 确认地面瓦片（草地、道路）正确显示
+3. 确认建筑墙体（石头墙、木板墙）正确显示
+4. 确认装饰物（水井、长凳、栅栏）正确显示
+5. 对其他地图重复上述验证
+
