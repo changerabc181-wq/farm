@@ -7,7 +7,9 @@
       "buy_price": 0,
       "sell_price": 15,
       "usable": true,
-      "use_effect": {"energy": 8},
+      "use_effect": {
+        "energy": 8
+      },
       "description": "野生的小浆果，酸甜可口。"
     },
     {
@@ -17,7 +19,9 @@
       "buy_price": 0,
       "sell_price": 40,
       "usable": true,
-      "use_effect": {"energy": 15},
+      "use_effect": {
+        "energy": 15
+      },
       "description": "藤蔓上结出的紫色葡萄。"
     },
     {
@@ -27,7 +31,9 @@
       "buy_price": 0,
       "sell_price": 25,
       "usable": true,
-      "use_effect": {"energy": 10},
+      "use_effect": {
+        "energy": 10
+      },
       "description": "深紫色的黑莓，营养丰富。"
     },
     {
@@ -37,7 +43,9 @@
       "buy_price": 0,
       "sell_price": 20,
       "usable": true,
-      "use_effect": {"energy": 10},
+      "use_effect": {
+        "energy": 10
+      },
       "description": "常见的可食用蘑菇。"
     },
     {
@@ -47,7 +55,9 @@
       "buy_price": 0,
       "sell_price": 80,
       "usable": true,
-      "use_effect": {"energy": 20},
+      "use_effect": {
+        "energy": 20
+      },
       "description": "金黄色的鸡油菌，味道鲜美。"
     },
     {
@@ -57,7 +67,9 @@
       "buy_price": 0,
       "sell_price": 150,
       "usable": true,
-      "use_effect": {"energy": 30},
+      "use_effect": {
+        "energy": 30
+      },
       "description": "珍贵的羊肚菌，稀有食材。"
     },
     {
@@ -137,7 +149,9 @@
       "id": "turnip_seed",
       "name": "芜菁种子",
       "type": "seed",
-      "seasons": ["spring"],
+      "seasons": [
+        "spring"
+      ],
       "growth_days": 4,
       "crop_id": "turnip",
       "buy_price": 20,
@@ -148,7 +162,9 @@
       "id": "potato_seed",
       "name": "土豆种子",
       "type": "seed",
-      "seasons": ["spring"],
+      "seasons": [
+        "spring"
+      ],
       "growth_days": 6,
       "crop_id": "potato",
       "buy_price": 50,
@@ -159,7 +175,9 @@
       "id": "tomato_seed",
       "name": "番茄种子",
       "type": "seed",
-      "seasons": ["summer"],
+      "seasons": [
+        "summer"
+      ],
       "growth_days": 11,
       "crop_id": "tomato",
       "buy_price": 50,
@@ -170,7 +188,9 @@
       "id": "corn_seed",
       "name": "玉米种子",
       "type": "seed",
-      "seasons": ["summer"],
+      "seasons": [
+        "summer"
+      ],
       "growth_days": 14,
       "crop_id": "corn",
       "buy_price": 80,
@@ -181,7 +201,9 @@
       "id": "pumpkin_seed",
       "name": "南瓜种子",
       "type": "seed",
-      "seasons": ["fall"],
+      "seasons": [
+        "fall"
+      ],
       "growth_days": 13,
       "crop_id": "pumpkin",
       "buy_price": 100,
@@ -195,7 +217,9 @@
       "buy_price": 0,
       "sell_price": 35,
       "usable": true,
-      "use_effect": {"energy": 10},
+      "use_effect": {
+        "energy": 10
+      },
       "description": "新鲜的芜菁，可以生吃或烹饪。"
     },
     {
@@ -205,7 +229,9 @@
       "buy_price": 0,
       "sell_price": 80,
       "usable": true,
-      "use_effect": {"energy": 15},
+      "use_effect": {
+        "energy": 15
+      },
       "description": "用途广泛的土豆，炸煮烤都美味。"
     },
     {
@@ -215,7 +241,9 @@
       "buy_price": 0,
       "sell_price": 60,
       "usable": true,
-      "use_effect": {"energy": 12},
+      "use_effect": {
+        "energy": 12
+      },
       "description": "新鲜红透的番茄。"
     },
     {
@@ -225,7 +253,9 @@
       "buy_price": 0,
       "sell_price": 50,
       "usable": true,
-      "use_effect": {"energy": 8},
+      "use_effect": {
+        "energy": 8
+      },
       "description": "香甜可口的玉米棒。"
     },
     {
@@ -235,7 +265,9 @@
       "buy_price": 0,
       "sell_price": 320,
       "usable": true,
-      "use_effect": {"energy": 20},
+      "use_effect": {
+        "energy": 20
+      },
       "description": "大个的南瓜，可以做派或装饰。"
     },
     {
@@ -307,7 +339,9 @@
       "buy_price": 0,
       "sell_price": 30,
       "usable": true,
-      "use_effect": {"energy": 13},
+      "use_effect": {
+        "energy": 13
+      },
       "description": "常见的淡水鱼。"
     },
     {
@@ -317,7 +351,9 @@
       "buy_price": 0,
       "sell_price": 100,
       "usable": true,
-      "use_effect": {"energy": 25},
+      "use_effect": {
+        "energy": 25
+      },
       "description": "美味的深海鱼。"
     },
     {
@@ -327,7 +363,9 @@
       "buy_price": 50,
       "sell_price": 25,
       "usable": true,
-      "use_effect": {"energy": 30},
+      "use_effect": {
+        "energy": 30
+      },
       "description": "新鲜出炉的面包，香气扑鼻。"
     },
     {
@@ -337,7 +375,9 @@
       "buy_price": 80,
       "sell_price": 40,
       "usable": true,
-      "use_effect": {"energy": 40},
+      "use_effect": {
+        "energy": 40
+      },
       "description": "浓郁的奶酪，营养丰富。"
     },
     {
@@ -434,7 +474,9 @@
       "buy_price": 0,
       "sell_price": 50,
       "usable": true,
-      "use_effect": {"energy": 15},
+      "use_effect": {
+        "energy": 15
+      },
       "description": "母鸡产下的新鲜鸡蛋。"
     },
     {
@@ -444,7 +486,9 @@
       "buy_price": 0,
       "sell_price": 300,
       "usable": true,
-      "use_effect": {"energy": 50},
+      "use_effect": {
+        "energy": 50
+      },
       "description": "闪耀着金光的稀有鸡蛋，非常珍贵。"
     },
     {
@@ -454,7 +498,9 @@
       "buy_price": 0,
       "sell_price": 80,
       "usable": true,
-      "use_effect": {"energy": 25},
+      "use_effect": {
+        "energy": 25
+      },
       "description": "新鲜挤出的牛奶，营养丰富。"
     },
     {
@@ -464,7 +510,9 @@
       "buy_price": 0,
       "sell_price": 200,
       "usable": true,
-      "use_effect": {"energy": 60},
+      "use_effect": {
+        "energy": 60
+      },
       "description": "高品质的牛奶，味道浓郁。"
     },
     {
@@ -498,7 +546,9 @@
       "buy_price": 0,
       "sell_price": 500,
       "usable": true,
-      "use_effect": {"energy": 80},
+      "use_effect": {
+        "energy": 80
+      },
       "description": "猪找到的珍贵松露，价值连城。"
     },
     {
@@ -524,7 +574,9 @@
       "buy_price": 0,
       "sell_price": 100,
       "usable": true,
-      "use_effect": {"energy": 40},
+      "use_effect": {
+        "energy": 40
+      },
       "description": "用鸡蛋制作的蛋黄酱。"
     },
     {
@@ -534,7 +586,9 @@
       "buy_price": 0,
       "sell_price": 160,
       "usable": true,
-      "use_effect": {"energy": 50},
+      "use_effect": {
+        "energy": 50
+      },
       "description": "用牛奶制作的奶酪。"
     },
     {
@@ -544,7 +598,9 @@
       "buy_price": 0,
       "sell_price": 50,
       "usable": true,
-      "use_effect": {"energy": 35},
+      "use_effect": {
+        "energy": 35
+      },
       "description": "简单美味的煎蛋，恢复少量体力。"
     },
     {
@@ -554,7 +610,9 @@
       "buy_price": 0,
       "sell_price": 40,
       "usable": true,
-      "use_effect": {"energy": 30},
+      "use_effect": {
+        "energy": 30
+      },
       "description": "营养保留最完整的水煮蛋。"
     },
     {
@@ -564,7 +622,9 @@
       "buy_price": 0,
       "sell_price": 35,
       "usable": true,
-      "use_effect": {"energy": 40},
+      "use_effect": {
+        "energy": 40
+      },
       "description": "香脆的烤面包，早餐的好选择。"
     },
     {
@@ -574,7 +634,9 @@
       "buy_price": 0,
       "sell_price": 150,
       "usable": true,
-      "use_effect": {"energy": 80},
+      "use_effect": {
+        "energy": 80
+      },
       "description": "营养丰富的蔬菜汤，恢复中量体力。"
     },
     {
@@ -584,7 +646,9 @@
       "buy_price": 0,
       "sell_price": 100,
       "usable": true,
-      "use_effect": {"energy": 60},
+      "use_effect": {
+        "energy": 60
+      },
       "description": "绵软香甜的土豆泥。"
     },
     {
@@ -594,7 +658,9 @@
       "buy_price": 0,
       "sell_price": 90,
       "usable": true,
-      "use_effect": {"energy": 55},
+      "use_effect": {
+        "energy": 55
+      },
       "description": "酸甜可口的番茄浓汤。"
     },
     {
@@ -604,7 +670,9 @@
       "buy_price": 0,
       "sell_price": 80,
       "usable": true,
-      "use_effect": {"energy": 75},
+      "use_effect": {
+        "energy": 75
+      },
       "description": "鲜嫩多汁的烤鱼。"
     },
     {
@@ -614,7 +682,9 @@
       "buy_price": 0,
       "sell_price": 200,
       "usable": true,
-      "use_effect": {"energy": 100},
+      "use_effect": {
+        "energy": 100
+      },
       "description": "新鲜的生鱼片，保持原汁原味。"
     },
     {
@@ -624,7 +694,9 @@
       "buy_price": 0,
       "sell_price": 300,
       "usable": true,
-      "use_effect": {"energy": 120},
+      "use_effect": {
+        "energy": 120
+      },
       "description": "香甜的南瓜派，秋天特色美食。"
     },
     {
@@ -634,7 +706,9 @@
       "buy_price": 0,
       "sell_price": 45,
       "usable": true,
-      "use_effect": {"energy": 30},
+      "use_effect": {
+        "energy": 30
+      },
       "description": "简单香甜的煮玉米。"
     },
     {
@@ -644,7 +718,9 @@
       "buy_price": 0,
       "sell_price": 60,
       "usable": true,
-      "use_effect": {"energy": 25},
+      "use_effect": {
+        "energy": 25
+      },
       "description": "看电影必备的爆米花。"
     },
     {
@@ -654,7 +730,9 @@
       "buy_price": 0,
       "sell_price": 180,
       "usable": true,
-      "use_effect": {"energy": 100},
+      "use_effect": {
+        "energy": 100
+      },
       "description": "精致的奶酪拼盘，恢复大量体力。"
     },
     {
@@ -664,7 +742,9 @@
       "buy_price": 0,
       "sell_price": 250,
       "usable": true,
-      "use_effect": {"energy": 150},
+      "use_effect": {
+        "energy": 150
+      },
       "description": "丰盛的早餐，提供一整天的活力。"
     },
     {
@@ -674,7 +754,9 @@
       "buy_price": 0,
       "sell_price": 220,
       "usable": true,
-      "use_effect": {"energy": 130},
+      "use_effect": {
+        "energy": 130
+      },
       "description": "温暖的鱼汤，适合寒冷的日子。"
     },
     {
@@ -684,7 +766,9 @@
       "buy_price": 0,
       "sell_price": 170,
       "usable": true,
-      "use_effect": {"energy": 90},
+      "use_effect": {
+        "energy": 90
+      },
       "description": "健康的烤蔬菜拼盘。"
     },
     {
@@ -694,7 +778,9 @@
       "buy_price": 0,
       "sell_price": 140,
       "usable": true,
-      "use_effect": {"energy": 100},
+      "use_effect": {
+        "energy": 100
+      },
       "description": "松软的煎蛋卷，可以加入各种配料。"
     },
     {
@@ -704,7 +790,9 @@
       "buy_price": 0,
       "sell_price": 70,
       "usable": true,
-      "use_effect": {"energy": 40},
+      "use_effect": {
+        "energy": 40
+      },
       "description": "清脆爽口的蔬菜沙拉。"
     },
     {
@@ -714,7 +802,9 @@
       "buy_price": 0,
       "sell_price": 350,
       "usable": true,
-      "use_effect": {"energy": 180},
+      "use_effect": {
+        "energy": 180
+      },
       "description": "精心烤制的鱼肉料理。"
     },
     {
@@ -724,7 +814,9 @@
       "buy_price": 0,
       "sell_price": 280,
       "usable": true,
-      "use_effect": {"energy": 200},
+      "use_effect": {
+        "energy": 200
+      },
       "description": "超高热量的汉堡，冒险者必备。"
     },
     {
@@ -734,7 +826,9 @@
       "buy_price": 0,
       "sell_price": 120,
       "usable": true,
-      "use_effect": {"energy": 50},
+      "use_effect": {
+        "energy": 50
+      },
       "description": "超强的提神饮料，让你不知疲倦。"
     },
     {
@@ -960,7 +1054,9 @@
       "buy_price": 0,
       "sell_price": 50,
       "usable": true,
-      "use_effect": {"energy": 30},
+      "use_effect": {
+        "energy": 30
+      },
       "description": "新鲜烤制的鱼，美味可口。"
     },
     {
@@ -985,7 +1081,11 @@
       "id": "fiber_seeds",
       "name": "纤维种子",
       "type": "seed",
-      "seasons": ["spring", "summer", "fall"],
+      "seasons": [
+        "spring",
+        "summer",
+        "fall"
+      ],
       "growth_days": 3,
       "crop_id": "fiber",
       "buy_price": 0,
@@ -999,7 +1099,9 @@
       "buy_price": 0,
       "sell_price": 40,
       "usable": true,
-      "use_effect": {"energy": 20},
+      "use_effect": {
+        "energy": 20
+      },
       "description": "蜜蜂酿制的蜂蜜，甜美可口。"
     },
     {
@@ -1016,7 +1118,9 @@
       "buy_price": 0,
       "sell_price": 30,
       "usable": true,
-      "use_effect": {"energy": 13},
+      "use_effect": {
+        "energy": 13
+      },
       "description": "常见的淡水鱼，适应力强。"
     },
     {
@@ -1026,7 +1130,9 @@
       "buy_price": 0,
       "sell_price": 50,
       "usable": true,
-      "use_effect": {"energy": 18},
+      "use_effect": {
+        "energy": 18
+      },
       "description": "淡水中的掠食者，肉质鲜美。"
     },
     {
@@ -1036,7 +1142,9 @@
       "buy_price": 0,
       "sell_price": 80,
       "usable": true,
-      "use_effect": {"energy": 25},
+      "use_effect": {
+        "energy": 25
+      },
       "description": "洄游鱼类，营养价值极高。"
     },
     {
@@ -1046,7 +1154,9 @@
       "buy_price": 0,
       "sell_price": 150,
       "usable": true,
-      "use_effect": {"energy": 35},
+      "use_effect": {
+        "energy": 35
+      },
       "description": "深海中的游泳健将，肉质紧实。"
     },
     {
@@ -1056,7 +1166,9 @@
       "buy_price": 0,
       "sell_price": 20,
       "usable": true,
-      "use_effect": {"energy": 8},
+      "use_effect": {
+        "energy": 8
+      },
       "description": "小型海鱼，常成群出现。"
     },
     {
@@ -1066,7 +1178,9 @@
       "buy_price": 0,
       "sell_price": 70,
       "usable": true,
-      "use_effect": {"energy": 20},
+      "use_effect": {
+        "energy": 20
+      },
       "description": "底栖鱼类，喜欢浑浊的水域。"
     },
     {
@@ -1076,7 +1190,9 @@
       "buy_price": 0,
       "sell_price": 120,
       "usable": true,
-      "use_effect": {"energy": 15},
+      "use_effect": {
+        "energy": 15
+      },
       "description": "受到惊吓会鼓起来的奇特鱼类。"
     },
     {
@@ -1086,7 +1202,9 @@
       "buy_price": 0,
       "sell_price": 300,
       "usable": true,
-      "use_effect": {"energy": 40},
+      "use_effect": {
+        "energy": 40
+      },
       "description": "深海怪鱼，头顶有发光的诱饵。"
     },
     {
@@ -1096,7 +1214,9 @@
       "buy_price": 0,
       "sell_price": 60,
       "usable": true,
-      "use_effect": {"energy": 5},
+      "use_effect": {
+        "energy": 5
+      },
       "description": "观赏鱼类，色彩鲜艳。"
     },
     {
@@ -1106,7 +1226,9 @@
       "buy_price": 0,
       "sell_price": 180,
       "usable": true,
-      "use_effect": {"energy": 30},
+      "use_effect": {
+        "energy": 30
+      },
       "description": "生活在冰冷海域的珍稀鱼类。"
     },
     {
@@ -1116,7 +1238,9 @@
       "buy_price": 0,
       "sell_price": 90,
       "usable": true,
-      "use_effect": {"energy": 22},
+      "use_effect": {
+        "energy": 22
+      },
       "description": "滑溜溜的长条鱼，夜间活动。"
     },
     {
@@ -1126,8 +1250,22 @@
       "buy_price": 0,
       "sell_price": 130,
       "usable": true,
-      "use_effect": {"energy": 28},
+      "use_effect": {
+        "energy": 28
+      },
       "description": "色彩斑斓的美丽鱼类，味道鲜美。"
+    },
+    {
+      "id": "pork",
+      "name": "猪肉",
+      "type": "animal_product",
+      "buy_price": 0,
+      "sell_price": 80,
+      "usable": true,
+      "use_effect": {
+        "energy": 20
+      },
+      "description": "猪产下的新鲜猪肉，营养丰富。"
     }
   ]
 }
