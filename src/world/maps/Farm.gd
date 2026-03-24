@@ -44,12 +44,76 @@ func _ready() -> void:
 		game_manager.start_game()
 
 func _setup_tilemap() -> void:
-	# 设置TileSet（如果没有的话）
+	# 使用 FarmTilesetBuilder 构建瓦片集
 	if tile_map.tile_set == null:
-		var tile_set: TileSet = TileSet.new()
+		var tile_set: TileSet = FarmTilesetBuilder.build_tileset()
 		tile_map.tile_set = tile_set
+		print("[Farm] TileSet built from FarmTilesetBuilder")
 
+	# 绘制默认农场布局
+	_paint_default_farm()
 	print("[Farm] TileMap setup complete")
+
+func _paint_default_farm() -> void:
+	print("[Farm] Painting default farm layout...")
+	# 地图：50x35 瓦片 @ 64px = 3200x2240 像素
+	var GRASS := FarmTilesetBuilder.TileCoord.GRASS_PLAIN
+	var PATH := FarmTilesetBuilder.TileCoord.PATH_DIRT
+	var FENCE_H := FarmTilesetBuilder.TileCoord.FENCE_H
+	var FENCE_V := FarmTilesetBuilder.TileCoord.FENCE_V
+	var FENCE_POST := FarmTilesetBuilder.TileCoord.FENCE_POST
+	var WATER := FarmTilesetBuilder.TileCoord.WATER_POND
+	var WATER_EDGE_TL := FarmTilesetBuilder.TileCoord.WATER_EDGE_TL
+	var WATER_EDGE_TR := FarmTilesetBuilder.TileCoord.WATER_EDGE_TR
+	var WATER_EDGE_BL := FarmTilesetBuilder.TileCoord.WATER_EDGE_BL
+	var WATER_EDGE_BR := FarmTilesetBuilder.TileCoord.WATER_EDGE_BR
+	var WOOD := FarmTilesetBuilder.TileCoord.WOOD_PLANKS
+
+	# 填满草地
+	for x in range(50):
+		for y in range(35):
+			tile_map.set_cell(0, Vector2i(x, y), 0, FarmTilesetBuilder.get_coord(GRASS))
+
+	# 主路（中间垂直）
+	for y in range(35):
+		tile_map.set_cell(0, Vector2i(25, y), 0, FarmTilesetBuilder.get_coord(PATH))
+
+	# 横向小路
+	for x in range(15, 36):
+		tile_map.set_cell(0, Vector2i(x, 15), 0, FarmTilesetBuilder.get_coord(PATH))
+
+	# 入口路径
+	for x in range(20, 31):
+		tile_map.set_cell(0, Vector2i(x, 25), 0, FarmTilesetBuilder.get_coord(PATH))
+
+	# 池塘（右上角）
+	for x in range(38, 45):
+		for y in range(3, 10):
+			var coord: Vector2i
+			if x == 38 and y == 3: coord = FarmTilesetBuilder.get_coord(WATER_EDGE_TL)
+			elif x == 44 and y == 3: coord = FarmTilesetBuilder.get_coord(WATER_EDGE_TR)
+			elif x == 38 and y == 9: coord = FarmTilesetBuilder.get_coord(WATER_EDGE_BL)
+			elif x == 44 and y == 9: coord = FarmTilesetBuilder.get_coord(WATER_EDGE_BR)
+			else: coord = FarmTilesetBuilder.get_coord(WATER)
+			tile_map.set_cell(0, Vector2i(x, y), 0, coord)
+
+	# 木地板（房子底板）
+	for x in range(28, 40):
+		for y in range(6, 12):
+			tile_map.set_cell(0, Vector2i(x, y), 0, FarmTilesetBuilder.get_coord(WOOD))
+
+	# 篱笆围栏
+	for x in range(10, 40):
+		tile_map.set_cell(0, Vector2i(x, 4), 0, FarmTilesetBuilder.get_coord(FENCE_H))
+		tile_map.set_cell(0, Vector2i(x, 28), 0, FarmTilesetBuilder.get_coord(FENCE_H))
+	for y in range(4, 29):
+		tile_map.set_cell(0, Vector2i(10, y), 0, FarmTilesetBuilder.get_coord(FENCE_V))
+		tile_map.set_cell(0, Vector2i(40, y), 0, FarmTilesetBuilder.get_coord(FENCE_V))
+	for corner in [Vector2i(10, 4), Vector2i(40, 4), Vector2i(10, 28), Vector2i(40, 28)]:
+		tile_map.set_cell(0, corner, 0, FarmTilesetBuilder.get_coord(FENCE_POST))
+
+	print("[Farm] Default farm layout painted.")
+
 
 func _setup_layout_root() -> void:
 	layout_root = get_node_or_null("LayoutRoot")
