@@ -233,3 +233,34 @@
 | BGM 生成 | 需 MiniMax Max 套餐（¥1,990/年） |
 | 头像/动物/成就精灵生成 | MiniMax 图片 API 额度已恢复 |
 | Godot 运行时画面验证 | 需有显示器或 VNC |
+
+---
+
+## 代码审查发现的问题
+### 🔴 严重（阻断）
+- Farm.tscn 没有 TileMap 节点，无法渲染农场地面 → `src/world/maps/Farm.tscn`（需新建 FarmTilesetBuilder.gd 并在 Farm.tscn 中添加 TileMap 子节点，参见 todo M2）
+- `start_game()` 不会初始化玩家到 Farm 场景 → `src/autoload/GameManager.gd:46`（函数体仅设置状态和发信号，未调用 `SceneTransition.change_scene_to_file()` 加载 Farm 场景）
+
+### 🟡 中等
+- FestivalMinigame.gd 有 9 个未实现的空函数（仅 `pass`）→ `src/minigames/FestivalMinigame.gd:37,42,113,118,123,128,133,138,143`
+- DialogueManager.gd 有 2 个未实现的空函数（仅 `pass`）→ `src/core/relationship/DialogueManager.gd:422,426`
+- NPC.gd 有 2 个未实现的空函数（仅 `pass`）→ `src/entities/npc/NPC.gd:218,367`
+- Player.gd 有 2 个未实现的空函数（仅 `pass`）→ `src/entities/player/Player.gd:229,233`
+- NPCSchedule.gd 有 1 个未实现的空函数（仅 `pass`）→ `src/entities/npc/NPCSchedule.gd:216`
+- Barn.gd 有 1 个未实现的空函数（仅 `pass`）→ `src/world/objects/Barn.gd:27`
+- Kitchen.gd 有 1 个未实现的空函数（仅 `pass`）→ `src/world/objects/Kitchen.gd:36`
+- Coop.gd 有 2 个未实现的空函数（仅 `pass`）→ `src/world/objects/Coop.gd:27,31`
+- PlayerHouse.gd 有 1 个未实现的空函数（仅 `pass`）→ `src/world/maps/PlayerHouse.gd:126`
+- Forest.gd 有 1 个未实现的空函数（仅 `pass`）→ `src/world/maps/Forest.gd:130`
+- DamageNumber.gd 有 1 个未实现的空函数（仅 `pass`）→ `src/ui/effects/DamageNumber.gd:24`
+- FestivalUI.gd 有 1 个未实现的空函数（仅 `pass`）→ `src/ui/festival/FestivalUI.gd:189`
+- QuestSystem.gd 有 2 处 TODO 注释（经验系统、NPC数据库） → `src/core/quest/QuestSystem.gd:433,567`
+- MainMenu.gd 有 2 处 TODO 注释（加载存档界面、设置菜单） → `src/ui/menus/MainMenu.gd:176,185`
+- HouseUpgradeUI.gd 有 1 处 TODO 注释（消息UI） → `src/ui/menus/HouseUpgradeUI.gd:88`
+
+### 🟢 轻微
+- `assets/sprites/animals/` 下 5 个动物精灵文件均为占位符（562~566 字节，< 5KB） → `assets/sprites/animals/`（已在 todo S3 记录）
+- NPC 精灵 `npc_default.png` 引用正确但为通用占位符，6 个具名 NPC 精灵（mayor/farmer_joe 等）已存在
+- check.sh 18/18 全部通过，ExtResource 引用路径全部正确（无 ExtResource 指向不存在的文件）
+
+**审查时间**: 2026-03-24

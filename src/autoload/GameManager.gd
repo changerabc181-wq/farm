@@ -47,7 +47,8 @@ func start_game() -> void:
 	current_state = GameState.PLAYING
 	is_game_active = true
 	game_started.emit()
-	print("[GameManager] Game started")
+	print("[GameManager] Game started, loading Farm scene...")
+	get_tree().change_scene_to_file("res://src/world/maps/Farm.tscn")
 
 func pause_game() -> void:
 	if current_state == GameState.PLAYING:
