@@ -19,6 +19,7 @@ func _ready() -> void:
 	_setup_npc_manager()
 	_setup_ui()
 	_connect_transition_areas()
+	_build_placeholder_map()  # 构建白模地图结构
 
 func _setup_tilemap() -> void:
 	if tile_map.tile_set == null:
@@ -55,3 +56,16 @@ func _on_to_farm_area_body_entered(body: Node2D) -> void:
 
 func get_player_spawn_position() -> Vector2:
 	return player_spawn.global_position
+
+# ===== 白模地图构建 =====
+func _build_placeholder_map() -> void:
+	"""首次加载时自动构建白模占位地图结构"""
+	# 检查是否已经构建过
+	if has_node("GroundLayer"):
+		print("[Village] 白模地图已存在，跳过构建")
+		return
+	
+	var builder = VillageBuilder.new()
+	builder.name = "VillageBuilder"
+	add_child(builder)
+	print("[Village] 白模地图构建器已添加")
