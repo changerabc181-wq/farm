@@ -192,9 +192,9 @@ func _check_single_condition(condition: Dictionary) -> bool:
 			return hearts >= min_hearts
 
 		"player_energy":
-			# 需要玩家系统集成
 			var max_energy = condition.get("max", 100)
-			return true  # TODO: 实现玩家能量检测
+			var current_energy = GameManager.current_stamina if GameManager else 100.0
+			return current_energy <= max_energy
 
 		"money":
 			var min_money = condition.get("min", 0)
@@ -202,7 +202,7 @@ func _check_single_condition(condition: Dictionary) -> bool:
 			return current_money >= min_money
 
 		"weather":
-			# TODO: 天气系统集成
+			# WeatherSystem 未实现，始终返回 true
 			return true
 
 		"random":
@@ -334,13 +334,16 @@ func _trigger_single_effect(effect: Dictionary) -> void:
 
 		"complete_quest":
 			var quest_id = effect.get("quest_id", "")
-			# TODO: 任务系统集成
-			print("[DialogueManager] Complete quest: ", quest_id)
+			if QuestSystem and QuestSystem.has_method("turn_in_quest"):
+				var ok = QuestSystem.turn_in_quest(quest_id)
+				print("[DialogueManager] Complete quest: %s -> %s" % [quest_id, "ok" if ok else "failed"])
+			else:
+				print("[DialogueManager] Complete quest (no system): ", quest_id)
 
 		"unlock_shop":
 			var shop_id = effect.get("shop", "")
-			# TODO: 商店系统集成
-			print("[DialogueManager] Unlock shop: ", shop_id)
+			# ShopSystem 未实现，记录日志
+			print("[DialogueManager] Unlock shop (no system): ", shop_id)
 
 		"trigger_dialogue":
 			var npc = effect.get("npc", "")

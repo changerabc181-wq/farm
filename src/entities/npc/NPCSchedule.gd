@@ -212,7 +212,7 @@ func _get_special_entry(time: float, day: int, season: int) -> ScheduleEntry:
 func _check_special_conditions(conditions: Dictionary, day: int, season: int, time: float) -> bool:
 	# 检查天气条件
 	if conditions.has("weather"):
-		# TODO: 连接天气系统
+		# WeatherSystem 未实现，跳过
 		pass
 
 	# 检查季节条件

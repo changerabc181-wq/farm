@@ -148,7 +148,7 @@ func _select_fish() -> Dictionary:
 	var available_fish: Array = []
 	var current_hour := int(get_node("/root/TimeManager").current_time) if TimeManager else 12
 	var current_season: String = TimeManager.get_season_name().to_lower() if TimeManager else "spring"
-	var current_weather: String = "sunny"  # TODO: 从天气系统获取
+	var current_weather: String = "sunny"  # WeatherSystem 未实现，默认晴天
 
 	# 筛选符合当前条件的鱼
 	for fish_id in _fish_database:

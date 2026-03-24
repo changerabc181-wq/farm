@@ -71,7 +71,6 @@ func _on_exit_area_entered(body: Node2D) -> void:
 
 func _on_bed_zone_entered(body: Node2D) -> void:
 	if body is Player:
-		# TODO: 显示睡眠对话框
 		_show_sleep_dialog()
 
 func _on_upgrade_station_entered(body: Node2D) -> void:
@@ -80,13 +79,24 @@ func _on_upgrade_station_entered(body: Node2D) -> void:
 		_show_upgrade_ui()
 
 func _show_sleep_dialog() -> void:
-	# 简单的睡眠提示
-	print("[PlayerHouse] Player wants to sleep")
-	# TODO: 创建睡眠对话框
-	# 睡眠会结束当前一天，恢复体力
+	var dialog := ConfirmationDialog.new()
+	dialog.dialog_text = "要睡觉到第二天吗？体力会完全恢复。"
+	dialog.window_title = "休息"
+	dialog.confirmed.connect(_on_sleep_confirmed)
+	dialog.canceled.connect(_on_sleep_canceled)
+	add_child(dialog)
+	dialog.popup_centered()
+
+func _on_sleep_confirmed() -> void:
 	if TimeManager:
 		TimeManager.advance_to_next_day()
-		print("[PlayerHouse] Advanced to next day")
+		# 恢复体力
+		if GameManager:
+			GameManager.current_stamina = GameManager.max_stamina
+		print("[PlayerHouse] Advanced to next day, stamina restored")
+
+func _on_sleep_canceled() -> void:
+	print("[PlayerHouse] Sleep canceled")
 
 func _show_upgrade_ui() -> void:
 	if HouseUpgradeSystem:

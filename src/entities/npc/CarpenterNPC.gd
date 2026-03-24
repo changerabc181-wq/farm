@@ -38,9 +38,56 @@ func _input(event: InputEvent) -> void:
 
 func _open_carpenter_menu() -> void:
 	print("[CarpenterNPC] 打开木匠菜单")
-	# TODO: 显示木匠菜单
-	# 选项：房屋升级、购买家具
-	_show_dialog()
+	_show_carpenter_dialog()
+
+func _show_carpenter_dialog() -> void:
+	var dialog := PanelContainer.new()
+	dialog.set_anchors_preset(Control.PRESET_CENTER)
+	dialog.custom_minimum_size = Vector2(300, 200)
+	dialog.name = "CarpenterDialog"
+
+	var vbox := VBoxContainer.new()
+	dialog.add_child(vbox)
+
+	var title := Label.new()
+	title.text = "木匠"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
+	vbox.add_child(title)
+
+	var spacer := Control.new()
+	spacer.custom_minimum_size.y = 10
+	vbox.add_child(spacer)
+
+	var house_btn := Button.new()
+	house_btn.text = "房屋升级"
+	house_btn.pressed.connect(_on_carpenter_house_upgrade)
+	vbox.add_child(house_btn)
+
+	var furniture_btn := Button.new()
+	furniture_btn.text = "购买家具"
+	furniture_btn.pressed.connect(_on_carpenter_furniture)
+	vbox.add_child(furniture_btn)
+
+	var close_btn := Button.new()
+	close_btn.text = "离开"
+	close_btn.pressed.connect(_on_carpenter_close.bind(dialog))
+	vbox.add_child(close_btn)
+
+	dialog.hide()
+	get_tree().current_scene.add_child(dialog)
+	dialog.popup_centered()
+
+func _on_carpenter_house_upgrade() -> void:
+	print("[CarpenterNPC] 选择: 房屋升级")
+	open_house_upgrade()
+
+func _on_carpenter_furniture() -> void:
+	print("[CarpenterNPC] 选择: 购买家具")
+	open_furniture_shop()
+
+func _on_carpenter_close(dialog: Control) -> void:
+	dialog.queue_free()
 
 func _show_dialog() -> void:
 	# 简单的对话显示

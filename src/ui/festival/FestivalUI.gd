@@ -248,15 +248,30 @@ func _on_reward_button_pressed(reward_id: String) -> void:
 
 ## 显示结果对话框
 func _show_result_dialog(title: String, rewards: Dictionary) -> void:
-	# 简单的控制台输出，实际应该显示UI对话框
-	print("[FestivalUI] ", title, " Rewards: ", rewards)
-	# TODO: 实现实际的对话框显示
-
+	var reward_lines := []
+	for item_id in rewards.get("items", []):
+		reward_lines.append("- " + str(item_id))
+	var reward_text := "\n".join(reward_lines) if reward_lines else "无"
+	var dialog := AcceptDialog.new()
+	dialog.dialog_text = title + "\n\n奖励:\n" + reward_text
+	dialog.window_title = "节日奖励"
+	dialog.ok_button_text = "确定"
+	add_child(dialog)
+	dialog.confirmed.connect(_on_dialog_confirmed.bind(dialog))
+	dialog.popup_centered()
 
 ## 显示错误对话框
 func _show_error_dialog(message: String) -> void:
-	print("[FestivalUI] Error: ", message)
-	# TODO: 实现实际的错误对话框显示
+	var dialog := AcceptDialog.new()
+	dialog.dialog_text = message
+	dialog.window_title = "错误"
+	dialog.ok_button_text = "确定"
+	add_child(dialog)
+	dialog.confirmed.connect(_on_dialog_confirmed.bind(dialog))
+	dialog.popup_centered()
+
+func _on_dialog_confirmed(dialog: AcceptDialog) -> void:
+	dialog.queue_free()
 
 
 ## 关闭按钮点击

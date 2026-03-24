@@ -36,13 +36,22 @@ func _on_body_exited(body: Node2D) -> void:
 		_hide_fishing_prompt()
 
 func _show_fishing_prompt() -> void:
-	# 显示钓鱼提示
 	print("[FishingSpot] Press F to fish here")
-	# TODO: 显示UI提示
+	var prompt := Label.new()
+	prompt.name = "FishingPrompt"
+	prompt.text = "[F] 钓鱼"
+	prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	prompt.z_index = 10
+	# 显示在钓鱼点上方
+	prompt.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	prompt.position = Vector2(0, -40)
+	add_child(prompt)
 
 func _hide_fishing_prompt() -> void:
-	# 隐藏钓鱼提示
 	print("[FishingSpot] Left fishing spot")
+	var existing := get_node_or_null("FishingPrompt")
+	if existing:
+		existing.queue_free()
 
 func _input(event: InputEvent) -> void:
 	if not is_player_in_range:

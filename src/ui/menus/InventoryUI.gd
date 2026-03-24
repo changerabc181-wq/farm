@@ -274,8 +274,40 @@ func _use_item(index: int) -> void:
 	if slot_data == null or slot_data.is_empty():
 		return
 
-	# TODO: 实现物品使用逻辑
-	print("[InventoryUI] Use item: %s" % slot_data.item_id)
+	var item_id: String = slot_data.item_id
+	var db := Inventory.get_item_database()
+	var item := db.get_item(item_id) if db else null
+	if item == null:
+		print("[InventoryUI] Item not found: ", item_id)
+		return
+
+	match item.type:
+		ItemDatabase.ItemType.FOOD:
+			# 消耗食物，恢复体力
+			var effect: Dictionary = item.get("use_effect", {})
+			var stamina_restore: float = effect.get("stamina", 0.0)
+			var health_restore: float = effect.get("health", 0.0)
+			if GameManager and stamina_restore > 0:
+				GameManager.current_stamina = minf(GameManager.current_stamina + stamina_restore, GameManager.max_stamina)
+			if health_restore > 0:
+				print("[InventoryUI] Health restore: ", health_restore)
+			Inventory.remove_item(index)
+			print("[InventoryUI] Consumed food: %s (+%s stamina, +%s health)" % [item_id, stamina_restore, health_restore])
+
+		ItemDatabase.ItemType.SEED:
+			print("[InventoryUI] Seed: right-click on tilled soil to plant")
+
+		ItemDatabase.ItemType.TOOL:
+			print("[InventoryUI] Tool: equip from toolbar")
+
+		ItemDatabase.ItemType.CROP:
+			print("[InventoryUI] Crop: sell at shipping bin or give as gift")
+
+		ItemDatabase.ItemType.FISH:
+			print("[InventoryUI] Fish: give as gift or sell")
+
+		_:
+			print("[InventoryUI] Item: %s (type=%s) - sell or gift" % [item_id, item.type])
 
 func _create_drag_preview(index: int) -> void:
 	if _drag_preview:
