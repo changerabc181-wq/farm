@@ -21,10 +21,14 @@ var quit_button: Button
 
 # 存档菜单引用
 var save_load_menu: SaveLoadMenu = null
+var settings_ui: SettingsUI = null
 
 func _ready() -> void:
 	_setup_ui()
 	_connect_signals()
+	settings_ui = preload("res://src/ui/menus/SettingsUI.tscn").instantiate()
+	settings_ui.settings_closed.connect(_on_settings_ui_closed)
+	add_child(settings_ui)
 
 func _setup_ui() -> void:
 	# 设置背景
@@ -118,7 +122,11 @@ func _on_load_pressed() -> void:
 	_open_save_load_menu(SaveLoadMenu.Mode.LOAD)
 
 func _on_settings_pressed() -> void:
-	print("[PauseMenu] Settings not implemented yet")
+	if settings_ui:
+		settings_ui.open()
+
+func _on_settings_ui_closed() -> void:
+	print("[PauseMenu] Settings closed")
 
 func _on_quit_pressed() -> void:
 	quit_game_requested.emit()
