@@ -12,6 +12,13 @@ const FARM_SCENE = "res://src/world/maps/Farm.tscn"
 
 # NPC管理器
 var npc_manager: NPCManager = null
+var _map_built: bool = false  # 防止重复构建
+
+# 场景切换目标
+const FARM_SCENE = "res://src/world/maps/Farm.tscn"
+
+# NPC管理器
+var npc_manager: NPCManager = null
 
 func _ready() -> void:
 	print("[Village] Scene loaded")
@@ -22,10 +29,26 @@ func _ready() -> void:
 	_build_placeholder_map()  # 构建白模地图结构
 
 func _setup_tilemap() -> void:
+	# 确保 TileMap 格式正确
+	tile_map.format = TileMap.FORMAT_2
+	
+	# 确保有 4 层
+	# Layer 0: 地面
+	# Layer 1: 建筑/墙体
+	# Layer 2: 装饰/物品
+	# Layer 3: 碰撞层
+	
 	if tile_map.tile_set == null:
 		var tile_set: TileSet = TileSet.new()
+		tile_set.name = "VillageTileSet"
 		tile_map.tile_set = tile_set
-	print("[Village] TileMap setup complete")
+	
+	# 清理旧 atlas sources（如果有的话）
+	if tile_map.tile_set.get_source_count() > 0:
+		for i in range(tile_map.tile_set.get_source_count() - 1, -1, -1):
+			tile_map.tile_set.remove_source(i)
+	
+	print("[Village] TileMap setup complete, format: ", tile_map.format)
 
 func _setup_npc_manager() -> void:
 	npc_manager = NPCManager.new()
@@ -57,15 +80,16 @@ func _on_to_farm_area_body_entered(body: Node2D) -> void:
 func get_player_spawn_position() -> Vector2:
 	return player_spawn.global_position
 
-# ===== 白模地图构建 =====
+# ===== 地图构建 =====
 func _build_placeholder_map() -> void:
-	"""首次加载时自动构建白模占位地图结构"""
-	# 检查是否已经构建过
-	if has_node("GroundLayer"):
-		print("[Village] 白模地图已存在，跳过构建")
+	"""构建 Village 地图（只执行一次）"""
+	if _map_built:
+		print("[Village] 地图已构建，跳过")
 		return
+	
+	_map_built = true
 	
 	var builder = VillageBuilder.new()
 	builder.name = "VillageBuilder"
 	add_child(builder)
-	print("[Village] 白模地图构建器已添加")
+	print("[Village] 地图构建器已添加")
