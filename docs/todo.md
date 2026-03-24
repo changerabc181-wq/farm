@@ -8,10 +8,11 @@
 
 ## 🔴 代码问题（必须修复）
 
-### C1: Player.tscn — 精灵引用错误
+### C1: Player.tscn — 精灵引用错误 ✅ 已修复
 **文件**: `src/entities/player/Player.tscn`
 **问题**: 引用了不存在的 `res://assets/sprites/characters/player_walk.png`
-**修复**: 替换为新的 directional sprites（`player_down/left/right/up.png`）
+**修复**: 替换为 `player_spritesheet.png`（由 player_down/left/right/up 组合），并创建 `player_spritesheet.png`
+**提交**: `adb2d6d`
 
 ---
 
@@ -84,17 +85,17 @@
 
 ## 🗺️ 地图系统问题
 
-### M1: Village TileSet Builder 尺寸写错 🔥 最优先
+### M1: Village TileSet Builder 尺寸写错 ✅ 已修复
 **文件**: `src/world/maps/VillageTilesetBuilder.gd`
 
-| 属性 | 当前错误值 | 应改为 |
-|------|-----------|--------|
-| `TILE_SIZE` | `Vector2i(64, 64)` | `Vector2i(16, 16)` |
-| `COLUMNS` | `5` | `8` |
-| `ROWS` | `5` | `8` |
+| 属性 | 旧值 | 新值 |
+|------|------|------|
+| `TILE_SIZE` | `Vector2i(64, 64)` | `Vector2i(16, 16)` ✅ |
+| `COLUMNS` | `5` | `8` ✅ |
+| `ROWS` | `5` | `8` ✅ |
 
-**影响**: Village 地图 TileSet 全空白
 **验证**: 改完后 Godot 启动 Village.tscn 应看到地面和建筑瓦片
+**提交**: `adb2d6d`
 
 ---
 
@@ -114,20 +115,8 @@
 
 ## 🖼️ 精灵资源问题
 
-### S1: 角色精灵占位符（需替换）
-
-| 文件（当前） | 实际大小 | 问题 |
-|------------|---------|------|
-| `npc_mayor.png` | 213B | 占位符 |
-| `npc_doctor.png` | 213B | 占位符 |
-| `npc_farmer.png` | 213B | 占位符 |
-| `npc_blacksmith.png` | 213B | 占位符 |
-| `npc_shopkeeper.png` | 213B | 占位符 |
-| `player.png` | 420B | 占位符 |
-| `npc_default.png` | 213B | 占位符 |
-
-**修复**: 替换为新生成的 directional NPC sprites
-**依赖**: 新精灵已生成（`mayor_down/left/right/up.png` 等）
+### S1: 角色精灵占位符 ✅ 部分完成
+玩家方向精灵已修复（player_spritesheet.png）。NPC 占位符待替换（mayor/farmer/shopkeeper/blacksmith/doctor/down.png → 新生成 directional sprites）
 
 ---
 
