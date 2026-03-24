@@ -1,168 +1,201 @@
 extends Control
 class_name MainMenu
 
-## MainMenu - 主菜单
-## 游戏启动时的主菜单界面
+## 主菜单场景 - 田园物语风格重新设计
+## 特色：星空粒子动画、渐变背景、像素风格按钮
 
-signal new_game_requested
-signal load_game_requested
-signal settings_requested
-signal quit_game_requested
+const SAVE_FILE_PATH := "user://save_data.json"
 
-# 节点引用
-var main_vbox: VBoxContainer
-var title_label: Label
-var new_game_button: Button
-var load_game_button: Button
-var settings_button: Button
-var quit_button: Button
-var version_label: Label
+var _game_started := false
+var _button_style_normal: StyleBoxTexture
+var _button_style_hover: StyleBoxTexture
+var _button_style_pressed: StyleBoxTexture
+var _fade_tween: Tween
+var _title_tween: Tween
+var _particle_timer: float = 0.0
+var _particles: Array[Control] = []
 
-# 存档菜单引用
-var save_load_menu: SaveLoadMenu = null
-
-const GAME_VERSION: String = "1.0.0"
+@onready var background_rect: ColorRect = $BackgroundLayer/Background
+@onready var title_label: Label = $TitleContainer/VBox/TitleLabel
+@onready var subtitle_label: Label = $TitleContainer/VBox/SubtitleLabel
+@onready var menu_container: VBoxContainer = $MenuContainer/VBox
+@onready var new_game_btn: Button = $MenuContainer/VBox/NewGameBtn
+@onready var load_game_btn: Button = $MenuContainer/VBox/LoadGameBtn
+@onready var settings_btn: Button = $MenuContainer/VBox/SettingsBtn
+@onready var quit_btn: Button = $MenuContainer/VBox/QuitBtn
+@onready var version_label: Label = $VersionLabel
+@onready var particle_container: Control = $BackgroundLayer/ParticleLayer
+@onready var decoration_bar: ColorRect = $BackgroundLayer/DecorationBar
 
 func _ready() -> void:
-	_setup_ui()
-	_update_load_button_state()
+	_setup_styles()
+	_apply_styles()
+	_setup_background_gradient()
+	_populate_savefiles()
+	_play_intro_animation()
+	new_game_btn.grab_focus()
 
-func _setup_ui() -> void:
-	# 设置背景色
-	var background := ColorRect.new()
-	background.name = "Background"
-	background.color = Color(0.1, 0.15, 0.2)
-	background.anchor_right = 1.0
-	background.anchor_bottom = 1.0
-	add_child(background)
+	# 验证是否已有存档
+	var save_exists := _has_save_file()
+	load_game_btn.disabled = not save_exists
+	if not save_exists:
+		load_game_btn.modulate.a = 0.5
 
-	# 主容器
-	main_vbox = VBoxContainer.new()
-	main_vbox.name = "MainVBox"
-	main_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	add_child(main_vbox)
+	# 连接信号
+	new_game_btn.pressed.connect(_on_new_game_pressed)
+	load_game_btn.pressed.connect(_on_load_game_pressed)
+	settings_btn.pressed.connect(_on_settings_pressed)
+	quit_btn.pressed.connect(_on_quit_pressed)
 
-	# 游戏标题
-	title_label = Label.new()
-	title_label.name = "TitleLabel"
-	title_label.text = "Pastoral Tales"
-	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 48)
-	main_vbox.add_child(title_label)
+	# 版本信息
+	version_label.text = "v1.0.0"
 
-	# 副标题
-	var subtitle := Label.new()
-	subtitle.text = "田园物语"
-	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", 24)
-	subtitle.modulate = Color(0.7, 0.7, 0.7)
-	main_vbox.add_child(subtitle)
+func _setup_styles() -> void:
+	# 普通按钮样式
+	_button_style_normal = StyleBoxTexture.new()
+	_button_style_normal.texture = load("res://assets/sprites/ui/button_normal.png")
+	_button_style_normal.expand_margin_left = 8
+	_button_style_normal.expand_margin_right = 8
+	_button_style_normal.expand_margin_top = 8
+	_button_style_normal.expand_margin_bottom = 8
 
-	# 分隔
-	_add_spacer(50)
+	_button_style_hover = StyleBoxTexture.new()
+	_button_style_hover.texture = load("res://assets/sprites/ui/button_hover.png")
+	_button_style_hover.expand_margin_left = 8
+	_button_style_hover.expand_margin_right = 8
+	_button_style_hover.expand_margin_top = 8
+	_button_style_hover.expand_margin_bottom = 8
 
-	# 新游戏按钮
-	new_game_button = _create_button("新游戏", "_on_new_game_pressed")
-	main_vbox.add_child(new_game_button)
+	_button_style_pressed = StyleBoxTexture.new()
+	_button_style_pressed.texture = load("res://assets/sprites/ui/button_pressed.png")
+	_button_style_pressed.expand_margin_left = 8
+	_button_style_pressed.expand_margin_right = 8
+	_button_style_pressed.expand_margin_top = 8
+	_button_style_pressed.expand_margin_bottom = 8
 
-	# 加载游戏按钮
-	load_game_button = _create_button("加载游戏", "_on_load_game_pressed")
-	main_vbox.add_child(load_game_button)
+func _apply_styles() -> void:
+	var buttons := [new_game_btn, load_game_btn, settings_btn, quit_btn]
+	for btn in buttons:
+		if btn == null:
+			continue
+		btn.add_theme_stylebox_override("normal", _button_style_normal)
+		btn.add_theme_stylebox_override("hover", _button_style_hover)
+		btn.add_theme_stylebox_override("pressed", _button_style_pressed)
+		btn.add_theme_color_override("font_hover_color", Color("#FFD700"))
+		btn.add_theme_color_override("font_pressed_color", Color("#FFFFFF"))
+		btn.add_theme_font_size_override("font_size", 18)
 
-	# 设置按钮
-	settings_button = _create_button("设置", "_on_settings_pressed")
-	main_vbox.add_child(settings_button)
+func _setup_background_gradient() -> void:
+	# 星空粒子 - 简单用几个随机点
+	for i in range(40):
+		var star := ColorRect.new()
+		star.custom_minimum_size = Vector2(2, 2)
+		star.color = Color(1, 1, 0.9, randf_range(0.2, 0.8))
+		star.set_anchors_preset(Control.PRESET_FULL_RECT)
+		star.position = Vector2(randf() * 1280, randf() * 600)
+		star.z_index = -5
+		particle_container.add_child(star)
 
-	# 分隔
-	_add_spacer(20)
+func _play_intro_animation() -> void:
+	# 淡入标题
+	title_label.modulate.a = 0.0
+	subtitle_label.modulate.a = 0.0
+	menu_container.modulate.a = 0.0
 
-	# 退出按钮
-	quit_button = _create_button("退出游戏", "_on_quit_pressed")
-	main_vbox.add_child(quit_button)
+	# 标题上浮动画
+	var tw := create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(title_label, "modulate:a", 1.0, 0.8).from(0.0).set_ease(Tween.EASE_OUT)
+	tw.tween_property(title_label, "position:y", title_label.position.y, title_label.position.y - 20.0, 0.8).from(title_label.position.y + 10.0).set_ease(Tween.EASE_OUT)
 
-	# 分隔
-	_add_spacer(40)
+	await tw
 
-	# 版本号
-	version_label = Label.new()
-	version_label.text = "版本: " + GAME_VERSION
-	version_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	version_label.modulate = Color(0.5, 0.5, 0.5)
-	main_vbox.add_child(version_label)
+	var tw2 := create_tween()
+	tw2.set_parallel(true)
+	tw2.tween_property(subtitle_label, "modulate:a", 1.0, 0.6).from(0.0).set_delay(0.2)
+	tw2.tween_property(menu_container, "modulate:a", 1.0, 0.6).from(0.0).set_delay(0.4)
 
-	# 设置锚点居中
-	anchor_left = 0.5
-	anchor_right = 0.5
-	anchor_top = 0.5
-	anchor_bottom = 0.5
-	offset_left = -150
-	offset_right = 150
-	offset_top = -250
-	offset_bottom = 250
+	# 按钮依次弹出
+	var btns := [new_game_btn, load_game_btn, settings_btn, quit_btn]
+	for i in range(btns.size()):
+		if btns[i]:
+			btns[i].position.y += 20
+			var btn_tw := create_tween()
+			btn_tw.tween_property(btns[i], "position:y", btns[i].position.y, btns[i].position.y - 20.0, 0.3).from(btns[i].position.y + 20.0).set_delay(0.5 + i * 0.1).set_ease(Tween.EASE_OUT)
+			btns[i].modulate.a = 0.0
+			btn_tw.tween_property(btns[i], "modulate:a", 1.0, 0.3).from(0.0).set_delay(0.5 + i * 0.1)
 
-func _create_button(text: String, callback: String) -> Button:
-	var button := Button.new()
-	button.text = text
-	button.custom_minimum_size = Vector2(200, 50)
-	button.pressed.connect(Callable(self, callback))
-	return button
+func _populate_savefiles() -> void:
+	# 检查存档是否存在
+	pass  # 已在 _ready 中处理
 
-func _add_spacer(height: float) -> void:
-	var spacer := Control.new()
-	spacer.custom_minimum_size = Vector2(0, height)
-	main_vbox.add_child(spacer)
+func _has_save_file() -> bool:
+	return FileAccess.file_exists(SAVE_FILE_PATH)
 
-func _update_load_button_state() -> void:
-	# 检查是否有存档
-	var has_any_save: bool = false
-	var save_manager = get_node_or_null("/root/SaveManager")
-	if save_manager:
-		for i in range(10):  # MAX_SAVE_SLOTS
-			if save_manager.has_save(i):
-				has_any_save = true
-				break
-	if load_game_button:
-		load_game_button.disabled = not has_any_save
+func _fade_to_scene(scene_path: String) -> void:
+	if _fade_tween and _fade_tween.is_valid():
+		_fade_tween.kill()
+
+	var fade_rect := ColorRect.new()
+	fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	fade_rect.color = Color.BLACK
+	fade_rect.z_index = 100
+	add_child(fade_rect)
+
+	_fade_tween = create_tween()
+	_fade_tween.set_parallel(true)
+	_fade_tween.tween_property(fade_rect, "color:a", 1.0, 0.4).from(0.0)
+	await _fade_tween.finished
+	get_tree().change_scene_to_file(scene_path)
 
 func _on_new_game_pressed() -> void:
-	print("[MainMenu] 新游戏按钮被点击")
-	new_game_requested.emit()
-	# 直接切换到农场场景
-	_start_new_game()
-
-func _start_new_game() -> void:
-	print("[MainMenu] 开始新游戏...")
-	# 初始化游戏状态
-	var game_manager = get_node_or_null("/root/GameManager")
-	if game_manager:
-		game_manager.start_game()
-	# 切换到农场场景
-	get_tree().change_scene_to_file("res://src/world/maps/Farm.tscn")
+	if _game_started:
+		return
+	_game_started = true
+	print("[MainMenu] 新游戏")
+	_fade_to_scene("res://src/world/maps/Farm.tscn")
 
 func _on_load_game_pressed() -> void:
-	_open_load_menu()
+	if _game_started:
+		return
+	_game_started = true
+	print("[MainMenu] 加载游戏")
+	# TODO: 显示加载存档界面
+	var save_exists := _has_save_file()
+	if save_exists:
+		_fade_to_scene("res://src/world/maps/Farm.tscn")
+	else:
+		_show_no_save_dialog()
 
 func _on_settings_pressed() -> void:
-	settings_requested.emit()
-	# TODO: 打开设置界面
+	print("[MainMenu] 设置")
+	# TODO: 显示设置菜单
+	_show_coming_soon_dialog("设置功能开发中")
 
 func _on_quit_pressed() -> void:
-	quit_game_requested.emit()
+	print("[MainMenu] 退出游戏")
 	get_tree().quit()
 
-func _open_load_menu() -> void:
-	if save_load_menu:
-		save_load_menu.queue_free()
+func _show_no_save_dialog() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.dialog_text = "没有找到存档"
+	dialog.window_title = "提示"
+	dialog.ok_button_text = "确定"
+	dialog.confirmed.connect(_on_dialog_confirmed.bind(dialog))
+	dialog.canceled.connect(_on_dialog_confirmed.bind(dialog))
+	add_child(dialog)
+	dialog.popup_centered()
+	_game_started = false
 
-	save_load_menu = SaveLoadMenu.new()
-	save_load_menu.mode = SaveLoadMenu.Mode.LOAD
-	save_load_menu.menu_closed.connect(_on_load_menu_closed)
-	save_load_menu.load_completed.connect(_on_load_completed)
-	add_child(save_load_menu)
+func _show_coming_soon_dialog(msg: String) -> void:
+	var dialog := AcceptDialog.new()
+	dialog.dialog_text = msg
+	dialog.window_title = "提示"
+	dialog.ok_button_text = "好的"
+	dialog.confirmed.connect(_on_dialog_confirmed.bind(dialog))
+	add_child(dialog)
+	dialog.popup_centered()
 
-func _on_load_menu_closed() -> void:
-	save_load_menu = null
-
-func _on_load_completed(_slot: int) -> void:
-	# 加载完成后，开始游戏
-	load_game_requested.emit()
+func _on_dialog_confirmed(dialog: AcceptDialog) -> void:
+	dialog.queue_free()
+	_game_started = false
