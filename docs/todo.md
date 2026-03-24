@@ -238,8 +238,8 @@
 
 ## 代码审查发现的问题
 ### 🔴 严重（阻断）
-- Farm.tscn 没有 TileMap 节点，无法渲染农场地面 → `src/world/maps/Farm.tscn`（需新建 FarmTilesetBuilder.gd 并在 Farm.tscn 中添加 TileMap 子节点，参见 todo M2）
-- `start_game()` 不会初始化玩家到 Farm 场景 → `src/autoload/GameManager.gd:46`（函数体仅设置状态和发信号，未调用 `SceneTransition.change_scene_to_file()` 加载 Farm 场景）
+- Farm.tscn 没有 TileMap 节点，无法渲染农场地面 → `src/world/maps/Farm.tscn` → ✅ 已修复：添加 TileMap 节点（FarmTilesetBuilder 在 Farm.gd:49 调用）
+- `start_game()` 不会初始化玩家到 Farm 场景 → `src/autoload/GameManager.gd:46` → ✅ 已修复：添加 change_scene_to_file("res://src/world/maps/Farm.tscn")
 
 ### 🟡 中等
 - FestivalMinigame.gd 有 9 个未实现的空函数（仅 `pass`）→ `src/minigames/FestivalMinigame.gd:37,42,113,118,123,128,133,138,143`
