@@ -24,7 +24,7 @@ var _particles: Array[Control] = []
 @onready var settings_btn: Button = $MenuContainer/VBox/SettingsBtn
 @onready var quit_btn: Button = $MenuContainer/VBox/QuitBtn
 @onready var version_label: Label = $VersionLabel
-@onready var particle_container: Control = $BackgroundLayer/ParticleLayer
+@onready var particle_container: Node2D = $BackgroundLayer/ParticleLayer
 @onready var decoration_bar: ColorRect = $BackgroundLayer/DecorationBar
 
 func _ready() -> void:
@@ -103,27 +103,39 @@ func _play_intro_animation() -> void:
 	menu_container.modulate.a = 0.0
 
 	# 标题上浮动画
+	var title_base_y: float = title_label.position.y
+	title_label.modulate.a = 0.0
+	title_label.position.y = title_base_y + 10.0
 	var tw := create_tween()
 	tw.set_parallel(true)
-	tw.tween_property(title_label, "modulate:a", 1.0, 0.8).from(0.0).set_ease(Tween.EASE_OUT)
-	tw.tween_property(title_label, "position:y", title_label.position.y, title_label.position.y - 20.0, 0.8).from(title_label.position.y + 10.0).set_ease(Tween.EASE_OUT)
+	tw.tween_property(title_label, "modulate:a", 1.0, 0.8).set_ease(Tween.EASE_OUT)
+	tw.tween_property(title_label, "position:y", title_base_y - 20.0, 0.8).set_ease(Tween.EASE_OUT)
 
 	await tw
 
+	# 副标题和菜单渐入
+	subtitle_label.modulate.a = 0.0
+	menu_container.modulate.a = 0.0
 	var tw2 := create_tween()
 	tw2.set_parallel(true)
-	tw2.tween_property(subtitle_label, "modulate:a", 1.0, 0.6).from(0.0).set_delay(0.2)
-	tw2.tween_property(menu_container, "modulate:a", 1.0, 0.6).from(0.0).set_delay(0.4)
+	tw2.tween_property(subtitle_label, "modulate:a", 1.0, 0.6)
+	await get_tree().create_timer(0.2).timeout
+	var tw3 := create_tween()
+	tw3.tween_property(menu_container, "modulate:a", 1.0, 0.6)
 
-	# 按钮依次弹出
+	# 按钮依次弹出（每0.15秒一个）
 	var btns := [new_game_btn, load_game_btn, settings_btn, quit_btn]
 	for i in range(btns.size()):
 		if btns[i]:
-			btns[i].position.y += 20
-			var btn_tw := create_tween()
-			btn_tw.tween_property(btns[i], "position:y", btns[i].position.y, btns[i].position.y - 20.0, 0.3).from(btns[i].position.y + 20.0).set_delay(0.5 + i * 0.1).set_ease(Tween.EASE_OUT)
+			var btn_base_y: float = btns[i].position.y
+			btns[i].position.y = btn_base_y + 20.0
 			btns[i].modulate.a = 0.0
-			btn_tw.tween_property(btns[i], "modulate:a", 1.0, 0.3).from(0.0).set_delay(0.5 + i * 0.1)
+			await get_tree().create_timer(0.5 + i * 0.15).timeout
+			var btn_tw := create_tween()
+			btn_tw.set_ease(Tween.EASE_OUT)
+			btn_tw.tween_property(btns[i], "position:y", btn_base_y - 20.0, 0.3)
+			var btn_tw2 := create_tween()
+			btn_tw2.tween_property(btns[i], "modulate:a", 1.0, 0.3)
 
 func _populate_savefiles() -> void:
 	# 检查存档是否存在
@@ -144,7 +156,8 @@ func _fade_to_scene(scene_path: String) -> void:
 
 	_fade_tween = create_tween()
 	_fade_tween.set_parallel(true)
-	_fade_tween.tween_property(fade_rect, "color:a", 1.0, 0.4).from(0.0)
+	fade_rect.color.a = 0.0
+	_fade_tween.tween_property(fade_rect, "color:a", 1.0, 0.4)
 	await _fade_tween.finished
 	get_tree().change_scene_to_file(scene_path)
 

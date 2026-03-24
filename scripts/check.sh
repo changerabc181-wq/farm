@@ -29,7 +29,7 @@ echo ""
 
 # ── 运行 Godot（启动后立即退出）───────────────────────────────────
 RUN_LOG="/tmp/godot_check_$$.log"
-$($GODOT --headless --quit --path "$PROJECT_DIR" > "$RUN_LOG" 2>&1) || true
+$($GODOT --no-window --headless --quit --path "$PROJECT_DIR" > "$RUN_LOG" 2>&1) || true
 
 # ── 检测错误 ──────────────────────────────────────────────────────
 SCRIPT_ERRORS=$(grep -cE "SCRIPT ERROR|Compile Error|Nonexistent function" "$RUN_LOG" 2>/dev/null) || SCRIPT_ERRORS=0
