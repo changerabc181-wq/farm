@@ -18,6 +18,20 @@ var ambient_volume: float = 0.5
 
 # 当前播放的曲目
 var current_music: String = ""
+var current_location: String = "farm"  # farm, village, forest
+
+const BGM_SCHEDULE := {
+	"farm_morning":   "res://assets/audio/bgm/farm/farm_morning.ogg",
+	"farm_day":       "res://assets/audio/bgm/farm/farm_day.ogg",
+	"farm_evening":   "res://assets/audio/bgm/farm/farm_evening.ogg",
+	"farm_night":     "res://assets/audio/bgm/farm/farm_night.ogg",
+	"village_day":    "res://assets/audio/bgm/village/village_day.ogg",
+	"village_night":  "res://assets/audio/bgm/village/village_night.ogg",
+	"forest_day":     "res://assets/audio/bgm/forest/forest_day.ogg",
+	"forest_night":   "res://assets/audio/bgm/forest/forest_night.ogg",
+	"festival_main":  "res://assets/audio/bgm/festival/festival_main.ogg",
+	"festival_harvest":"res://assets/audio/bgm/festival/festival_harvest.ogg",
+}
 var current_ambient: String = ""
 
 func _ready() -> void:
@@ -68,6 +82,56 @@ func play_music(track_name: String, fade_duration: float = 1.0) -> void:
 		print("[AudioManager] Playing music: ", track_name)
 	else:
 		push_warning("[AudioManager] Music track not found: " + path)
+
+func update_location_bgm(location: String) -> void:
+	"""切换场景时更新 BGM."""
+	current_location = location
+	_update_time_bgm()
+
+
+func _update_time_bgm() -> void:
+	"""根据时间更新 BGM."""
+	var hour: int = Time.get_time_dict_from_system().hour
+	var track_key: String
+	
+	if hour >= 6 and hour < 9:
+		track_key = current_location + "_morning"
+	elif hour >= 9 and hour < 17:
+		track_key = current_location + "_day"
+	elif hour >= 17 and hour < 20:
+		track_key = current_location + "_evening"
+	else:
+		track_key = current_location + "_night"
+	
+	var path: String = BGM_SCHEDULE.get(track_key, BGM_SCHEDULE.get(current_location + "_day", ""))
+	if path != "" and ResourceLoader.exists(path):
+		_crossfade_to(path, track_key)
+	elif path == "":
+		print("[AudioManager] No BGM for time slot: ", track_key)
+
+
+func _crossfade_to(path: String, track_name: String) -> void:
+	"""淡入淡出切换曲目."""
+	if music_player.playing and current_music == track_name:
+		return
+	var stream: AudioStream = load(path)
+	if stream == null:
+		push_warning("[AudioManager] Could not load: " + path)
+		return
+	var old_vol := music_player.volume_db
+	# 淡出
+	var fade_out := create_tween()
+	fade_out.tween_property(music_player, "volume_db", -80.0, 0.5)
+	await fade_out.finished
+	# 切换
+	music_player.stop()
+	music_player.stream = stream
+	music_player.volume_db = old_vol
+	music_player.play()
+	current_music = track_name
+	music_changed.emit(track_name)
+	print("[AudioManager] Crossfade to: ", track_name)
+
 
 func stop_music(fade_duration: float = 1.0) -> void:
 	music_player.stop()
