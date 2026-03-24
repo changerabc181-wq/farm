@@ -151,19 +151,52 @@
 **目录**: `assets/sprites/ui/achievements/`
 **问题**: 16 个成就已注册，无成就图标
 **影响**: 成就解锁无图标显示
-**修复**: 生成 16 个成就图标（可用 nature_elements 风格）
+**修复**: 生成 16 个成就图标
 
 ---
 
 ## ✅ 已确认正常的部分
 
+- **Godot 运行时验证通过**（2026-03-24）— 无脚本错误
 - 11 个 JSON 数据文件全部有效，无解析错误
 - Phase 1-6 代码框架全部存在
-- 集成测试 13/13 通过（2026-03-10）
+- 集成测试通过（2026-03-10）
 - EventBus / AutoLoad 静态引用已修复
 - 节日数据（4个）、食谱（20个）、作物（20种）数据完整
 - 节日 JSON（4个）、鱼类（15+）、矿洞配置数据完整
 - 成就系统代码存在，16个成就已注册
+- Godot 4.6.1 已安装：`/home/admin/tools/bin/godot`
+
+---
+
+## 📊 Godot 运行时验证（2026-03-24）
+
+运行 `/home/admin/tools/bin/godot --headless --path .` 结果：
+
+```
+✅ GameManager Initialized
+✅ TimeManager Initialized (6:00 AM)
+✅ SaveManager Initialized
+✅ EventBus Initialized
+✅ AudioManager Initialized
+✅ InputManager Initialized
+✅ MoneySystem Initialized ($500)
+✅ ShippingSystem Initialized
+✅ SceneTransition Initialized
+✅ ItemDatabase Loaded (121 items)
+✅ GrowthSystem Initialized (20 crop types)
+✅ GiftSystem Initialized
+✅ ForagingSystem Initialized (17 forage types)
+✅ QuestSystem Loaded (15 quests)
+✅ PlantingManager Registered seeds
+✅ NPCManager Loaded (6 NPCs)
+✅ HouseUpgradeSystem Initialized
+✅ FurnitureDatabase Loaded (14 furniture)
+✅ FestivalSystem Initialized (春花祭)
+✅ AchievementSystem Initialized (15 achievements)
+✅ No script errors
+✅ Exit code 0
+```
 
 ---
 
@@ -173,7 +206,7 @@
 
 | # | 任务 | 预估 | 原因 |
 |---|------|------|------|
-| 1 | M1: VillageTileSize 改1行 | 5分钟 | 解除地图报错 |
+| 1 | M1: VillageTileSize 改3常量 | 5分钟 | 解除地图报错 |
 | 2 | C1: player_walk.png 引用 | 5分钟 | 解除精灵报错 |
 | 3 | C2: 烹饪体力系统 | 30分钟 | 核心玩法 |
 | 4 | C3: 对话系统集成 | 1小时 | 核心玩法 |
@@ -197,7 +230,6 @@
 | 12 | S2: 头像生成（6个） | MiniMax图片API |
 | 13 | S3: 动物精灵生成 | MiniMax图片API |
 | 14 | S4: 成就图标（16个） | MiniMax图片API |
-| 15 | M2-M6 Builder 接入真实瓦片 | 精灵就绪后 |
 
 ---
 
@@ -206,5 +238,5 @@
 | 任务 | 阻塞原因 |
 |------|---------|
 | BGM 生成 | 需 MiniMax Max 套餐（¥1,990/年） |
-| 头像/动物/成就精灵生成 | MiniMax 图片 API（已可用，需等待额度刷新） |
-| Godot 运行时验证 | 需本地启动 Godot 验证 |
+| 头像/动物/成就精灵生成 | MiniMax 图片 API 额度已恢复 |
+| Godot 运行时画面验证 | 需有显示器或 VNC |
