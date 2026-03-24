@@ -7,9 +7,9 @@ class_name VillageTilesetBuilder
 # tile 图集信息（来自分析）
 const TILESET_NAME := "village_tiles"
 const ATLAS_PATH := "res://assets/tiles/village_tiles.png"
-const TILE_SIZE := Vector2i(64, 64)
-const COLUMNS := 5
-const ROWS := 5
+const TILE_SIZE := Vector2i(16, 16)
+const COLUMNS := 8
+const ROWS := 8
 
 # Tile ID 映射 (基于 5x5 网格，x + y*10 的格式用于 Godot TileMap)
 # 注意：Godot 4 使用 coords = Vector2i(x, y) 在 atlas 中定位 tile
