@@ -16,7 +16,11 @@
 
 ---
 
-### C2: CookingSystem.gd — 烹饪体力未实现
+### C2: CookingSystem.gd — 烹饪体力未实现 ✅ 已修复
+**文件**: `src/core/crafting/CookingSystem.gd`
+- 第 245 行: 连接 GameManager 检查体力 ✅
+- 第 290 行: 调用 GameManager.use_stamina() 消耗体力 ✅
+- 提交: `e2e0818`
 **文件**: `src/core/crafting/CookingSystem.gd`
 - 第 245 行: `TODO: 检查玩家体力是否足够`
 - 第 290 行: `TODO: 减少玩家体力`
@@ -24,7 +28,7 @@
 
 ---
 
-### C3: DialogueManager.gd — 4个集成未完成
+### C3: DialogueManager.gd — 4个集成未完成 ✅ 已修复
 **文件**: `src/core/relationship/DialogueManager.gd`
 - 第 197 行: 玩家能量检测未实现
 - 第 205 行: 天气系统集成未实现
@@ -34,7 +38,7 @@
 
 ---
 
-### C4: FestivalUI.gd — 节日对话框未实现
+### C4: FestivalUI.gd — 节日对话框未实现 ✅ 已修复
 **文件**: `src/ui/festival/FestivalUI.gd`
 - 第 253 行: 实际对话框显示 TODO
 - 第 259 行: 错误对话框显示 TODO
@@ -42,7 +46,7 @@
 
 ---
 
-### C5: PlayerHouse.gd — 睡眠系统未实现
+### C5: PlayerHouse.gd — 睡眠系统未实现 ✅ 已修复
 **文件**: `src/world/maps/PlayerHouse.gd`
 - 第 74 行: 显示睡眠对话框 TODO
 - 第 85 行: 创建睡眠对话框 TODO
@@ -50,34 +54,34 @@
 
 ---
 
-### C6: CarpenterNPC.gd — 木匠菜单未实现
+### C6: CarpenterNPC.gd — 木匠菜单未实现 ✅ 已修复
 **文件**: `src/entities/npc/CarpenterNPC.gd`
 - 第 41 行: 显示木匠菜单 TODO
 **影响**: 房屋升级入口无法使用
 
 ---
 
-### C7: InventoryUI.gd — 物品使用逻辑未实现
+### C7: InventoryUI.gd — 物品使用逻辑未实现 ✅ 已修复
 **文件**: `src/ui/menus/InventoryUI.gd`
 - 第 277 行: 物品使用 TODO
 **影响**: 背包选中物品后无法使用
 
 ---
 
-### C8: FishingSpot.gd — 渔点交互提示未实现
+### C8: FishingSpot.gd — 渔点交互提示未实现 ✅ 已修复
 **文件**: `src/world/objects/FishingSpot.gd`
 - 第 41 行: 显示 UI 提示 TODO
 **影响**: 钓鱼点无交互提示
 
 ---
 
-### C9: FishingRod.gd — 鱼竿使用逻辑未完成
+### C9: FishingRod.gd — 鱼竿使用逻辑未完成 ✅ 已修复
 **文件**: `src/entities/tools/FishingRod.gd`
 **影响**: 钓鱼功能流程不完整
 
 ---
 
-### C10: NPCSchedule.gd — NPC日程系统待完善
+### C10: NPCSchedule.gd — NPC日程系统待完善 ✅ 已修复
 **文件**: `src/entities/npc/NPCSchedule.gd`
 **影响**: NPC 日常行为调度可能不完整
 
