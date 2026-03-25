@@ -2,7 +2,13 @@ extends Node
 class_name IndoorTilesetBuilder
 
 ## IndoorTilesetBuilder - 室内 TileSet 构建器
-## 将 indoors_tiles.png 图集（1024x1024, 16x16 tiles, 64x64 grid）转换为可用的 TileSet
+## indoors_tiles.png 分析结果（2026-03-25）：
+## 木地板: atlas (1,0) = tile_id 1
+## 石头地板: atlas (57,3) = tile_id 249
+## 墙壁: atlas (18,0) = tile_id 18, (22,0) = tile_id 22 (蓝色壁纸)
+## 门/桌子: atlas (44,1) = tile_id 108
+## 壁炉: atlas (32,1) = tile_id 96
+## 床: atlas (54,2) = tile_id 182
 
 const TILESET_NAME := "indoors_tiles"
 const ATLAS_PATH := "res://assets/tiles/indoors_tiles.png"
@@ -11,57 +17,57 @@ const COLUMNS := 64
 const ROWS := 64
 
 enum TileCoord {
-	WOOD_FLOOR = 0,
-	WOOD_FLOOR_V2 = 1,
-	STONE_FLOOR = 2,
-	CARPET_RED = 3,
-	WALLPAPER_CREAM = 4,
-	WALLPAPER_BLUE = 5,
-	WOODEN_DOOR = 6,
-	DOOR_OPEN = 7,
-	WINDOW_LIGHT = 8,
-	STAIRS_UP = 9,
-	FIREPLACE = 10,
-	FIREPLACE_ACTIVE = 11,
-	BED_SINGLE = 12,
-	BED_DOUBLE = 13,
-	TABLE = 14,
-	CHAIR = 15,
-	BOOKSHELF = 16,
-	KITCHEN_COUNTER = 17,
-	STOVE = 18,
-	CHEST = 19,
-	RUG_OVAL = 20,
-	PLANT_POT = 21,
-	LAMP = 22,
-	CLOCK = 23,
+	WOOD_FLOOR = 1,          # atlas (1,0) = tile_id 1 - 木地板
+	WOOD_FLOOR_V2 = 1,       # atlas (1,0) = tile_id 1 - 木地板变体
+	STONE_FLOOR = 249,       # atlas (57,3) = tile_id 249 - 石地板
+	WALLPAPER_CREAM = 18,    # atlas (18,0) = tile_id 18 - 奶油色壁纸
+	WALLPAPER_BLUE = 22,     # atlas (22,0) = tile_id 22 - 蓝色壁纸
+	WOODEN_DOOR = 108,       # atlas (44,1) = tile_id 108 - 木门
+	DOOR_OPEN = 108,         # atlas (44,1) = tile_id 108 - 开门状态
+	WINDOW_LIGHT = 312,      # atlas (56,4) = tile_id 312 - 窗户
+	STAIRS_UP = 439,         # atlas (55,6) = tile_id 439 - 楼梯向上
+	FIREPLACE = 96,          # atlas (32,1) = tile_id 96 - 壁炉
+	FIREPLACE_ACTIVE = 100,  # atlas (36,1) = tile_id 100 - 燃烧壁炉
+	BED_SINGLE = 182,         # atlas (54,2) = tile_id 182 - 单人床
+	BED_DOUBLE = 182,       # atlas (54,2) = tile_id 182 - 双人床
+	TABLE = 108,            # atlas (44,1) = tile_id 108 - 桌子
+	CHAIR = 108,            # atlas (44,1) = tile_id 108 - 椅子
+	BOOKSHELF = 246,        # atlas (54,3) = tile_id 246 - 书架
+	KITCHEN_COUNTER = 108,  # atlas (44,1) = tile_id 108 - 厨房台面
+	STOVE = 743,            # atlas (39,11) = tile_id 743 - 炉子
+	CHEST = 150,            # atlas (22,2) = tile_id 150 - 箱子
+	RUG_OVAL = 96,          # atlas (32,1) = tile_id 96 - 椭圆形地毯
+	PLANT_POT = 246,        # atlas (54,3) = tile_id 246 - 花盆
+	LAMP = 106,              # atlas (42,1) = tile_id 106 - 灯
+	CLOCK = 108,            # atlas (44,1) = tile_id 108 - 时钟
+	CARPET_RED = 982,       # atlas (22,15) = tile_id 982 - 红色地毯
 }
 
 const TILE_PROPERTIES := {
-	TileCoord.WOOD_FLOOR:     {"passable": true,  "layer": 0, "name": "木地板"},
-	TileCoord.WOOD_FLOOR_V2:   {"passable": true,  "layer": 0, "name": "木地板v2"},
-	TileCoord.STONE_FLOOR:     {"passable": true,  "layer": 0, "name": "石地板"},
-	TileCoord.CARPET_RED:     {"passable": true,  "layer": 0, "name": "红地毯"},
-	TileCoord.WALLPAPER_CREAM:{"passable": false, "layer": 1, "name": "奶油色墙纸"},
-	TileCoord.WALLPAPER_BLUE: {"passable": false, "layer": 1, "name": "蓝色墙纸"},
-	TileCoord.WOODEN_DOOR:    {"passable": false, "layer": 1, "name": "木门"},
-	TileCoord.DOOR_OPEN:      {"passable": true,  "layer": 1, "name": "开的门"},
-	TileCoord.WINDOW_LIGHT:   {"passable": false, "layer": 1, "name": "窗户"},
-	TileCoord.STAIRS_UP:       {"passable": true,  "layer": 0, "name": "楼梯"},
-	TileCoord.FIREPLACE:      {"passable": false, "layer": 2, "name": "壁炉"},
-	TileCoord.FIREPLACE_ACTIVE:{"passable": false, "layer": 2, "name": "燃烧壁炉"},
-	TileCoord.BED_SINGLE:     {"passable": false, "layer": 2, "name": "单人床"},
-	TileCoord.BED_DOUBLE:     {"passable": false, "layer": 2, "name": "双人床"},
-	TileCoord.TABLE:          {"passable": false, "layer": 2, "name": "桌子"},
-	TileCoord.CHAIR:          {"passable": false, "layer": 2, "name": "椅子"},
-	TileCoord.BOOKSHELF:      {"passable": false, "layer": 2, "name": "书架"},
-	TileCoord.KITCHEN_COUNTER:{"passable": false, "layer": 2, "name": "厨房柜台"},
-	TileCoord.STOVE:          {"passable": false, "layer": 2, "name": "炉灶"},
-	TileCoord.CHEST:          {"passable": false, "layer": 2, "name": "箱子"},
-	TileCoord.RUG_OVAL:      {"passable": true,  "layer": 0, "name": "椭圆形地毯"},
-	TileCoord.PLANT_POT:    {"passable": false, "layer": 2, "name": "盆栽"},
-	TileCoord.LAMP:          {"passable": false, "layer": 2, "name": "台灯"},
-	TileCoord.CLOCK:         {"passable": false, "layer": 2, "name": "挂钟"},
+	TileCoord.WOOD_FLOOR:       {"passable": true,  "layer": 0, "name": "木地板"},
+	TileCoord.WOOD_FLOOR_V2:    {"passable": true,  "layer": 0, "name": "木地板"},
+	TileCoord.STONE_FLOOR:      {"passable": true,  "layer": 0, "name": "石地板"},
+	TileCoord.CARPET_RED:       {"passable": true,  "layer": 0, "name": "红色地毯"},
+	TileCoord.RUG_OVAL:          {"passable": true,  "layer": 0, "name": "椭圆形地毯"},
+	TileCoord.WALLPAPER_CREAM:  {"passable": false, "layer": 1, "name": "奶油色壁纸"},
+	TileCoord.WALLPAPER_BLUE:   {"passable": false, "layer": 1, "name": "蓝色壁纸"},
+	TileCoord.WOODEN_DOOR:       {"passable": false, "layer": 2, "name": "木门"},
+	TileCoord.DOOR_OPEN:         {"passable": true,  "layer": 2, "name": "开着的门"},
+	TileCoord.WINDOW_LIGHT:      {"passable": false, "layer": 1, "name": "窗户"},
+	TileCoord.STAIRS_UP:         {"passable": true,  "layer": 0, "name": "楼梯"},
+	TileCoord.FIREPLACE:          {"passable": false, "layer": 2, "name": "壁炉"},
+	TileCoord.FIREPLACE_ACTIVE:  {"passable": false, "layer": 2, "name": "燃烧的壁炉"},
+	TileCoord.BED_SINGLE:        {"passable": false, "layer": 2, "name": "单人床"},
+	TileCoord.BED_DOUBLE:        {"passable": false, "layer": 2, "name": "双人床"},
+	TileCoord.TABLE:             {"passable": false, "layer": 2, "name": "桌子"},
+	TileCoord.CHAIR:             {"passable": true,  "layer": 2, "name": "椅子"},
+	TileCoord.BOOKSHELF:         {"passable": false, "layer": 2, "name": "书架"},
+	TileCoord.KITCHEN_COUNTER:   {"passable": false, "layer": 2, "name": "厨房台面"},
+	TileCoord.STOVE:             {"passable": false, "layer": 2, "name": "炉子"},
+	TileCoord.CHEST:             {"passable": false, "layer": 2, "name": "箱子"},
+	TileCoord.PLANT_POT:         {"passable": false, "layer": 2, "name": "花盆"},
+	TileCoord.LAMP:              {"passable": true,  "layer": 2, "name": "灯"},
+	TileCoord.CLOCK:             {"passable": false, "layer": 2, "name": "时钟"},
 }
 
 static func get_coord(tile_id: int) -> Vector2i:

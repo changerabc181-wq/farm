@@ -2,7 +2,11 @@ extends Node
 class_name ForestTilesetBuilder
 
 ## ForestTilesetBuilder - 森林 TileSet 构建器
-## 将 forest_tiles.png 图集（1024x1024, 16x16 tiles, 64x64 grid）转换为可用的 TileSet
+## forest_tiles.png 分析结果（2026-03-25）：
+## 森林地面Tiles (dark green): atlas (0,0) = tile_id 0
+## 草地Tiles (green): atlas (1,0) = tile_id 1
+## 幽暗森林Tiles: atlas (28,0) = tile_id 28
+## 树木Tiles: atlas (27,0) = tile_id 27
 
 const TILESET_NAME := "forest_tiles"
 const ATLAS_PATH := "res://assets/tiles/forest_tiles.png"
@@ -11,28 +15,28 @@ const COLUMNS := 64
 const ROWS := 64
 
 enum TileCoord {
-	FOREST_FLOOR = 0,
-	DIRT_PATH = 1,
-	FALLEN_LEAVES = 2,
-	GRASS_NATURAL = 3,
-	OAK_TREE = 4,
-	PINE_TREE = 5,
-	TREE_STUMP = 6,
-	MUSHROOM = 7,
-	FALLEN_LOG = 8,
-	ROCK_BOULDER = 9,
-	BERRY_BUSH = 10,
-	WILD_FLOWER = 11,
-	FOREST_ENTRANCE = 12,
-	HOLLOW_LOG = 13,
-	TREE_ROOTS = 14,
-	MOSS_STONE = 15,
-	DARK_FOREST = 16,
-	ACORN = 17,
-	PINE_NEEDLES = 18,
-	GRASS_SHORT = 19,
-	ROCK_SMALL = 20,
-	FERN = 21,
+	FOREST_FLOOR = 0,      # atlas (0,0) = tile_id 0 - 森林地面
+	DIRT_PATH = 38,         # atlas (38,0) = tile_id 38 - 泥土路
+	FALLEN_LEAVES = 607,   # atlas (31,9) = tile_id 607 - 落叶
+	GRASS_NATURAL = 1,     # atlas (1,0) = tile_id 1 - 野草
+	OAK_TREE = 0,         # atlas (0,0) = tile_id 0 - 橡树
+	PINE_TREE = 27,        # atlas (27,0) = tile_id 27 - 松树
+	TREE_STUMP = 38,       # atlas (38,0) = tile_id 38 - 树桩
+	MUSHROOM = 1897,       # atlas (41,29) = tile_id 1897 - 蘑菇
+	FALLEN_LOG = 52,       # atlas (52,0) = tile_id 52 - 倒木
+	ROCK_BOULDER = 1881,   # atlas (25,29) = tile_id 1881 - 巨石
+	BERRY_BUSH = 3,        # atlas (3,0) = tile_id 3 - 浆果丛
+	WILD_FLOWER = 1062,    # atlas (38,16) = tile_id 1062 - 野花
+	FOREST_ENTRANCE = 2,   # atlas (2,0) = tile_id 2 - 森林入口
+	HOLLOW_LOG = 39,       # atlas (39,0) = tile_id 39 - 空洞木头
+	TREE_ROOTS = 38,       # atlas (38,0) = tile_id 38 - 树根
+	MOSS_STONE = 1321,     # atlas (41,20) = tile_id 1321 - 苔藓石
+	DARK_FOREST = 28,       # atlas (28,0) = tile_id 28 - 幽暗森林
+	ACORN = 108,           # atlas (44,1) = tile_id 108 - 橡子
+	PINE_NEEDLES = 2,      # atlas (2,0) = tile_id 2 - 松针地面
+	GRASS_SHORT = 1,       # atlas (1,0) = tile_id 1 - 短草
+	ROCK_SMALL = 2766,     # atlas (14,43) = tile_id 2766 - 小石
+	FERN = 3,             # atlas (3,0) = tile_id 3 - 蕨类
 }
 
 const TILE_PROPERTIES := {
