@@ -14,12 +14,6 @@ const FARM_SCENE = "res://src/world/maps/Farm.tscn"
 var npc_manager: NPCManager = null
 var _map_built: bool = false  # 防止重复构建
 
-# 场景切换目标
-const FARM_SCENE = "res://src/world/maps/Farm.tscn"
-
-# NPC管理器
-var npc_manager: NPCManager = null
-
 func _ready() -> void:
 	print("[Village] Scene loaded")
 	_setup_tilemap()

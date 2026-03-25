@@ -1,4 +1,5 @@
 extends Node
+class_name CookingSystem
 
 ## CookingSystem - 烹饪系统
 ## 管理食谱、烹饪制作、效果应用
@@ -247,8 +248,8 @@ func can_cook(recipe_id: String) -> Dictionary:
 
 	# 检查体力
 	var stamina_ok := true
-	if _game_manager and recipe.has("energy_cost"):
-		var cost: float = recipe.get("energy_cost", 5.0)
+	if _game_manager:
+		var cost: float = recipe.energy_cost
 		if _game_manager.has_method("use_stamina"):
 			# GameManager.use_stamina 返回是否足够
 			# 用 test 版本检查是否足够（不实际消耗）
@@ -299,8 +300,8 @@ func cook(recipe_id: String) -> bool:
 			_inventory.remove_item(item_id, quantity)
 
 	# 消耗体力
-	if _game_manager and recipe.has("energy_cost"):
-		var cost: float = recipe.get("energy_cost", 5.0)
+	if _game_manager:
+		var cost: float = recipe.energy_cost
 		if _game_manager.has_method("use_stamina"):
 			_game_manager.use_stamina(cost)
 

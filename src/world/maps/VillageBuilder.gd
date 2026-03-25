@@ -103,7 +103,6 @@ func _setup_tileset() -> void:
 	# 使用 VillageTilesetBuilder 创建 TileSet
 	var tile_set = VillageTilesetBuilder.build_tileset()
 	tilemap.tile_set = tile_set
-	tilemap.format = TileMap.FORMAT_2
 	print("[VillageBuilder] TileSet 构建完成")
 
 func _fill_ground_layer() -> void:

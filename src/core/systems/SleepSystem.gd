@@ -1,4 +1,5 @@
 extends Node
+class_name SleepSystem
 
 ## SleepSystem - 睡眠系统
 ## 管理玩家睡眠、时间推进到第二天、体力恢复

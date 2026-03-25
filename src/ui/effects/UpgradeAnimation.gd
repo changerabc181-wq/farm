@@ -111,7 +111,7 @@ func play_star_burst() -> void:
 	await get_tree().create_timer(0.6).timeout
 	animation_finished.emit()
 
-func _create_star() -> Sprite2D:
+func _create_star() -> Node2D:
 	var star := Sprite2D.new()
 	star.modulate = Color.GOLD
 	star.scale = Vector2(0.3, 0.3)

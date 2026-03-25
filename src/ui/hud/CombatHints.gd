@@ -5,7 +5,7 @@ class_name CombatHints
 ## 显示战斗相关的提示信息，如按键提示、敌人信息等
 
 # 配置
-@export var show_button_hints: bool = true
+@export var button_hints_enabled: bool = true
 @export var show_enemy_info: bool = true
 @export var hint_display_time: float = 3.0
 @export var fade_duration: float = 0.5
@@ -91,7 +91,7 @@ func _hide_current_hint() -> void:
 
 ## 显示按钮提示
 func show_button_hints(hints: Dictionary) -> void:
-	if not show_button_hints or not button_hint:
+	if not button_hints_enabled or not button_hint:
 		return
 
 	button_hint.visible = true

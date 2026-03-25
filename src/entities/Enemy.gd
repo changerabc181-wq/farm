@@ -1,5 +1,6 @@
 extends CharacterBody2D
 class_name Enemy
+class_name Enemy
 
 ## Enemy - 敌人基类
 ## 处理敌人AI、移动、攻击、碰撞检测和掉落物
@@ -421,9 +422,14 @@ func _on_attack_area_body_exited(body: Node2D) -> void:
 ## 受伤区域回调
 func _on_hurtbox_area_entered(area: Area2D) -> void:
 	if area.is_in_group("player_attack"):
-		var damage = area.get("damage", 5)
-		var source = area.get("owner", null)
-		take_damage(damage, source)
+		# 从攻击区域获取伤害值（通过 metadata 或属性）
+		var damage_val: int = 5
+		var source_node: Node = null
+		if area.has_meta("damage"):
+			damage_val = area.get_meta("damage")
+		if area.has_meta("owner"):
+			source_node = area.get_meta("owner")
+		take_damage(damage_val, source_node)
 
 ## 获取敌人信息
 func get_enemy_info() -> Dictionary:

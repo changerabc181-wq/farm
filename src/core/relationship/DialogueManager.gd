@@ -325,12 +325,12 @@ func _trigger_single_effect(effect: Dictionary) -> void:
 		"add_money":
 			var amount = effect.get("amount", 0)
 			if MoneySystem:
-				MoneySystem.add_money(amount)
+				MoneySystem.add_money(amount, MoneySystem.IncomeSource.OTHER, "dialogue_reward")
 
 		"remove_money":
 			var amount = effect.get("amount", 0)
 			if MoneySystem:
-				MoneySystem.spend_money(amount)
+				MoneySystem.spend_money(amount, MoneySystem.ExpenseType.OTHER, "dialogue_cost")
 
 		"complete_quest":
 			var quest_id = effect.get("quest_id", "")

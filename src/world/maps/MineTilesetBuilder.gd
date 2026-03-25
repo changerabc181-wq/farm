@@ -19,45 +19,45 @@ const COLUMNS := 64
 const ROWS := 64
 
 enum TileCoord {
-	STONE_FLOOR = 1,       # atlas (1,0) = tile_id 1 - 石砖地面
-	DIRT_FLOOR = 0,         # atlas (0,0) = tile_id 0 - 泥土地面
-	STONE_WALL = 1,         # atlas (1,0) = tile_id 1 - 石墙
-	DARK_STONE = 16,        # atlas (16,0) = tile_id 16 - 深色石头
-	CRACKED_WALL = 0,      # atlas (0,0) = tile_id 0 - 裂缝墙壁
-	COPPER_ORE = 152,       # atlas (24,2) = tile_id 152 - 铜矿
-	IRON_ORE = 83,          # atlas (19,1) = tile_id 83 - 铁矿
-	GOLD_ORE = 122,         # atlas (58,1) = tile_id 122 - 金矿
-	COAL_ORE = 16,          # atlas (16,0) = tile_id 16 - 煤矿
-	GEM_ORE = 1139,         # atlas (51,17) = tile_id 1139 - 宝石矿
-	GLOWING_ORE = 376,      # atlas (56,5) = tile_id 376 - 发光矿石
-	WOOD_SUPPORT = 88,     # atlas (24,1) = tile_id 88 - 木支撑
-	LADDER_UP = 88,        # atlas (24,1) = tile_id 88 - 向上梯子
-	LADDER_DOWN = 88,      # atlas (24,1) = tile_id 88 - 向下梯子
-	TORCH_BRACKET = 88,    # atlas (24,1) = tile_id 88 - 火把
-	MINECART_TRACK = 4,    # atlas (4,0) = tile_id 4 - 矿车轨道
-	RUBBLE = 0,            # atlas (0,0) = tile_id 0 - 碎石
-	CRACKED_FLOOR = 0,     # atlas (0,0) = tile_id 0 - 裂缝地面
+	STONE_FLOOR = 0,
+	DIRT_FLOOR = 1,
+	CRACKED_FLOOR = 2,
+	RUBBLE = 3,
+	MINECART_TRACK = 4,
+	STONE_WALL = 5,
+	CRACKED_WALL = 6,
+	DARK_STONE = 7,
+	COPPER_ORE = 8,
+	IRON_ORE = 9,
+	GOLD_ORE = 10,
+	COAL_ORE = 11,
+	GEM_ORE = 12,
+	GLOWING_ORE = 13,
+	WOOD_SUPPORT = 14,
+	LADDER_UP = 15,
+	LADDER_DOWN = 16,
+	TORCH_BRACKET = 17
 }
 
 const TILE_PROPERTIES := {
-	TileCoord.STONE_FLOOR:    {"passable": true,  "layer": 0, "name": "石砖地面"},
-	TileCoord.DIRT_FLOOR:     {"passable": true,  "layer": 0, "name": "泥土地面"},
-	TileCoord.CRACKED_FLOOR:  {"passable": true,  "layer": 0, "name": "裂缝地面"},
-	TileCoord.RUBBLE:          {"passable": true,  "layer": 0, "name": "碎石"},
-	TileCoord.MINECART_TRACK:  {"passable": true,  "layer": 0, "name": "矿车轨道"},
-	TileCoord.STONE_WALL:      {"passable": false, "layer": 1, "name": "石墙"},
-	TileCoord.CRACKED_WALL:    {"passable": false, "layer": 1, "name": "裂缝墙壁"},
-	TileCoord.DARK_STONE:      {"passable": false, "layer": 1, "name": "深色石头"},
-	TileCoord.COPPER_ORE:      {"passable": false, "layer": 2, "name": "铜矿"},
-	TileCoord.IRON_ORE:        {"passable": false, "layer": 2, "name": "铁矿"},
-	TileCoord.GOLD_ORE:        {"passable": false, "layer": 2, "name": "金矿"},
-	TileCoord.COAL_ORE:        {"passable": false, "layer": 2, "name": "煤矿"},
-	TileCoord.GEM_ORE:          {"passable": false, "layer": 2, "name": "宝石矿"},
-	TileCoord.GLOWING_ORE:      {"passable": false, "layer": 2, "name": "发光矿石"},
-	TileCoord.WOOD_SUPPORT:     {"passable": false, "layer": 1, "name": "木支撑"},
-	TileCoord.LADDER_UP:       {"passable": true,  "layer": 1, "name": "向上梯子"},
-	TileCoord.LADDER_DOWN:      {"passable": true,  "layer": 1, "name": "向下梯子"},
-	TileCoord.TORCH_BRACKET:    {"passable": true,  "layer": 2, "name": "火把"},
+	TileCoord.STONE_FLOOR: {"tile_id": 0, "passable": true, "layer": 0, "name": "石砖地面"},
+	TileCoord.DIRT_FLOOR: {"tile_id": 0, "passable": true, "layer": 0, "name": "泥土地面"},
+	TileCoord.CRACKED_FLOOR: {"tile_id": 0, "passable": true, "layer": 0, "name": "裂缝地面"},
+	TileCoord.RUBBLE: {"tile_id": 0, "passable": true, "layer": 0, "name": "碎石"},
+	TileCoord.MINECART_TRACK: {"tile_id": 0, "passable": true, "layer": 0, "name": "矿车轨道"},
+	TileCoord.STONE_WALL: {"tile_id": 0, "passable": false, "layer": 1, "name": "石墙"},
+	TileCoord.CRACKED_WALL: {"tile_id": 0, "passable": false, "layer": 1, "name": "裂缝墙壁"},
+	TileCoord.DARK_STONE: {"tile_id": 0, "passable": false, "layer": 1, "name": "深色石头"},
+	TileCoord.COPPER_ORE: {"tile_id": 0, "passable": false, "layer": 2, "name": "铜矿"},
+	TileCoord.IRON_ORE: {"tile_id": 0, "passable": false, "layer": 2, "name": "铁矿"},
+	TileCoord.GOLD_ORE: {"tile_id": 0, "passable": false, "layer": 2, "name": "金矿"},
+	TileCoord.COAL_ORE: {"tile_id": 0, "passable": false, "layer": 2, "name": "煤矿"},
+	TileCoord.GEM_ORE: {"tile_id": 0, "passable": false, "layer": 2, "name": "宝石矿"},
+	TileCoord.GLOWING_ORE: {"tile_id": 0, "passable": false, "layer": 2, "name": "发光矿石"},
+	TileCoord.WOOD_SUPPORT: {"tile_id": 0, "passable": false, "layer": 1, "name": "木支撑"},
+	TileCoord.LADDER_UP: {"tile_id": 0, "passable": true, "layer": 1, "name": "向上梯子"},
+	TileCoord.LADDER_DOWN: {"tile_id": 0, "passable": true, "layer": 1, "name": "向下梯子"},
+	TileCoord.TORCH_BRACKET: {"tile_id": 0, "passable": true, "layer": 2, "name": "火把"},
 }
 
 static func get_coord(tile_id: int) -> Vector2i:
@@ -83,7 +83,7 @@ static func build_tileset() -> TileSet:
 			shape.size = TILE_SIZE
 			physics_layer.add_shape(shape)
 			tile_data.add_physics_layer(physics_layer)
-		atlas_source.set_tile_data(_pack_tile_data(tile_id), tile_data)
+		atlas_source.set_tile_data(_pack_tile_data(actual_tile_id), tile_data)
 
 	tile_set.add_source(atlas_source)
 	return tile_set

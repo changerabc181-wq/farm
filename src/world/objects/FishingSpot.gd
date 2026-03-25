@@ -17,9 +17,7 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	
-	# 加载钓鱼竿场景
-	if fishing_rod_scene == null:
-		fishing_rod_scene = preload("res://src/entities/tools/FishingRod.tscn")
+	# 钓鱼竿场景通过 @export editor 配置
 	
 	print("[FishingSpot] Fishing spot initialized: ", location_type)
 

@@ -12,62 +12,62 @@ const ROWS := 64
 
 enum TileCoord {
 	GRASS_PLAIN = 0,
-	GRASS_2 = 1,           # atlas (1,0) - grass variant
-	WATER_POND = 1387,     # atlas (39,21) - pond interior (rows 17-27, cols 32-47)
-	WATER_EDGE_TL = 1124,  # atlas (36,17) - top-left edge
-	WATER_EDGE_TR = 1178,  # atlas (42,18) - top-right edge
-	WATER_EDGE_BL = 1592,  # atlas (24,24) - bottom-left edge
-	WATER_EDGE_BR = 1741,  # atlas (41,27) - bottom-right edge
-	PATH_DIRT = 658,       # atlas (18,10) - dirt path (rows 10-14 dirt patches)
-	PATH_GRASS = 3,        # atlas (3,0) - grass path
-	TILLED_SOIL = 4,       # atlas (4,0) - farmland
-	GROWING_CROPS = 5,     # atlas (5,0) - growing crop
-	MATURE_CROPS = 6,      # atlas (6,0) - mature crop
-	FENCE_H = 85,          # atlas (21,1) - horizontal fence (rows 1-14, cols 21-27)
-	FENCE_V = 85,          # atlas (21,1) - vertical fence (shared tile)
-	FENCE_POST = 3169,     # atlas (33,49) - fence post (yellow post tiles rows 49-60)
-	WOOD_PLANKS = 1090,    # atlas (2,17) - wood floor planks
-	STONE_WALL = 960,      # atlas (0,15) - stone divider row 15
-	WOOD_WALL = 13,        # atlas (13,0) - wood wall
-	GATE_OPEN = 10,        # atlas (10,0)
-	GATE_CLOSED = 11,      # atlas (11,0)
-	WELL = 14,             # atlas (14,0)
-	SCARECROW = 15,        # atlas (15,0)
-	FLOWER_PATCH = 16,     # atlas (16,0)
-	RAISED_BED = 17,       # atlas (17,0)
-	DENSE_CROPS = 18,      # atlas (18,0)
-	HAYSTACK = 20,         # atlas (20,0)
-	FERTILE_SOIL = 26,     # atlas (26,0)
+	GRASS_2 = 1,
+	WATER_POND = 2,
+	WATER_EDGE_TL = 3,
+	WATER_EDGE_TR = 4,
+	WATER_EDGE_BL = 5,
+	WATER_EDGE_BR = 6,
+	PATH_DIRT = 7,
+	PATH_GRASS = 8,
+	TILLED_SOIL = 9,
+	GROWING_CROPS = 10,
+	MATURE_CROPS = 11,
+	FENCE_H = 12,
+	FENCE_V = 13,
+	FENCE_POST = 14,
+	WOOD_PLANKS = 15,
+	STONE_WALL = 16,
+	WOOD_WALL = 17,
+	GATE_OPEN = 18,
+	GATE_CLOSED = 19,
+	WELL = 20,
+	SCARECROW = 21,
+	FLOWER_PATCH = 22,
+	RAISED_BED = 23,
+	DENSE_CROPS = 24,
+	HAYSTACK = 25,
+	FERTILE_SOIL = 26
 }
 
 const TILE_PROPERTIES := {
-	TileCoord.GRASS_PLAIN:    {"passable": true,  "layer": 0, "name": "草地"},
-	TileCoord.GRASS_2:         {"passable": true,  "layer": 0, "name": "草地2"},
-	TileCoord.PATH_DIRT:       {"passable": true,  "layer": 0, "name": "泥路"},
-	TileCoord.PATH_GRASS:      {"passable": true,  "layer": 0, "name": "草地路"},
-	TileCoord.TILLED_SOIL:     {"passable": true,  "layer": 0, "name": "耕地"},
-	TileCoord.FERTILE_SOIL:    {"passable": true,  "layer": 0, "name": "肥沃土壤"},
-	TileCoord.GROWING_CROPS:   {"passable": true,  "layer": 0, "name": "生长中作物"},
-	TileCoord.MATURE_CROPS:    {"passable": true,  "layer": 0, "name": "成熟作物"},
-	TileCoord.DENSE_CROPS:     {"passable": true,  "layer": 0, "name": "密植作物"},
-	TileCoord.WATER_POND:      {"passable": false, "layer": 1, "name": "池塘"},
-	TileCoord.WATER_EDGE_TL:   {"passable": false, "layer": 1, "name": "水边上"},
-	TileCoord.WATER_EDGE_TR:   {"passable": false, "layer": 1, "name": "水边上"},
-	TileCoord.WATER_EDGE_BL:   {"passable": false, "layer": 1, "name": "水边下"},
-	TileCoord.WATER_EDGE_BR:   {"passable": false, "layer": 1, "name": "水边下"},
-	TileCoord.STONE_WALL:       {"passable": false, "layer": 1, "name": "石墙"},
-	TileCoord.WOOD_WALL:        {"passable": false, "layer": 1, "name": "木墙"},
-	TileCoord.FENCE_H:          {"passable": false, "layer": 2, "name": "水平栅栏"},
-	TileCoord.FENCE_V:          {"passable": false, "layer": 2, "name": "垂直栅栏"},
-	TileCoord.FENCE_POST:       {"passable": false, "layer": 2, "name": "栅栏柱"},
-	TileCoord.GATE_OPEN:        {"passable": true,  "layer": 2, "name": "开的门"},
-	TileCoord.GATE_CLOSED:      {"passable": false, "layer": 2, "name": "关的门"},
-	TileCoord.WELL:             {"passable": false, "layer": 2, "name": "水井"},
-	TileCoord.SCARECROW:        {"passable": false, "layer": 2, "name": "稻草人"},
-	TileCoord.FLOWER_PATCH:     {"passable": true,  "layer": 2, "name": "花坛"},
-	TileCoord.RAISED_BED:       {"passable": false, "layer": 2, "name": "苗圃"},
-	TileCoord.WOOD_PLANKS:      {"passable": true,  "layer": 0, "name": "木板地"},
-	TileCoord.HAYSTACK:         {"passable": false, "layer": 2, "name": "草堆"},
+	TileCoord.GRASS_PLAIN: {"tile_id": 0, "passable": true, "layer": 0, "name": "草地"},
+	TileCoord.GRASS_2: {"tile_id": 1, "passable": true, "layer": 0, "name": "草地变体"},
+	TileCoord.WATER_POND: {"tile_id": 1387, "passable": false, "layer": 1, "name": "池塘水"},
+	TileCoord.WATER_EDGE_TL: {"tile_id": 1124, "passable": false, "layer": 1, "name": "水边上"},
+	TileCoord.WATER_EDGE_TR: {"tile_id": 1178, "passable": false, "layer": 1, "name": "水边右"},
+	TileCoord.WATER_EDGE_BL: {"tile_id": 1592, "passable": false, "layer": 1, "name": "水边左"},
+	TileCoord.WATER_EDGE_BR: {"tile_id": 1741, "passable": false, "layer": 1, "name": "水边右下"},
+	TileCoord.PATH_DIRT: {"tile_id": 658, "passable": true, "layer": 0, "name": "泥土路"},
+	TileCoord.PATH_GRASS: {"tile_id": 3, "passable": true, "layer": 0, "name": "草地路"},
+	TileCoord.TILLED_SOIL: {"tile_id": 4, "passable": true, "layer": 0, "name": "耕地"},
+	TileCoord.GROWING_CROPS: {"tile_id": 5, "passable": true, "layer": 0, "name": "生长中"},
+	TileCoord.MATURE_CROPS: {"tile_id": 6, "passable": true, "layer": 0, "name": "成熟作物"},
+	TileCoord.FENCE_H: {"tile_id": 85, "passable": false, "layer": 1, "name": "篱笆"},
+	TileCoord.FENCE_V: {"tile_id": 85, "passable": false, "layer": 1, "name": "篱笆柱"},
+	TileCoord.FENCE_POST: {"tile_id": 3169, "passable": false, "layer": 2, "name": "栅栏柱"},
+	TileCoord.WOOD_PLANKS: {"tile_id": 1090, "passable": true, "layer": 0, "name": "木板地"},
+	TileCoord.STONE_WALL: {"tile_id": 960, "passable": false, "layer": 1, "name": "石墙"},
+	TileCoord.WOOD_WALL: {"tile_id": 13, "passable": false, "layer": 1, "name": "木墙"},
+	TileCoord.GATE_OPEN: {"tile_id": 10, "passable": true, "layer": 1, "name": "开门"},
+	TileCoord.GATE_CLOSED: {"tile_id": 11, "passable": false, "layer": 1, "name": "关门"},
+	TileCoord.WELL: {"tile_id": 14, "passable": false, "layer": 2, "name": "水井"},
+	TileCoord.SCARECROW: {"tile_id": 15, "passable": false, "layer": 2, "name": "稻草人"},
+	TileCoord.FLOWER_PATCH: {"tile_id": 16, "passable": true, "layer": 0, "name": "花丛"},
+	TileCoord.RAISED_BED: {"tile_id": 17, "passable": true, "layer": 0, "name": "raised_bed"},
+	TileCoord.DENSE_CROPS: {"tile_id": 18, "passable": true, "layer": 0, "name": "茂盛作物"},
+	TileCoord.HAYSTACK: {"tile_id": 20, "passable": false, "layer": 2, "name": "草堆"},
+	TileCoord.FERTILE_SOIL: {"tile_id": 26, "passable": true, "layer": 0, "name": "肥沃土壤"},
 }
 
 static func get_coord(tile_id: int) -> Vector2i:
@@ -82,12 +82,12 @@ static func build_tileset() -> TileSet:
 	atlas_source.texture = load(ATLAS_PATH)
 	atlas_source.texture_region_size = TILE_SIZE
 
-	for tile_id in TileCoord.values():
-		var coords := get_coord(tile_id)
+	for enum_key in TileCoord.keys():
+		var props = TILE_PROPERTIES.get(enum_key, {"tile_id": enum_key, "passable": true, "layer": 0})
+		var actual_tile_id: int = props.get("tile_id", enum_key)
 		var tile_data := TileSetCellTile.new()
 		tile_data.texture_origin = Vector2i.ZERO
 
-		var props = TILE_PROPERTIES.get(tile_id, {"passable": true, "layer": 0})
 		if not props.get("passable", true):
 			var physics_layer := TileSetPhysicsLayer.new()
 			physics_layer.layer_mask = 1
@@ -96,7 +96,7 @@ static func build_tileset() -> TileSet:
 			physics_layer.add_shape(shape)
 			tile_data.add_physics_layer(physics_layer)
 
-		atlas_source.set_tile_data(_pack_tile_data(tile_id), tile_data)
+		atlas_source.set_tile_data(_pack_tile_data(actual_tile_id), tile_data)
 
 	tile_set.add_source(atlas_source)
 	return tile_set
@@ -107,5 +107,8 @@ static func _pack_tile_data(tile_id: int) -> PackedInt32Array:
 	return data
 
 static func get_tile_name(tile_id: int) -> String:
-	var props = TILE_PROPERTIES.get(tile_id, {"name": "未知"})
-	return props.get("name", "未知")
+	for enum_key in TileCoord.keys():
+		var props = TILE_PROPERTIES.get(enum_key, {})
+		if props.get("tile_id", -1) == tile_id:
+			return props.get("name", "未知")
+	return "未知"

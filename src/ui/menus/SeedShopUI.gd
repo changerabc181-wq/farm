@@ -192,7 +192,7 @@ func _on_buy_button_pressed() -> void:
 	# 检查金钱
 	if MoneySystem and MoneySystem.get_money() >= total_price:
 		# 扣除金钱
-		MoneySystem.spend_money(total_price)
+		MoneySystem.spend_money(total_price, MoneySystem.ExpenseType.SEED_PURCHASE, item_id)
 		
 		# 添加到背包
 		if Inventory:
