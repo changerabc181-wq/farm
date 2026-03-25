@@ -107,11 +107,11 @@ func _create_default_crop_database() -> void:
 				"season": ["Spring"],
 				"regrow": false,
 				"stages_sprites": [
-					"res://assets/sprites/crops/turnip_0.png",
-					"res://assets/sprites/crops/turnip_1.png",
-					"res://assets/sprites/crops/turnip_2.png",
-					"res://assets/sprites/crops/turnip_3.png",
-					"res://assets/sprites/crops/turnip_4.png"
+					"res://assets/sprites/crops/turnip_stage0.png",
+					"res://assets/sprites/crops/turnip_stage1.png",
+					"res://assets/sprites/crops/turnip_stage2.png",
+					"res://assets/sprites/crops/turnip_stage3.png",
+					"res://assets/sprites/crops/turnip_stage4.png"
 				],
 				"sell_price": 35,
 				"exp": 8
@@ -124,11 +124,11 @@ func _create_default_crop_database() -> void:
 				"season": ["Spring"],
 				"regrow": false,
 				"stages_sprites": [
-					"res://assets/sprites/crops/potato_0.png",
-					"res://assets/sprites/crops/potato_1.png",
-					"res://assets/sprites/crops/potato_2.png",
-					"res://assets/sprites/crops/potato_3.png",
-					"res://assets/sprites/crops/potato_4.png"
+					"res://assets/sprites/crops/potato_stage0.png",
+					"res://assets/sprites/crops/potato_stage1.png",
+					"res://assets/sprites/crops/potato_stage2.png",
+					"res://assets/sprites/crops/potato_stage3.png",
+					"res://assets/sprites/crops/potato_stage4.png"
 				],
 				"sell_price": 80,
 				"exp": 14
@@ -142,11 +142,11 @@ func _create_default_crop_database() -> void:
 				"regrow": true,
 				"regrow_days": 4,
 				"stages_sprites": [
-					"res://assets/sprites/crops/tomato_0.png",
-					"res://assets/sprites/crops/tomato_1.png",
-					"res://assets/sprites/crops/tomato_2.png",
-					"res://assets/sprites/crops/tomato_3.png",
-					"res://assets/sprites/crops/tomato_4.png"
+					"res://assets/sprites/crops/tomato_stage0.png",
+					"res://assets/sprites/crops/tomato_stage1.png",
+					"res://assets/sprites/crops/tomato_stage2.png",
+					"res://assets/sprites/crops/tomato_stage3.png",
+					"res://assets/sprites/crops/tomato_stage4.png"
 				],
 				"sell_price": 60,
 				"exp": 12
@@ -160,11 +160,11 @@ func _create_default_crop_database() -> void:
 				"regrow": true,
 				"regrow_days": 4,
 				"stages_sprites": [
-					"res://assets/sprites/crops/corn_0.png",
-					"res://assets/sprites/crops/corn_1.png",
-					"res://assets/sprites/crops/corn_2.png",
-					"res://assets/sprites/crops/corn_3.png",
-					"res://assets/sprites/crops/corn_4.png"
+					"res://assets/sprites/crops/corn_stage0.png",
+					"res://assets/sprites/crops/corn_stage1.png",
+					"res://assets/sprites/crops/corn_stage2.png",
+					"res://assets/sprites/crops/corn_stage3.png",
+					"res://assets/sprites/crops/corn_stage4.png"
 				],
 				"sell_price": 50,
 				"exp": 10
@@ -177,11 +177,11 @@ func _create_default_crop_database() -> void:
 				"season": ["Fall"],
 				"regrow": false,
 				"stages_sprites": [
-					"res://assets/sprites/crops/pumpkin_0.png",
-					"res://assets/sprites/crops/pumpkin_1.png",
-					"res://assets/sprites/crops/pumpkin_2.png",
-					"res://assets/sprites/crops/pumpkin_3.png",
-					"res://assets/sprites/crops/pumpkin_4.png"
+					"res://assets/sprites/crops/pumpkin_stage0.png",
+					"res://assets/sprites/crops/pumpkin_stage1.png",
+					"res://assets/sprites/crops/pumpkin_stage2.png",
+					"res://assets/sprites/crops/pumpkin_stage3.png",
+					"res://assets/sprites/crops/pumpkin_stage4.png"
 				],
 				"sell_price": 320,
 				"exp": 30
