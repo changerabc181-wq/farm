@@ -43,6 +43,10 @@ HouseUpgradeSystem="*res://src/core/building/HouseUpgradeSystem.gd"
 FurnitureDatabase="*res://src/core/building/FurnitureDatabase.gd"
 FestivalSystem="*res://src/core/time/FestivalSystem.gd"
 AchievementSystem="*res://src/core/achievement/AchievementSystem.gd"
+SeasonSystem="*res://src/core/time/SeasonSystem.gd"
+WeatherSystem="*res://src/core/weather/WeatherSystem.gd"
+SleepSystem="*res://src/core/systems/SleepSystem.gd"
+FishingSystem="*res://src/core/systems/FishingSystem.gd"
 
 [display]
 

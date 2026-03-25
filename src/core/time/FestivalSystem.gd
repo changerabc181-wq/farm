@@ -26,7 +26,7 @@ const FESTIVALS = {
 			"participation": {"money": 500, "items": {"flower_seed": 5}},
 			"winner": {"money": 2000, "items": {"golden_flower": 1}},
 		},
-		"mini_game": "flower_arrangement",
+		"mini_game": "egg_hunt",
 		"npc_participants": ["mayor", "farmer", "shopkeeper"]
 	},
 	FestivalType.SUMMER_NIGHT: {
@@ -42,7 +42,7 @@ const FESTIVALS = {
 			"participation": {"money": 300, "items": {"firework": 3}},
 			"winner": {"money": 1500, "items": {"golden_firework": 1}},
 		},
-		"mini_game": "firework_show",
+		"mini_game": "fishing_tournament",
 		"npc_participants": ["blacksmith", "doctor"]
 	},
 	FestivalType.FALL_HARVEST: {
@@ -58,7 +58,7 @@ const FESTIVALS = {
 			"participation": {"money": 800, "items": {"quality_fertilizer": 10}},
 			"winner": {"money": 5000, "items": {"golden_scythe": 1}},
 		},
-		"mini_game": "crop_show",
+		"mini_game": "pumpkin_carving",
 		"npc_participants": ["mayor", "farmer", "shopkeeper", "blacksmith"]
 	},
 	FestivalType.WINTER_SNOW: {
@@ -74,7 +74,7 @@ const FESTIVALS = {
 			"participation": {"money": 400, "items": {"hot_cocoa": 5}},
 			"winner": {"money": 3000, "items": {"winter_star": 1}},
 		},
-		"mini_game": "ice_sculpture",
+		"mini_game": "snowball_fight",
 		"npc_participants": ["doctor", "shopkeeper"]
 	}
 }
@@ -89,6 +89,17 @@ var current_festival: int = -1
 var is_festival_active: bool = false
 var festival_participation: Dictionary = {}
 var festival_scores: Dictionary = {}
+
+# Minigame 管理
+var _current_minigame: Node = null
+
+# MiniGame 名称到类脚本的映射
+const MINIGAME_SCENES: Dictionary = {
+	"egg_hunt": preload("res://src/minigames/EggHuntMinigame.gd"),
+	"fishing_tournament": preload("res://src/minigames/FishingTournamentMinigame.gd"),
+	"pumpkin_carving": preload("res://src/minigames/PumpkinCarvingMinigame.gd"),
+	"snowball_fight": preload("res://src/minigames/SnowballFightMinigame.gd"),
+}
 
 func _ready() -> void:
 	print("[FestivalSystem] Initialized")
@@ -155,6 +166,9 @@ func start_festival(festival_type: int) -> void:
 	var event_bus = get_node_or_null("/root/EventBus")
 	if event_bus:
 		event_bus.notification_shown.emit(festival.name + " 开始了！", 2)
+	
+	# 自动打开 minigame
+	_open_festival_minigame(festival)
 
 ## 结束节日
 func end_festival() -> void:
@@ -305,3 +319,57 @@ func load_state(data: Dictionary) -> void:
 		festival_scores = data.festival_scores.duplicate()
 	
 	print("[FestivalSystem] State loaded")
+
+## 打开节日小游戏
+func _open_festival_minigame(festival: Dictionary) -> void:
+	var mini_game_name = festival.get("mini_game", "")
+	if mini_game_name.is_empty() or not MINIGAME_SCENES.has(mini_game_name):
+		print("[FestivalSystem] No minigame for festival: ", festival.get("name", "?"))
+		return
+	
+	var minigame_script = MINIGAME_SCENES[mini_game_name]
+	if not minigame_script:
+		return
+	
+	# 创建 minigame 实例
+	var minigame = Node.new()
+	minigame.set_script(minigame_script)
+	minigame.name = "FestivalMinigame"
+	
+	# 连接完成信号
+	if minigame.has_signal("completed"):
+		minigame.completed.connect(_on_minigame_completed.bind(minigame))
+	if minigame.has_signal("cancelled"):
+		minigame.cancelled.connect(_on_minigame_cancelled.bind(minigame))
+	
+	# 添加到场景
+	var root = get_tree().current_scene
+	if root:
+		root.add_child(minigame)
+		_current_minigame = minigame
+		# 调用 start_game 开始游戏
+		if minigame.has_method("start_game"):
+			minigame.start_game()
+		print("[FestivalSystem] Opened minigame: ", mini_game_name)
+	else:
+		minigame.queue_free()
+
+## Minigame 完成回调
+func _on_minigame_completed(score: int, success: bool, minigame: Node) -> void:
+	print("[FestivalSystem] Minigame completed: score=", score, " success=", success)
+	# 将 minigame 分数添加到节日分数
+	add_festival_score(score)
+	# 清理 minigame
+	_cleanup_minigame(minigame)
+
+## Minigame 取消回调
+func _on_minigame_cancelled(minigame: Node) -> void:
+	print("[FestivalSystem] Minigame cancelled")
+	_cleanup_minigame(minigame)
+
+## 清理 minigame
+func _cleanup_minigame(minigame: Node) -> void:
+	if minigame and is_instance_valid(minigame):
+		minigame.queue_free()
+	if _current_minigame == minigame:
+		_current_minigame = null

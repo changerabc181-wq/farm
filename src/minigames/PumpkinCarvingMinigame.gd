@@ -137,7 +137,7 @@ func _check_pattern_bonus() -> void:
 	# 嘴巴位置
 	var mouth_idx := (2 * GRID_SIZE / 3) * GRID_SIZE + GRID_SIZE / 2
 
-	var has_eyes := _grid[left_eye_idx] and _grid[right_eye_idx]
+	var has_eyes: bool = _grid[left_eye_idx] != null and _grid[right_eye_idx] != null
 	var has_mouth := false
 	for i in range(mouth_idx - 2, mouth_idx + 3):
 		if i >= 0 and i < _grid.size() and _grid[i]:
