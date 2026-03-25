@@ -1,5 +1,4 @@
 extends Node
-class_name CookingSystem
 
 ## CookingSystem - 烹饪系统
 ## 管理食谱、烹饪制作、效果应用

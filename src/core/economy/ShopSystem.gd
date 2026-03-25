@@ -1,6 +1,4 @@
 extends Node
-class_name ShopSystem
-class_name ShopSystem
 
 ## ShopSystem - 商店系统
 ## 管理商店、商品列表、库存和交易

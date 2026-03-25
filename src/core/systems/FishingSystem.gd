@@ -1,5 +1,4 @@
 extends Node
-class_name FishingSystem
 
 ## FishingSystem - 钓鱼全局管理系统
 ## 跟踪钓鱼统计、鱼类图鉴、钓鱼成就

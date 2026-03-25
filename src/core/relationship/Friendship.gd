@@ -1,5 +1,4 @@
 extends Node
-class_name Friendship
 
 ## Friendship - 好感度系统
 ## 管理玩家与NPC之间的关系，包括心数、点数和事件触发

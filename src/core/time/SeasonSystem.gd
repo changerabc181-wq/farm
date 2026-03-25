@@ -1,5 +1,4 @@
 extends Node
-class_name SeasonSystem
 
 ## SeasonSystem - 季节系统
 ## 管理季节变化、作物季节适配、天气影响

@@ -1,5 +1,4 @@
 extends Node
-class_name CraftingSystem
 
 ## CraftingSystem - 制作系统
 ## 管理配方数据、检查材料、执行制作

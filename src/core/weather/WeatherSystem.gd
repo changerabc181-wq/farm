@@ -1,5 +1,4 @@
 extends Node
-class_name WeatherSystem
 
 ## WeatherSystem - 天气系统
 ## 管理每日天气生成、天气效果、应用天气影响
