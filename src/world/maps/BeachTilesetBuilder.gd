@@ -2,7 +2,11 @@ extends Node
 class_name BeachTilesetBuilder
 
 ## BeachTilesetBuilder - 海滩 TileSet 构建器
-## 将 beach_tiles.png 图集（1024x1024, 16x16 tiles, 64x64 grid）转换为可用的 TileSet
+## beach_tiles.png 分析结果（2026-03-25）：
+## 水体主要区域: rows 2-63, cols 32-63 (tile_id ~185-4095)
+## 沙滩/草地区域: rows 3-14, cols 0-32
+## 沙质Tiles (row 0): tile_ids 0-20
+## 水边缘Tiles (row 3): tile_ids 246-255
 
 const TILESET_NAME := "beach_tiles"
 const ATLAS_PATH := "res://assets/tiles/beach_tiles.png"
@@ -11,25 +15,25 @@ const COLUMNS := 64
 const ROWS := 64
 
 enum TileCoord {
-	SAND_PLAIN = 0,
-	SAND_WET = 1,
-	SHALLOW_WATER = 2,
-	DEEP_WATER = 3,
-	WATER_SURFACE = 4,
-	SEASHELL = 5,
-	STARFISH = 6,
-	DRIFTWOOD = 7,
-	BEACH_GRASS = 8,
-	PIER_WOOD = 9,
-	ROCK_POOL = 10,
-	CORAL = 11,
-	SEAWEED = 12,
-	BEACH_PATH = 13,
-	SANDCASTLE = 14,
-	WATER_EDGE_SAND_L = 15,
-	WATER_EDGE_SAND_R = 16,
-	PEBBLES = 17,
-	WATER_EDGE_SAND_T = 18,
+	SAND_PLAIN = 0,          # atlas (0,0) - 沙滩主色
+	SAND_WET = 1,            # atlas (1,0) - 湿沙
+	SHALLOW_WATER = 319,     # atlas (63,4) - 浅水
+	DEEP_WATER = 185,        # atlas (57,2) - 深水
+	WATER_SURFACE = 246,     # atlas (54,3) - 水面
+	SEASHELL = 297,          # atlas (41,4) - 贝壳
+	STARFISH = 2371,         # atlas (3,37) - 海星
+	DRIFTWOOD = 602,         # atlas (26,9) - 浮木
+	BEACH_GRASS = 160,       # atlas (32,2) - 海滩草
+	PIER_WOOD = 21,          # atlas (21,0) - 码头木头
+	ROCK_POOL = 298,         # atlas (42,4) - 岩石池
+	CORAL = 225,             # atlas (33,3) - 珊瑚
+	SEAWEED = 693,           # atlas (53,10) - 海草
+	BEACH_PATH = 287,        # atlas (31,4) - 沙滩路
+	SANDCASTLE = 288,        # atlas (32,4) - 沙堡
+	WATER_EDGE_SAND_L = 246, # atlas (54,3) - 水边左
+	WATER_EDGE_SAND_R = 255, # atlas (63,3) - 水边右
+	PEBBLES = 298,           # atlas (42,4) - 鹅卵石
+	WATER_EDGE_SAND_T = 185, # atlas (57,2) - 水边上
 }
 
 const TILE_PROPERTIES := {
