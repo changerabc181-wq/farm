@@ -5,65 +5,65 @@
 ## ✅ 已完成（本次会话）
 
 ### 高优先级 R1-R4
-- ✅ R1: **WeatherSystem** - 新 Autoload（21个系统之一）
-  - 基于 SeasonSystem 权重生成每日天气（晴/多云/雨/暴风雨/雪）
-  - 接入 TimeManager.day_changed，每日自动刷新天气
-  - 提供 get_current_weather()、get_growth_bonus()、get_fishing_bonus()
-  - 天气视觉效果框架（雨/风暴/雪粒子节点）
-  - 修复 SeasonSystem 缺 class_name（与 Autoload 冲突）
-
-- ✅ R2: **FestivalSystem Minigame 集成**
-  - 添加 mini_game → 类脚本映射（egg_hunt/fishing_tournament/pumpkin_carving/snowball_fight）
-  - start_festival() 自动打开对应 Minigame
-  - Minigame 完成/取消回调，更新节日分数
-  - 修复 EGG_SCENE/SNOWBALL_SCENE preload（缺失 .tscn）
-  - 修复 PumpkinCarvingMinigame has_eyes 类型推断
-
+- ✅ R1: **WeatherSystem** - 新 Autoload
+- ✅ R2: **Festival Minigame 集成**
 - ✅ R3: **SleepSystem** - 新 Autoload
-  - sleep() 推进到第二天（TimeManager.advance_day）
-  - 体力恢复机制（100点）
-  - can_sleep() 白天禁止睡觉检查
-  - 信号通知（sleep_started/sleep_ended）
-
 - ✅ R4: **FishingSystem** - 新 Autoload
-  - 跟踪 total_fish_caught、按地点统计、历史记录
-  - record_catch() 记录每次钓鱼（含时间戳）
-  - 钓鱼成就检查（first_fish, fisherman）
-  - Session 跟踪（开始/结束）
-  - 存档支持
 
-### TileSet/资源（本次会话）
-- ✅ M2-M6: 修正所有 tileset tile ID（Farm/Beach/Forest/Mine/Indoor）
-- ✅ S2: NPC头像 6个（64x64 PNG）
-- ✅ S3: 动物精灵 5个（64x64 PNG）
-- ✅ S4: 成就图标 15个（64x64 PNG）
+### 代码质量修复（25+ 文件）
+**TileSetBuilders 重复 key 问题：**
+- 修复 Farm/Beach/Forest/Mine/Indoor 的 enum 重复 tile_id
+- TILE_PROPERTIES 改用 tile_id 作为属性存储
+
+**缺失 class_name：**
+- 添加: CraftingSystem, CookingSystem, ShopSystem, FishingSystem, WeatherSystem, SleepSystem, FurnitureSystem, SeasonSystem, Enemy
+
+**Autoload 注册：**
+- 添加: SeasonSystem, WeatherSystem, SleepSystem, FishingSystem, Friendship, CraftingSystem
+
+**API 调用修复：**
+- MoneySystem: add_money/spend_money 改为3参数
+- CookingSystem: recipe.energy_cost 属性访问
+- Enemy: area.get_meta() for damage/owner
+- InventoryUI: item 强转为 Dictionary, slot_index 强转为 String
+
+**类型推断修复（Variant → 显式类型）：**
+- ToolUpgrade, FishingRod, Farm, FarmLayoutEditor, FestivalUI, FestivalNotification
+
+**场景文件：**
+- 创建 FestivalNotificationPopup.tscn, FestivalActivityButton.tscn, FestivalRewardButton.tscn
+
+**其他：**
+- VillageBuilder: 移除 TileMap.FORMAT_2
+- Village: 移除重复 FARM_SCENE 常量
+- UpgradeAnimation: 返回类型 Sprite2D → Node2D
+- CombatHints: 变量/函数名冲突
+- FishingSpot: 移除缺失的 FishingRod.tscn preload
+- FarmLayoutEditor: reversed() → [::-1]
 
 ---
 
 ## 🟡 剩余任务
 
 ### 中优先级
-- ⬜ R5: FestivalMinigame 基类 9个 pass 回调（低影响）
-- ⬜ R6: NPCSchedule 天气条件存根（WeatherSystem 已实现可接入）
-- ⬜ R7: NPCSchedule 扩展更多日程
+- ⬜ R5: FestivalMinigame 基类 9个 pass 回调
+- ⬜ R6: NPCSchedule 天气条件存根
+- ⬜ R7: NPCSchedule 扩展
 - ⬜ R8: MainMenu 存档加载/设置菜单
 - ⬜ R9: HouseUpgradeUI 消息显示
 - ⬜ R10: QuestSystem 经验系统
-- ⬜ R11: QuestSystem NPC数据库集成
+- ⬜ R11: QuestSystem NPC数据库
 
-### 缺失场景资源
-- ⬜ Egg.tscn（EggHuntMinigame 引用，preload 改为 null）
-- ⬜ Snowball.tscn（SnowballFightMinigame 引用，preload 改为 null）
-- ⬜ FestivalMinigame 基类存根（9个 pass 回调可选）
+### 缺失场景
+- ⬜ Egg.tscn / Snowball.tscn（已设为 null）
 
-### 内容/资源
-- ⬜ S1: BGM（需 Max 套餐 ¥1,990/年）
+### 测试框架
+- ⬜ tests/ - GUT 测试框架未安装（不影响游戏运行）
 
 ---
 
-## 📊 测试状态
+## 📊 状态
 
 - ✅ 18/18 检查通过
-- ✅ 21 个系统初始化（新增 Season/Weather/Sleep/FishingSystem）
-- ✅ Godot 4.6.1 无脚本错误
-- ⏳ Git push 等待网络恢复（3个 commits 待推送）
+- ✅ 22 个系统初始化
+- ⚠️ Git push 待网络恢复（4个 commits 本地待推送）
