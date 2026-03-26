@@ -114,7 +114,9 @@ func get_save_info(slot: int) -> Dictionary:
 func _gather_save_data() -> Dictionary:
 	var save_data: Dictionary = {}
 	var time_manager = get_node_or_null("/root/TimeManager")
-	var money_system = get_node_or_null("/root/MoneySystem")
+	var money_manager = get_node_or_null("/root/MoneyManager")
+	var inventory_manager = get_node_or_null("/root/InventoryManager")
+	var stamina_manager = get_node_or_null("/root/StaminaManager")
 	var shipping_system = get_node_or_null("/root/ShippingSystem")
 	var gift_system = get_node_or_null("/root/GiftSystem")
 	var quest_system = get_node_or_null("/root/QuestSystem")
@@ -123,9 +125,17 @@ func _gather_save_data() -> Dictionary:
 	if time_manager:
 		save_data["time"] = time_manager.save_state()
 
-	# 保存金钱数据
-	if money_system:
-		save_data["money"] = money_system.save_state()
+	# 保存金钱数据 (优先使用新的 MoneyManager)
+	if money_manager:
+		save_data["money"] = money_manager.save_state()
+
+	# 保存背包数据
+	if inventory_manager:
+		save_data["inventory"] = inventory_manager.save_state()
+
+	# 保存体力数据
+	if stamina_manager:
+		save_data["stamina"] = stamina_manager.save_state()
 
 	# 保存出货箱数据
 	if shipping_system:
@@ -194,7 +204,9 @@ func _find_player() -> Node:
 
 func _apply_save_data(data: Dictionary) -> void:
 	var time_manager = get_node_or_null("/root/TimeManager")
-	var money_system = get_node_or_null("/root/MoneySystem")
+	var money_manager = get_node_or_null("/root/MoneyManager")
+	var inventory_manager = get_node_or_null("/root/InventoryManager")
+	var stamina_manager = get_node_or_null("/root/StaminaManager")
 	var shipping_system = get_node_or_null("/root/ShippingSystem")
 	var gift_system = get_node_or_null("/root/GiftSystem")
 	var quest_system = get_node_or_null("/root/QuestSystem")
@@ -203,9 +215,22 @@ func _apply_save_data(data: Dictionary) -> void:
 	if data.has("time") and time_manager:
 		time_manager.load_state(data["time"])
 
-	# 加载金钱数据
-	if data.has("money") and money_system:
-		money_system.load_state(data["money"])
+	# 加载金钱数据 (优先使用新的 MoneyManager)
+	if data.has("money"):
+		if money_manager:
+			money_manager.load_state(data["money"])
+		else:
+			var money_system = get_node_or_null("/root/MoneySystem")
+			if money_system:
+				money_system.load_state(data["money"])
+
+	# 加载背包数据
+	if data.has("inventory") and inventory_manager:
+		inventory_manager.load_state(data["inventory"])
+
+	# 加载体力数据
+	if data.has("stamina") and stamina_manager:
+		stamina_manager.load_state(data["stamina"])
 
 	# 加载出货箱数据
 	if data.has("shipping") and shipping_system:
