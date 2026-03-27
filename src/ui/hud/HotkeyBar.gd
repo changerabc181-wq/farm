@@ -72,9 +72,11 @@ func _create_slot(index: int) -> Control:
 	slot.add_child(border)
 
 	# 物品图标
-	var item_icon := ColorRect.new()
+	var item_icon := TextureRect.new()
 	item_icon.name = "ItemIcon"
-	item_icon.color = Color(0.3, 0.3, 0.3, 0.5)
+	item_icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	item_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	item_icon.modulate = Color(1, 1, 1, 0)  # 隐藏默认
 	item_icon.custom_minimum_size = Vector2(SLOT_SIZE - 8, SLOT_SIZE - 8)
 	item_icon.offset_left = 4
 	item_icon.offset_top = 4
@@ -82,6 +84,18 @@ func _create_slot(index: int) -> Control:
 	item_icon.offset_bottom = -4
 	item_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	slot.add_child(item_icon)
+
+	# 颜色备用层（当没有图标时显示）
+	var color_fallback := ColorRect.new()
+	color_fallback.name = "ColorFallback"
+	color_fallback.color = Color(0.3, 0.3, 0.3, 0.5)
+	color_fallback.custom_minimum_size = Vector2(SLOT_SIZE - 8, SLOT_SIZE - 8)
+	color_fallback.offset_left = 4
+	color_fallback.offset_top = 4
+	color_fallback.offset_right = -4
+	color_fallback.offset_bottom = -4
+	color_fallback.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	slot.add_child(color_fallback)
 
 	# 数量标签
 	var quantity_label := Label.new()
@@ -132,7 +146,8 @@ func _update_slot(index: int) -> void:
 		return
 
 	var slot: Control = _slots[index]
-	var item_icon: ColorRect = slot.get_node("ItemIcon")
+	var item_icon: TextureRect = slot.get_node("ItemIcon")
+	var color_fallback: ColorRect = slot.get_node("ColorFallback")
 	var quantity_label: Label = slot.get_node("QuantityLabel")
 	var border: ColorRect = slot.get_node("SelectionBorder")
 
@@ -142,12 +157,22 @@ func _update_slot(index: int) -> void:
 	# 获取背包数据
 	var slot_data := Inventory.get_slot(index)
 	if slot_data == null or slot_data.is_empty():
-		item_icon.color = Color(0.3, 0.3, 0.3, 0.5)
+		item_icon.modulate = Color(1, 1, 1, 0)
+		color_fallback.color = Color(0.3, 0.3, 0.3, 0.5)
 		quantity_label.visible = false
 		return
 
-	# 设置物品颜色（临时方案）
-	item_icon.color = _get_item_type_color(slot_data.item_id)
+	# 加载物品图标
+	var icon_texture := _load_item_icon(slot_data.item_id)
+	if icon_texture:
+		item_icon.texture = icon_texture
+		item_icon.modulate = Color(1, 1, 1, 1)
+		color_fallback.color = Color(1, 1, 1, 0)  # 隐藏备用
+	else:
+		# 没有图标则用颜色
+		item_icon.modulate = Color(1, 1, 1, 0)
+		color_fallback.color = _get_item_type_color(slot_data.item_id)
+
 	quantity_label.text = str(slot_data.quantity)
 	quantity_label.visible = slot_data.quantity > 1
 
@@ -167,6 +192,12 @@ func _get_item_type_color(item_id: String) -> Color:
 					ItemDatabase.ItemType.DECORATION: return Color(0.9, 0.5, 0.8)
 					ItemDatabase.ItemType.QUEST: return Color(1.0, 0.8, 0.2)
 	return Color(0.5, 0.5, 0.5)
+
+func _load_item_icon(item_id: String) -> Texture2D:
+	var db := Inventory.get_item_database() if Inventory else null
+	if db:
+		return db.load_icon_texture(item_id)
+	return null
 
 func _on_slot_gui_input(event: InputEvent, index: int) -> void:
 	if event is InputEventMouseButton:

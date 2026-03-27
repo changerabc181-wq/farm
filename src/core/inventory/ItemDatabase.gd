@@ -205,3 +205,41 @@ func _create_default_database() -> void:
 ## 获取类型名称
 func get_type_name(type: int) -> String:
 	return ItemType.keys()[type]
+
+## 获取物品图标路径
+func get_icon_path(item_id: String) -> String:
+	# 优先使用 item_data 中定义的 icon_path
+	var item := get_item(item_id)
+	if item and item.icon_path != "":
+		return item.icon_path
+
+	# 自动映射：item_id -> assets/sprites/items/{item_id}.png
+	var icon_path := "res://assets/sprites/items/%s.png" % item_id
+	if FileAccess.file_exists(icon_path):
+		return icon_path
+
+	# 备用：尝试不带 _seed 后缀
+	if item_id.ends_with("_seed"):
+		var crop_id := item_id.substr(0, item_id.length() - 5)  # 去掉 "_seed"
+		icon_path = "res://assets/sprites/items/%s.png" % crop_id
+		if FileAccess.file_exists(icon_path):
+			return icon_path
+
+	# 工具类型尝试从 tools 文件夹加载
+	if item and item.type == ItemType.TOOL:
+		icon_path = "res://assets/sprites/tools/%s.png" % item_id
+		if FileAccess.file_exists(icon_path):
+			return icon_path
+
+	return ""
+
+## 加载物品图标纹理
+func load_icon_texture(item_id: String) -> Texture2D:
+	var path := get_icon_path(item_id)
+	if path == "":
+		return null
+
+	var tex := load(path)
+	if tex is Texture2D:
+		return tex
+	return null

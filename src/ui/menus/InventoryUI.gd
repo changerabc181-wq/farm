@@ -201,12 +201,19 @@ func _update_slot(index: int) -> void:
 	quantity_label.text = str(slot_data.quantity)
 	quantity_label.visible = slot_data.quantity > 1
 
-	# 这里应该加载物品图标，暂时用颜色代替
-	var item_type := _get_item_type_color(slot_data.item_id)
-	item_icon.modulate = item_type
+	# 加载物品图标
+	var icon_texture := _load_item_icon(slot_data.item_id)
+	if icon_texture:
+		item_icon.texture = icon_texture
+		item_icon.modulate = Color(1, 1, 1, 1)
+	else:
+		# 没有图标则用类型颜色作为背景
+		item_icon.texture = null
+		var item_type := _get_item_type_color(slot_data.item_id)
+		item_icon.modulate = item_type
 
 func _get_item_type_color(item_id: String) -> Color:
-	# 根据物品类型返回不同颜色（临时方案）
+	# 根据物品类型返回不同颜色（没有图标时的备用方案）
 	if Inventory:
 		var db := Inventory.get_item_database()
 		if db:
@@ -222,6 +229,13 @@ func _get_item_type_color(item_id: String) -> Color:
 					ItemDatabase.ItemType.DECORATION: return Color(0.9, 0.5, 0.8)
 					ItemDatabase.ItemType.QUEST: return Color(1.0, 0.8, 0.2)
 	return Color(0.5, 0.5, 0.5)
+
+func _load_item_icon(item_id: String) -> Texture2D:
+	# 从 ItemDatabase 获取物品图标
+	var db := Inventory.get_item_database() if Inventory else null
+	if db:
+		return db.load_icon_texture(item_id)
+	return null
 
 func _on_slot_gui_input(event: InputEvent, index: int) -> void:
 	if event is InputEventMouseButton:
@@ -321,16 +335,34 @@ func _create_drag_preview(index: int) -> void:
 	panel.custom_minimum_size = Vector2(SLOT_SIZE, SLOT_SIZE)
 	_drag_preview.add_child(panel)
 
-	var item_icon := ColorRect.new()
-	item_icon.color = _get_item_type_color(Inventory.get_slot(index).item_id)
-	item_icon.custom_minimum_size = Vector2(SLOT_SIZE - 8, SLOT_SIZE - 8)
-	item_icon.anchor_left = 0.5
-	item_icon.anchor_top = 0.5
-	item_icon.offset_left = -(SLOT_SIZE - 8) / 2
-	item_icon.offset_top = -(SLOT_SIZE - 8) / 2
-	item_icon.offset_right = (SLOT_SIZE - 8) / 2
-	item_icon.offset_bottom = (SLOT_SIZE - 8) / 2
-	panel.add_child(item_icon)
+	var slot_data := Inventory.get_slot(index)
+	var icon_texture := _load_item_icon(slot_data.item_id) if slot_data else null
+
+	if icon_texture:
+		var item_icon := TextureRect.new()
+		item_icon.texture = icon_texture
+		item_icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+		item_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		item_icon.custom_minimum_size = Vector2(SLOT_SIZE - 8, SLOT_SIZE - 8)
+		item_icon.anchor_left = 0.5
+		item_icon.anchor_top = 0.5
+		item_icon.offset_left = -(SLOT_SIZE - 8) / 2
+		item_icon.offset_top = -(SLOT_SIZE - 8) / 2
+		item_icon.offset_right = (SLOT_SIZE - 8) / 2
+		item_icon.offset_bottom = (SLOT_SIZE - 8) / 2
+		panel.add_child(item_icon)
+	else:
+		# 没有图标则用颜色方块
+		var item_icon := ColorRect.new()
+		item_icon.color = _get_item_type_color(slot_data.item_id) if slot_data else Color(0.5, 0.5, 0.5)
+		item_icon.custom_minimum_size = Vector2(SLOT_SIZE - 8, SLOT_SIZE - 8)
+		item_icon.anchor_left = 0.5
+		item_icon.anchor_top = 0.5
+		item_icon.offset_left = -(SLOT_SIZE - 8) / 2
+		item_icon.offset_top = -(SLOT_SIZE - 8) / 2
+		item_icon.offset_right = (SLOT_SIZE - 8) / 2
+		item_icon.offset_bottom = (SLOT_SIZE - 8) / 2
+		panel.add_child(item_icon)
 
 	add_child(_drag_preview)
 
