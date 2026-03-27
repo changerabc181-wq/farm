@@ -190,7 +190,7 @@ func _select_fish() -> Dictionary:
 	}
 
 	for fish in available_fish:
-		var weight := rarity_weights.get(fish.get("rarity", "common"), 10)
+		var weight = rarity_weights.get(fish.get("rarity", "common"), 10)
 		for i in range(weight):
 			weighted_fish.append(fish)
 

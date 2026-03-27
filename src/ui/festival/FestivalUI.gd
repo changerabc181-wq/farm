@@ -105,7 +105,7 @@ func _update_display() -> void:
 
 ## 更新进度
 func _update_progress() -> void:
-	var progress := FestivalSystem.get_festival_progress(current_festival_id)
+	var progress = FestivalSystem.get_festival_progress(current_festival_id)
 
 	progress_bar.max_value = progress.get("total_activities", 1)
 	progress_bar.value = progress.get("completed_activities", 0)
@@ -121,7 +121,7 @@ func _update_activities() -> void:
 	for child in activities_container.get_children():
 		child.queue_free()
 
-	var activities := FestivalSystem.get_available_activities(current_festival_id)
+	var activities = FestivalSystem.get_available_activities(current_festival_id)
 
 	for activity in activities:
 		_create_activity_button(activity)
@@ -166,7 +166,7 @@ func _create_reward_button(reward: Dictionary) -> void:
 	var required_activities: int = requirements.get("activities_completed", 0)
 
 	# 检查是否可领取
-	var progress := FestivalSystem.get_festival_progress(current_festival_id)
+	var progress = FestivalSystem.get_festival_progress(current_festival_id)
 	var completed: int = progress.get("completed_activities", 0)
 
 	if completed >= required_activities:

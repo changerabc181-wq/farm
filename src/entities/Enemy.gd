@@ -1,6 +1,5 @@
 extends CharacterBody2D
 class_name Enemy
-class_name Enemy
 
 ## Enemy - 敌人基类
 ## 处理敌人AI、移动、攻击、碰撞检测和掉落物

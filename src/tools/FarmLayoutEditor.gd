@@ -306,7 +306,7 @@ func _find_node_at(world_pos: Vector2) -> Node2D:
 func _node_contains_point(node: Node2D, world_pos: Vector2) -> bool:
 	if node.get_child_count() > 0 and node.get_child(0) is ColorRect:
 		var rect: ColorRect = node.get_child(0)
-		var rect_global := Rect2(node.position - rect.size / 2.0, rect.size)
+		var rect_global = Rect2(node.position - rect.size / 2.0, rect.size)
 		return rect_global.has_point(world_pos)
 	return node.position.distance_to(world_pos) < 40.0
 

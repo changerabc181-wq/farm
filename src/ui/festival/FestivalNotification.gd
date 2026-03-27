@@ -32,7 +32,7 @@ func _connect_signals() -> void:
 
 ## 显示节日通知
 func show_notification(festival_id: String, notification_type: String, days_until: int = 0) -> void:
-	var festival_data := FestivalSystem.get_festival_data(festival_id)
+	var festival_data = FestivalSystem.get_festival_data(festival_id)
 
 	if festival_data.is_empty():
 		return
