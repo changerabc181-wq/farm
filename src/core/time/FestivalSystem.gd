@@ -354,6 +354,45 @@ func _open_festival_minigame(festival: Dictionary) -> void:
 	else:
 		minigame.queue_free()
 
+## 完成节日活动（由 FestivalUI 调用）
+func complete_festival_activity(festival_id: String, activity_id: String) -> Dictionary:
+	if not is_in_festival():
+		return {"success": false, "message": "当前没有进行中的节日"}
+	if festival_id != _get_current_festival_id():
+		return {"success": false, "message": "节日ID不匹配"}
+	# 标记活动完成，给玩家奖励
+	var rewards = _generate_activity_rewards(activity_id)
+	_give_rewards(rewards)
+	add_festival_score(100)
+	return {"success": true, "rewards": rewards}
+
+## 领取节日奖励（由 FestivalUI 调用）
+func claim_festival_reward(festival_id: String, reward_id: String) -> Dictionary:
+	if not is_in_festival():
+		return {"success": false, "message": "当前没有进行中的节日"}
+	if festival_id != _get_current_festival_id():
+		return {"success": false, "message": "节日ID不匹配"}
+	var reward = _get_reward_by_id(reward_id)
+	if reward.is_empty():
+		return {"success": false, "message": "奖励不存在"}
+	_give_rewards(reward)
+	return {"success": true, "items": reward}
+
+func _get_current_festival_id() -> String:
+	if current_festival < 0:
+		return ""
+	var festivals = get_all_festivals()
+	for key in festivals:
+		if festivals[key] is Dictionary and festivals[key].get("type") == current_festival:
+			return festivals[key].get("id", "")
+	return ""
+
+func _generate_activity_rewards(activity_id: String) -> Dictionary:
+	return {"money": 50, "items": {}}
+
+func _get_reward_by_id(reward_id: String) -> Dictionary:
+	return {}
+
 ## Minigame 完成回调
 func _on_minigame_completed(score: int, success: bool, minigame: Node) -> void:
 	print("[FestivalSystem] Minigame completed: score=", score, " success=", success)
