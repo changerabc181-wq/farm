@@ -107,17 +107,36 @@ if grep -q "ItemDatabase\|item.*loaded" "$RUN_LOG" 2>/dev/null; then
     fi
 fi
 
+# ── 单元测试 ────────────────────────────────────────────────────
+echo ""
+echo -e "${CYAN}═══════════════════════════════════════${NC}"
+echo -e "${CYAN}  单元测试${NC}"
+echo -e "${CYAN}═══════════════════════════════════════${NC}"
+
+UNIT_TEST_LOG="/tmp/godot_tests_$$.log"
+$GODOT --headless --quit --path "$PROJECT_DIR" --scene tests/unit/test_core.tscn > "$UNIT_TEST_LOG" 2>&1 || true
+
+# 提取测试结果
+if grep -q "ALL TESTS PASSED" "$UNIT_TEST_LOG"; then
+    UNIT_PASSED=$(grep -oP "RESULTS: \K\d+" "$UNIT_TEST_LOG" | head -1)
+    echo -e "${GREEN}  ✅ 单元测试全部通过 ($UNIT_PASSED/$UNIT_PASSED)${NC}"
+else
+    UNIT_FAILED=$(grep -oP "FAILED: \K\d+" "$UNIT_TEST_LOG" | head -1)
+    echo -e "${RED}  ❌ 单元测试失败 ($UNIT_FAILED failed)${NC}"
+    grep -E "\[FAIL\]" "$UNIT_TEST_LOG" | sed 's/^/    /' | head -10
+fi
+
 # ── 完成 ──────────────────────────────────────────────────────────
 echo ""
 echo -e "${BLUE}═══════════════════════════════════════${NC}"
 if [ "$FAIL" -eq 0 ]; then
     echo -e "${GREEN}  ✅ 所有检查通过 ($PASS/$PASS)${NC}"
     echo -e "${BLUE}═══════════════════════════════════════${NC}"
-    rm -f "$RUN_LOG"
+    rm -f "$RUN_LOG" "$UNIT_TEST_LOG"
     exit 0
 else
     echo -e "${RED}  ❌ $FAIL 个检查失败${NC}"
     echo -e "${BLUE}═══════════════════════════════════════${NC}"
-    rm -f "$RUN_LOG"
+    rm -f "$RUN_LOG" "$UNIT_TEST_LOG"
     exit 1
 fi

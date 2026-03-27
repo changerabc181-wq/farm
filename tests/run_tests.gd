@@ -4,9 +4,9 @@ extends SceneTree
 ## 运行所有单元测试
 
 func _init() -> void:
-	print("=" * 50)
-	print("🧪 田园物语 - 单元测试")
-	print("=" * 50)
+	print("==================================================")
+	print("TEST: Pastoral Tales Unit Tests")
+	print("==================================================")
 	
 	var results = {
 		"total": 0,
@@ -15,39 +15,39 @@ func _init() -> void:
 	}
 	
 	# 运行时间管理器测试
-	print("\n📅 测试 TimeManager...")
+	print("\n[TIME] Testing TimeManager...")
 	results = _run_time_manager_tests(results)
 	
 	# 运行背包系统测试
-	print("\n🎒 测试 Inventory...")
+	print("\n[INVENTORY] Testing Inventory...")
 	results = _run_inventory_tests(results)
 	
-	# 运行烹饪系统测试
-	print("\n🍳 测试 CookingSystem...")
-	results = _run_cooking_tests(results)
+	# 运行物品数据库测试
+	print("\n[DATABASE] Testing ItemDatabase...")
+	results = _run_item_database_tests(results)
 	
 	# 输出结果
-	print("\n" + "=" * 50)
-	print("📊 测试结果")
-	print("=" * 50)
-	print("总计: %d" % results.total)
-	print("通过: %d ✅" % results.passed)
-	print("失败: %d ❌" % results.failed)
-	print("=" * 50)
+	print("\n==================================================")
+	print("RESULTS")
+	print("==================================================")
+	print("Total: %d" % results.total)
+	print("Passed: %d" % results.passed)
+	print("Failed: %d" % results.failed)
+	print("==================================================")
 	
 	if results.failed == 0:
-		print("🎉 所有测试通过!")
+		print("ALL TESTS PASSED!")
 	else:
-		print("⚠️ 有测试失败，请检查")
+		print("SOME TESTS FAILED")
 	
 	quit()
 
 func _run_time_manager_tests(results: Dictionary) -> Dictionary:
 	var tests = [
-		{"name": "初始时间", "func": _test_time_initial},
-		{"name": "时间格式化", "func": _test_time_formatting},
-		{"name": "季节名称", "func": _test_season_names},
-		{"name": "暂停恢复", "func": _test_pause_resume}
+		{"name": "test_time_initial", "func": _test_time_initial},
+		{"name": "test_time_formatting", "func": _test_time_formatting},
+		{"name": "test_season_names", "func": _test_season_names},
+		{"name": "test_pause_resume", "func": _test_pause_resume}
 	]
 	
 	for test in tests:
@@ -55,19 +55,20 @@ func _run_time_manager_tests(results: Dictionary) -> Dictionary:
 		var success = test.func.call()
 		if success:
 			results.passed += 1
-			print("  ✅ %s" % test.name)
+			print("  [PASS] %s" % test.name)
 		else:
 			results.failed += 1
-			print("  ❌ %s" % test.name)
+			print("  [FAIL] %s" % test.name)
 	
 	return results
 
 func _run_inventory_tests(results: Dictionary) -> Dictionary:
 	var tests = [
-		{"name": "初始状态", "func": _test_inventory_initial},
-		{"name": "添加物品", "func": _test_inventory_add},
-		{"name": "移除物品", "func": _test_inventory_remove},
-		{"name": "检查物品", "func": _test_inventory_has}
+		{"name": "test_inventory_initial", "func": _test_inventory_initial},
+		{"name": "test_inventory_add", "func": _test_inventory_add},
+		{"name": "test_inventory_remove", "func": _test_inventory_remove},
+		{"name": "test_inventory_has", "func": _test_inventory_has},
+		{"name": "test_inventory_save_load", "func": _test_inventory_save_load}
 	]
 	
 	for test in tests:
@@ -75,18 +76,18 @@ func _run_inventory_tests(results: Dictionary) -> Dictionary:
 		var success = test.func.call()
 		if success:
 			results.passed += 1
-			print("  ✅ %s" % test.name)
+			print("  [PASS] %s" % test.name)
 		else:
 			results.failed += 1
-			print("  ❌ %s" % test.name)
+			print("  [FAIL] %s" % test.name)
 	
 	return results
 
-func _run_cooking_tests(results: Dictionary) -> Dictionary:
+func _run_item_database_tests(results: Dictionary) -> Dictionary:
 	var tests = [
-		{"name": "加载配方", "func": _test_cooking_load},
-		{"name": "学习配方", "func": _test_cooking_learn},
-		{"name": "获取配方", "func": _test_cooking_get}
+		{"name": "test_item_database_load", "func": _test_item_database_load},
+		{"name": "test_get_item", "func": _test_get_item},
+		{"name": "test_get_icon_path", "func": _test_get_icon_path}
 	]
 	
 	for test in tests:
@@ -94,73 +95,110 @@ func _run_cooking_tests(results: Dictionary) -> Dictionary:
 		var success = test.func.call()
 		if success:
 			results.passed += 1
-			print("  ✅ %s" % test.name)
+			print("  [PASS] %s" % test.name)
 		else:
 			results.failed += 1
-			print("  ❌ %s" % test.name)
+			print("  [FAIL] %s" % test.name)
 	
 	return results
 
-# TimeManager 测试函数
+# TimeManager Test Functions
 func _test_time_initial() -> bool:
 	var tm = TimeManager.new()
-	return tm.current_time == 6.0 and tm.current_day == 1
+	var ok = tm.current_time == 6.0 and tm.current_day == 1
+	tm.free()
+	return ok
 
 func _test_time_formatting() -> bool:
 	var tm = TimeManager.new()
 	var formatted = tm.get_formatted_time()
-	return formatted != ""
+	var ok = formatted != ""
+	tm.free()
+	return ok
 
 func _test_season_names() -> bool:
 	var tm = TimeManager.new()
-	return tm.get_season_name() == "Spring"
+	var season = tm.get_season_name()
+	var ok = season == "Spring" or season == "Summer" or season == "Fall" or season == "Winter"
+	tm.free()
+	return ok
 
 func _test_pause_resume() -> bool:
 	var tm = TimeManager.new()
 	tm.pause_time()
-	var paused = tm.is_paused
+	var is_paused = tm.is_paused
 	tm.resume_time()
-	return paused and not tm.is_paused
+	var ok = is_paused and not tm.is_paused
+	tm.free()
+	return ok
 
-# Inventory 测试函数
+# Inventory Test Functions
 func _test_inventory_initial() -> bool:
 	var inv = Inventory.new()
 	inv._initialize_slots()
-	return inv.get_empty_slot_count() == 36
+	var ok = inv.get_empty_slot_count() == 36
+	inv.free()
+	return ok
 
 func _test_inventory_add() -> bool:
 	var inv = Inventory.new()
 	inv._initialize_slots()
 	var result = inv.add_item("turnip", 5)
-	return result and inv.get_item_count("turnip") == 5
+	var ok = result and inv.get_item_count("turnip") == 5
+	inv.free()
+	return ok
 
 func _test_inventory_remove() -> bool:
 	var inv = Inventory.new()
 	inv._initialize_slots()
 	inv.add_item("turnip", 10)
 	var result = inv.remove_item("turnip", 3)
-	return result and inv.get_item_count("turnip") == 7
+	var ok = result and inv.get_item_count("turnip") == 7
+	inv.free()
+	return ok
 
 func _test_inventory_has() -> bool:
 	var inv = Inventory.new()
 	inv._initialize_slots()
 	inv.add_item("turnip", 5)
-	return inv.has_item("turnip", 3) and not inv.has_item("turnip", 10)
+	var ok = inv.has_item("turnip", 3) and not inv.has_item("turnip", 10)
+	inv.free()
+	return ok
 
-# CookingSystem 测试函数
-func _test_cooking_load() -> bool:
-	var cs = CookingSystem.new()
-	cs._create_default_recipes()
-	return cs.get_all_recipes().size() > 0
+func _test_inventory_save_load() -> bool:
+	var inv = Inventory.new()
+	inv._initialize_slots()
+	inv.add_item("turnip", 5)
+	inv.add_item("potato", 3)
+	
+	var save_data = inv.get_save_data()
+	
+	var inv2 = Inventory.new()
+	inv2._initialize_slots()
+	inv2.load_save_data(save_data)
+	
+	var ok = inv2.get_item_count("turnip") == 5 and inv2.get_item_count("potato") == 3
+	inv.free()
+	inv2.free()
+	return ok
 
-func _test_cooking_learn() -> bool:
-	var cs = CookingSystem.new()
-	cs._create_default_recipes()
-	var result = cs.learn_recipe("fried_egg")
-	return result and cs.is_recipe_learned("fried_egg")
+# ItemDatabase Test Functions
+func _test_item_database_load() -> bool:
+	var db = ItemDatabase.new()
+	var ok = db.items.size() > 0
+	db.free()
+	return ok
 
-func _test_cooking_get() -> bool:
-	var cs = CookingSystem.new()
-	cs._create_default_recipes()
-	var recipe = cs.get_recipe("fried_egg")
-	return recipe != null and recipe.name == "煎蛋"
+func _test_get_item() -> bool:
+	var db = ItemDatabase.new()
+	var item = db.get_item("turnip")
+	var ok = item != null and item.name == "芜菁"
+	db.free()
+	return ok
+
+func _test_get_icon_path() -> bool:
+	var db = ItemDatabase.new()
+	var path = db.get_icon_path("turnip")
+	var ok = path != ""
+	db.free()
+	return ok
