@@ -298,7 +298,9 @@ func _detect_scene_key(node: Node2D) -> String:
 	return "shipping_bin"
 
 func _find_node_at(world_pos: Vector2) -> Node2D:
-	for child in layout_root.get_children()[::-1]:
+	var children = layout_root.get_children()
+	children.invert()
+	for child in children:
 		if _node_contains_point(child, world_pos):
 			return child
 	return null

@@ -216,7 +216,7 @@ func _on_activity_button_pressed(activity_id: String, activity: Dictionary) -> v
 		_start_minigame(minigame, activity_id, activity)
 	else:
 		# 直接完成活动
-		var result := FestivalSystem.complete_festival_activity(current_festival_id, activity_id)
+		var result = FestivalSystem.complete_festival_activity(current_festival_id, activity_id)
 		if result.get("success", false):
 			_show_result_dialog("活动完成！", result.get("rewards", {}))
 		else:
@@ -230,14 +230,14 @@ func _start_minigame(minigame_id: String, activity_id: String, activity: Diction
 	print("[FestivalUI] Starting minigame: ", minigame_id)
 
 	# 模拟小游戏完成
-	var result := FestivalSystem.complete_festival_activity(current_festival_id, activity_id)
+	var result = FestivalSystem.complete_festival_activity(current_festival_id, activity_id)
 	if result.get("success", false):
 		_show_result_dialog("活动完成！", result.get("rewards", {}))
 
 
 ## 奖励按钮点击
 func _on_reward_button_pressed(reward_id: String) -> void:
-	var result := FestivalSystem.claim_festival_reward(current_festival_id, reward_id)
+	var result = FestivalSystem.claim_festival_reward(current_festival_id, reward_id)
 
 	if result.get("success", false):
 		_show_result_dialog("奖励领取成功！", result.get("items", {}))
