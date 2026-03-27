@@ -1,5 +1,4 @@
 extends Node
-class_name GameManager
 
 ## GameManager - 游戏主管理器
 ## 负责游戏整体状态管理，协调各个系统
@@ -94,11 +93,11 @@ func register_player(player_node: Node2D) -> void:
 	print("[GameManager] Player registered")
 
 ## 获取管理器引用（便捷方法）
-func get_inventory_manager() -> InventoryManager:
+func get_inventory_manager():
 	return get_node_or_null("/root/InventoryManager")
 
-func get_money_manager() -> MoneyManager:
+func get_money_manager():
 	return get_node_or_null("/root/MoneyManager")
 
-func get_stamina_manager() -> StaminaManager:
+func get_stamina_manager():
 	return get_node_or_null("/root/StaminaManager")
