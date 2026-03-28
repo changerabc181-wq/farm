@@ -12,6 +12,8 @@ class_name HouseUpgradeUI
 @onready var money_label: Label = $Panel/MoneyLabel
 @onready var benefits_label: Label = $Panel/BenefitsLabel
 
+var _message_label: Label
+
 func _ready() -> void:
 	_setup_signals()
 	_update_display()
@@ -85,7 +87,34 @@ func _on_close_pressed() -> void:
 
 func _show_message(text: String) -> void:
 	print("[HouseUpgradeUI] ", text)
-	# TODO: 显示实际的消息UI
+	# 创建或复用消息标签
+	if not _message_label:
+		_message_label = Label.new()
+		_message_label.name = "MessageLabel"
+		_message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_message_label.add_theme_font_size_override("font_size", 16)
+		_message_label.modulate = Color(1.0, 0.9, 0.2, 1.0)  # 金黄色
+		_panel_add_message_label()
+	
+	_message_label.text = text
+	_message_label.modulate.a = 1.0
+	
+	# 淡出动画
+	var tween := create_tween()
+	tween.tween_property(_message_label, "modulate:a", 0.0, 2.5)
+
+
+func _panel_add_message_label() -> void:
+	# 找到 Panel 并添加消息标签
+	var panel := find_child("Panel", true, false)
+	if panel and _message_label.get_parent() != panel:
+		panel.add_child(_message_label)
+		# 设置位置在面板底部
+		_message_label.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+		_message_label.offset_top = -60
+		_message_label.offset_bottom = -35
+		_message_label.offset_left = -150
+		_message_label.offset_right = 150
 
 func open() -> void:
 	show()

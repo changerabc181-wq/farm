@@ -171,19 +171,49 @@ func _on_new_game_pressed() -> void:
 func _on_load_game_pressed() -> void:
 	if _game_started:
 		return
-	_game_started = true
 	print("[MainMenu] 加载游戏")
-	# TODO: 显示加载存档界面
-	var save_exists := _has_save_file()
-	if save_exists:
-		_fade_to_scene("res://src/world/maps/Farm.tscn")
-	else:
-		_show_no_save_dialog()
+	_show_save_load_menu(false)
+
+
+func _show_save_load_menu(is_save: bool) -> void:
+	var packed := load("res://src/ui/menus/SaveLoadMenu.tscn")
+	if packed:
+		var menu: SaveLoadMenu = packed.instantiate()
+		menu.set_mode(SaveLoadMenu.Mode.SAVE if is_save else SaveLoadMenu.Mode.LOAD)
+		menu.load_completed.connect(_on_save_load_completed)
+		menu.save_completed.connect(_on_save_completed)
+		menu.menu_closed.connect(_on_save_load_menu_closed)
+		add_child(menu)
+
+
+func _on_save_load_completed(slot: int) -> void:
+	print("[MainMenu] 已加载存档槽位 %d" % slot)
+	_fade_to_scene("res://src/world/maps/Farm.tscn")
+
+
+func _on_save_completed(slot: int) -> void:
+	print("[MainMenu] 已保存到存档槽位 %d" % slot)
+
+
+func _on_save_load_menu_closed() -> void:
+	_game_started = false
 
 func _on_settings_pressed() -> void:
 	print("[MainMenu] 设置")
-	# TODO: 显示设置菜单
-	_show_coming_soon_dialog("设置功能开发中")
+	_show_settings_menu()
+
+
+func _show_settings_menu() -> void:
+	var packed := load("res://src/ui/menus/SettingsUI.tscn")
+	if packed:
+		var settings: SettingsUI = packed.instantiate()
+		settings.settings_closed.connect(_on_settings_closed)
+		add_child(settings)
+		settings.open()
+
+
+func _on_settings_closed() -> void:
+	_game_started = false
 
 func _on_quit_pressed() -> void:
 	print("[MainMenu] 退出游戏")

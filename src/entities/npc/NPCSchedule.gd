@@ -212,8 +212,34 @@ func _get_special_entry(time: float, day: int, season: int) -> ScheduleEntry:
 func _check_special_conditions(conditions: Dictionary, day: int, season: int, time: float) -> bool:
 	# 检查天气条件
 	if conditions.has("weather"):
-		# WeatherSystem 未实现，跳过
-		pass
+		var weather_system := _get_weather_system()
+		if weather_system == null:
+			return false  # WeatherSystem 未就绪，跳过
+
+		var required_weather = conditions.get("weather", "")
+		var current_weather: String = weather_system.get_current_weather()
+		var weather_match := false
+
+		# 支持数组：满足其中一个天气即可
+		if required_weather is Array:
+			weather_match = current_weather in required_weather
+		elif str(required_weather).begins_with("not_"):
+			# 支持 "not_rain" 等反向条件
+			var excluded := str(required_weather).substr(4)
+			weather_match = current_weather != excluded
+		else:
+			weather_match = required_weather == current_weather
+
+		if not weather_match:
+			return false
+
+	# 检查雨季/雪季特殊条件
+	if conditions.has("bad_weather"):
+		var weather_system := _get_weather_system()
+		if weather_system != null:
+			var bad_weather: bool = weather_system.is_bad_weather()
+			if not bad_weather:
+				return false
 
 	# 检查季节条件
 	if conditions.has("season"):
@@ -233,6 +259,26 @@ func _check_special_conditions(conditions: Dictionary, day: int, season: int, ti
 			return false
 
 	return true
+
+
+## 获取 WeatherSystem 引用（安全获取）
+func _get_weather_system() -> Node:
+	# NPCSchedule is RefCounted, not Node, so use get_tree() if available
+	# Otherwise require explicit injection via set_weather_system()
+	if _weather_system != null:
+		return _weather_system
+	# Try engine singleton approach
+	var tree := Engine.get_main_loop()
+	if tree and tree.has_meta("weather_system"):
+		return tree.get_meta("weather_system")
+	return null
+
+
+## 设置 WeatherSystem 引用（用于 RefCounted 环境）
+var _weather_system: Node = null
+
+func set_weather_system(system: Node) -> void:
+	_weather_system = system
 
 
 ## 在列表中查找日程项

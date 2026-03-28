@@ -80,10 +80,53 @@ var _completed_quests: Array[String] = []
 # 追踪的最大任务数量
 const MAX_TRACKED_QUESTS: int = 5
 
+# 经验系统
+signal experience_gained(amount: int, total: int)
+signal level_up(new_level: int)
+
+const XP_BASE: int = 100          # 1级所需经验
+const XP_MULTIPLIER: float = 1.5  # 每级倍数
+
+var _player_xp: int = 0
+var _player_level: int = 1
+
+# NPC 数据库缓存
+var _npc_database: Dictionary = {}
+
 func _ready() -> void:
 	print("[QuestSystem] Initialized")
 	_load_quest_database()
+	_load_npc_database()
 	_connect_signals()
+
+## 加载 NPC 数据库
+func _load_npc_database() -> void:
+	var npc_file_path := "res://data/npcs.json"
+	if not FileAccess.file_exists(npc_file_path):
+		push_warning("[QuestSystem] NPC database not found: " + npc_file_path)
+		return
+
+	var npc_file := FileAccess.open(npc_file_path, FileAccess.READ)
+	if not npc_file:
+		push_error("[QuestSystem] Failed to open NPC database")
+		return
+
+	var npc_json_text := npc_file.get_as_text()
+	npc_file.close()
+
+	var npc_json := JSON.new()
+	if npc_json.parse(npc_json_text) != OK:
+		push_error("[QuestSystem] Failed to parse NPC database: " + npc_json.get_error_message())
+		return
+
+	var npc_data_dict: Dictionary = npc_json.data
+	for npc_entry in npc_data_dict.get("npcs", []):
+		var npc_id: String = npc_entry.get("id", "")
+		if npc_id != "":
+			_npc_database[npc_id] = npc_entry
+
+	print("[QuestSystem] Loaded %d NPCs from database" % _npc_database.size())
+
 
 func _load_quest_database() -> void:
 	var file_path: String = "res://data/quests.json"
@@ -409,6 +452,73 @@ func turn_in_quest(quest_id: String) -> bool:
 
 	return true
 
+## 经验系统：计算指定等级所需总经验
+func get_xp_for_level(level: int) -> int:
+	if level <= 1:
+		return 0
+	return int(float(XP_BASE) * (pow(XP_MULTIPLIER, level - 1) - 1.0) / (XP_MULTIPLIER - 1.0))
+
+
+## 经验系统：根据总经验计算当前等级
+func get_level_from_xp(total_xp: int) -> int:
+	var level := 1
+	while get_xp_for_level(level + 1) <= total_xp:
+		level += 1
+	return level
+
+
+## 经验系统：获取当前等级所需经验
+func get_xp_for_current_level() -> int:
+	return get_xp_for_level(_player_level)
+
+
+## 经验系统：获取下一级所需经验
+func get_xp_for_next_level() -> int:
+	return get_xp_for_level(_player_level + 1)
+
+
+## 经验系统：获取当前进度 (0.0 - 1.0)
+func get_xp_progress() -> float:
+	var current_level_xp: int = get_xp_for_current_level()
+	var next_level_xp: int = get_xp_for_next_level()
+	if next_level_xp == current_level_xp:
+		return 1.0
+	return float(_player_xp - current_level_xp) / float(next_level_xp - current_level_xp)
+
+
+## 经验系统：添加经验值
+func add_experience(amount: int) -> void:
+	if amount <= 0:
+		return
+
+	var old_level: int = _player_level
+	_player_xp += amount
+	_player_level = get_level_from_xp(_player_xp)
+
+	print("[QuestSystem] +%d XP (Total: %d, Level: %d)" % [amount, _player_xp, _player_level])
+	experience_gained.emit(amount, _player_xp)
+
+	if _player_level > old_level:
+		print("[QuestSystem] 🎉 Level Up! %d → %d" % [old_level, _player_level])
+		level_up.emit(_player_level)
+
+
+## 经验系统：获取当前经验
+func get_current_xp() -> int:
+	return _player_xp
+
+
+## 经验系统：获取当前等级
+func get_current_level() -> int:
+	return _player_level
+
+
+## 经验系统：设置经验值（用于加载存档）
+func set_xp_and_level(xp: int, level: int) -> void:
+	_player_xp = xp
+	_player_level = level
+
+
 ## 发放奖励
 func _grant_rewards(rewards: Dictionary) -> void:
 	# 金钱奖励
@@ -429,8 +539,7 @@ func _grant_rewards(rewards: Dictionary) -> void:
 	# 经验奖励
 	var experience: int = rewards.get("experience", 0)
 	if experience > 0:
-		print("[QuestSystem] Reward: %d experience" % experience)
-		# TODO: 实现经验系统后添加
+		add_experience(experience)
 
 ## 放弃任务
 func abandon_quest(quest_id: String) -> bool:
@@ -564,14 +673,34 @@ func _get_target_display_name(target: String) -> String:
 
 ## 获取NPC名称
 func _get_npc_name(npc_id: String) -> String:
-	# TODO: 实现NPC数据库后从数据库获取
+	if _npc_database.has(npc_id):
+		return _npc_database[npc_id].get("name", npc_id)
+	# Fallback to hardcoded
 	match npc_id:
-		"mayor": return "村长"
-		"shopkeeper": return "店主"
-		"farmer": return "农夫"
-		"fisherman": return "渔夫"
-		"blacksmith": return "铁匠"
+		"mayor": return "镇长·威廉"
+		"shopkeeper_lily": return "店主·莉莉"
+		"blacksmith_tom": return "铁匠·汤姆"
+		"doctor_mary": return "医生·玛丽"
+		"fisherman_jack": return "渔夫·杰克"
+		"farmer_joe": return "农夫·乔"
 		_: return npc_id
+
+
+## 根据 NPC ID 获取 NPC 数据
+func get_npc_data(npc_id: String) -> Dictionary:
+	return _npc_database.get(npc_id, {})
+
+
+## 根据 NPC ID 获取 NPC 当前地点
+func get_npc_location(npc_id: String) -> String:
+	if _npc_database.has(npc_id):
+		return _npc_database[npc_id].get("default_location", "")
+	return ""
+
+
+## 检查 NPC 是否在数据库中
+func has_npc(npc_id: String) -> bool:
+	return _npc_database.has(npc_id)
 
 # ===== 事件处理 =====
 
@@ -688,7 +817,9 @@ func save_state() -> Dictionary:
 	return {
 		"progress": data,
 		"active_quests": _active_quests,
-		"completed_quests": _completed_quests
+		"completed_quests": _completed_quests,
+		"player_xp": _player_xp,
+		"player_level": _player_level
 	}
 
 ## 加载状态
@@ -717,6 +848,10 @@ func load_state(data: Dictionary) -> void:
 	# 加载已完成任务列表
 	for qid in data.get("completed_quests", []):
 		_completed_quests.append(str(qid))
+
+	# 加载经验数据
+	_player_xp = data.get("player_xp", 0)
+	_player_level = data.get("player_level", 1)
 
 	print("[QuestSystem] Loaded %d quest progress records" % _player_progress.size())
 

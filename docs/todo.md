@@ -46,13 +46,13 @@
 ## 🟡 剩余任务
 
 ### 中优先级
-- ⬜ R5: FestivalMinigame 基类 9个 pass 回调
-- ⬜ R6: NPCSchedule 天气条件存根
-- ⬜ R7: NPCSchedule 扩展
-- ⬜ R8: MainMenu 存档加载/设置菜单
-- ⬜ R9: HouseUpgradeUI 消息显示
-- ⬜ R10: QuestSystem 经验系统
-- ⬜ R11: QuestSystem NPC数据库
+- ✅ R5: FestivalMinigame 基类 9个 pass 回调
+- ✅ R6: NPCSchedule 天气条件存根
+- ✅ R7: NPCSchedule 扩展
+- ✅ R8: MainMenu 存档加载/设置菜单
+- ✅ R9: HouseUpgradeUI 消息显示
+- ✅ R10: QuestSystem 经验系统
+- ✅ R11: QuestSystem NPC数据库
 
 ### 缺失场景
 - ⬜ Egg.tscn / Snowball.tscn（已设为 null）
