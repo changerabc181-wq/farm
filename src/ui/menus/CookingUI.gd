@@ -418,7 +418,7 @@ func _update_effects(recipe) -> void:
 		effects_text += "恢复生命: %d  " % recipe.effects.health
 	if recipe.effects.has("buff"):
 		var buff_name := _get_buff_name(recipe.effects.buff)
-		var duration := recipe.effects.get("duration", 0)
+		var duration: int = recipe.effects.get("duration", 0)
 		effects_text += "\n增益: %s (%d秒)" % [buff_name, duration]
 
 	effects_label.text = effects_text

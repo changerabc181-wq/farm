@@ -294,14 +294,14 @@ func upgrade_tool(tool_type: int) -> bool:
 
 ## 获取升级效果描述
 func get_upgrade_effect_description(current_tier: int, next_tier: int) -> String:
-	var current_eff := TIER_EFFICIENCY.get(current_tier, 1.0)
-	var next_eff := TIER_EFFICIENCY.get(next_tier, 1.0)
+	var current_eff: float = TIER_EFFICIENCY.get(current_tier, 1.0)
+	var next_eff: float = TIER_EFFICIENCY.get(next_tier, 1.0)
 
-	var current_range := TIER_RANGE.get(current_tier, 1)
-	var next_range := TIER_RANGE.get(next_tier, 1)
+	var current_range: int = TIER_RANGE.get(current_tier, 1)
+	var next_range: int = TIER_RANGE.get(next_tier, 1)
 
-	var current_energy := TIER_ENERGY_COST.get(current_tier, 2)
-	var next_energy := TIER_ENERGY_COST.get(next_tier, 2)
+	var current_energy: int = TIER_ENERGY_COST.get(current_tier, 2)
+	var next_energy: int = TIER_ENERGY_COST.get(next_tier, 2)
 
 	var desc := "升级效果:\n"
 
