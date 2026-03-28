@@ -31,6 +31,7 @@ var layout_root: Node2D
 func _ready() -> void:
 	print("[Farm] Scene loaded")
 	_setup_tilemap()
+	print("[Farm] Tileset: ", tile_set)
 	_setup_layout_root()
 	_apply_layout_from_file()
 	_setup_ui()
@@ -41,6 +42,7 @@ func _ready() -> void:
 	_connect_event_signals()
 
 func _setup_tilemap() -> void:
+	print("[Farm] Tileset: ", tile_set)
 	# 使用 FarmTilesetBuilder 构建瓦片集
 	if tile_map.tile_set == null:
 		var tile_set: TileSet = FarmTilesetBuilder.build_tileset()

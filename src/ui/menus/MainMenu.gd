@@ -28,6 +28,9 @@ var _particles: Array[Control] = []
 @onready var decoration_bar: ColorRect = $BackgroundLayer/DecorationBar
 
 func _ready() -> void:
+	print("[DEBUG] MainMenu._ready starting")
+	print("[DEBUG] MenuContainer: ", menu_container)
+	print("[DEBUG] new_game_btn: ", new_game_btn, " rect: ", new_game_btn.get_global_rect() if new_game_btn else "null")
 	print("[MainMenu] _ready() called")
 	_setup_styles()
 	_apply_styles()
