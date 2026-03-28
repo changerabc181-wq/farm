@@ -39,9 +39,6 @@ func _ready() -> void:
 	_setup_planting_manager()
 	_connect_time_signals()
 	_connect_event_signals()
-	var game_manager = get_node_or_null("/root/GameManager")
-	if game_manager:
-		game_manager.start_game()
 
 func _setup_tilemap() -> void:
 	# 使用 FarmTilesetBuilder 构建瓦片集
