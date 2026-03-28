@@ -42,7 +42,7 @@ const IDLE_FRAMES = {
 func _ready() -> void:
 	# 初始化相机
 	if camera:
-		camera.enabled = true
+		camera.current = true
 	# 设置初始帧
 	if sprite:
 		sprite.frame = IDLE_FRAMES[current_direction]
