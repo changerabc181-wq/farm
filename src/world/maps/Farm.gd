@@ -8,6 +8,7 @@ const TimeDisplayScene = preload("res://src/ui/hud/TimeDisplay.tscn")
 const ToolDisplayScene = preload("res://src/ui/hud/ToolDisplay.tscn")
 const HoeScene = preload("res://src/entities/tools/Hoe.tscn")
 const FARM_LAYOUT_PATH := "res://data/farm_layout.json"
+const EDITOR_MAP_PATH := "res://data/maps/farm_layout.json"
 const LAYOUT_SCENES := {
 	"shipping_bin": preload("res://src/world/objects/ShippingBin.tscn"),
 	"workbench": preload("res://src/world/objects/Workbench.tscn"),
@@ -49,8 +50,18 @@ func _setup_tilemap() -> void:
 		tile_map.tile_set = tile_set
 		print("[Farm] TileSet built from FarmTilesetBuilder")
 
-	# 绘制默认农场布局
-	_paint_default_farm()
+	# 尝试从 MapLoader 加载编辑器地图
+	if MapLoader.map_exists(EDITOR_MAP_PATH):
+		var editor_tiles: Array = MapLoader.load_layout(EDITOR_MAP_PATH)
+		if not editor_tiles.is_empty():
+			_paint_editor_layout(editor_tiles)
+			print("[Farm] Loaded map from MapLoader: ", EDITOR_MAP_PATH)
+		else:
+			_paint_default_farm()
+			print("[Farm] MapLoader returned empty, using default farm")
+	else:
+		_paint_default_farm()
+		print("[Farm] No editor map found, using default farm")
 	print("[Farm] TileMap setup complete")
 
 func _paint_default_farm() -> void:
@@ -112,6 +123,43 @@ func _paint_default_farm() -> void:
 		tile_map.set_cell(0, corner, 0, FarmTilesetBuilder.get_coord(FENCE_POST))
 
 	print("[Farm] Default farm layout painted.")
+
+
+## Map editor tile ID → FarmTilesetBuilder TileCoord mapping.
+## Editor tile IDs 0-15 correspond to the first 8 columns × 2 rows of the farm_tiles.png atlas.
+## This maps each editor tile to the most appropriate FarmTilesetBuilder tile.
+const _EDITOR_TILE_MAP := {
+	0:  FarmTilesetBuilder.TileCoord.GRASS_PLAIN,    # grass
+	1:  FarmTilesetBuilder.TileCoord.GRASS_2,        # dark_grass
+	2:  FarmTilesetBuilder.TileCoord.GRASS_PLAIN,    # medium_grass (→ grass)
+	3:  FarmTilesetBuilder.TileCoord.GRASS_PLAIN,    # light_grass (→ grass)
+	4:  FarmTilesetBuilder.TileCoord.GRASS_PLAIN,    # dry_grass (→ grass)
+	5:  FarmTilesetBuilder.TileCoord.GRASS_PLAIN,    # flower_grass (→ grass)
+	6:  FarmTilesetBuilder.TileCoord.PATH_DIRT,       # path
+	7:  FarmTilesetBuilder.TileCoord.PATH_DIRT,       # dirt (→ dirt path)
+	8:  FarmTilesetBuilder.TileCoord.WATER_POND,      # water
+	9:  FarmTilesetBuilder.TileCoord.WATER_POND,      # shallow_water (→ water)
+	10: FarmTilesetBuilder.TileCoord.GRASS_PLAIN,    # sand (→ grass placeholder)
+	11: FarmTilesetBuilder.TileCoord.FENCE_H,         # fence
+	12: FarmTilesetBuilder.TileCoord.GATE_OPEN,       # gate
+	13: FarmTilesetBuilder.TileCoord.WOOD_PLANKS,     # wood_floor
+	14: FarmTilesetBuilder.TileCoord.STONE_WALL,      # stone_floor (→ stone wall)
+	15: FarmTilesetBuilder.TileCoord.FERTILE_SOIL,    # farmland
+}
+
+## Paint the map from the map editor's JSON layout (30×20 grid).
+## Each cell in editor_tiles is an editor tile ID (0-15), which is translated
+## to a FarmTilesetBuilder TileCoord and painted on the TileMap.
+func _paint_editor_layout(editor_tiles: Array) -> void:
+	print("[Farm] Painting editor layout (", editor_tiles.size(), " rows)...")
+	for row in range(editor_tiles.size()):
+		var row_data: Array = editor_tiles[row]
+		for col in range(row_data.size()):
+			var editor_id: int = row_data[col]
+			var tile_coord: int = _EDITOR_TILE_MAP.get(editor_id, FarmTilesetBuilder.TileCoord.GRASS_PLAIN)
+			var atlas_coord: Vector2i = FarmTilesetBuilder.get_coord(tile_coord)
+			tile_map.set_cell(0, Vector2i(col, row), 0, atlas_coord)
+	print("[Farm] Editor layout painted.")
 
 
 func _setup_layout_root() -> void:
