@@ -49,6 +49,7 @@ SleepSystem="*res://src/core/systems/SleepSystem.gd"
 FishingSystem="*res://src/core/systems/FishingSystem.gd"
 Friendship="*res://src/core/relationship/Friendship.gd"
 CraftingSystem="*res://src/core/crafting/CraftingSystem.gd"
+StaminaManager="*res://src/core/systems/StaminaManager.gd"
 
 [display]
 

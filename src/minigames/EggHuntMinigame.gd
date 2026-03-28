@@ -5,7 +5,7 @@ class_name EggHuntMinigame
 ## 春节活动：在限定时间内找到隐藏的彩蛋
 
 # 彩蛋配置
-const EGG_SCENE: PackedScene = null  # preload("res://src/minigames/Egg.tscn")  // TODO: Create Egg.tscn
+const EGG_SCENE: PackedScene = preload("res://src/minigames/Egg.tscn") if FileAccess.file_exists("res://src/minigames/Egg.tscn") else null
 const MAX_EGGS: int = 20
 const EGG_POINTS: Dictionary = {
 	"normal": 10,
@@ -65,8 +65,12 @@ func _spawn_eggs() -> void:
 	_total_eggs = egg_count
 
 
-func _create_egg(index: int) -> Node2D:
-	var egg := Node2D.new()
+func _create_egg(_index: int) -> Node2D:
+	var egg: Node2D
+	if EGG_SCENE:
+		egg = EGG_SCENE.instantiate()
+	else:
+		egg = Node2D.new()
 
 	# 随机位置
 	var x := randf_range(play_area.position.x, play_area.position.x + play_area.size.x)
@@ -76,14 +80,26 @@ func _create_egg(index: int) -> Node2D:
 	# 随机类型
 	var roll := randf()
 	var egg_type := "normal"
+	var color := Color.DEEP_PINK
 	if roll > 0.95:
 		egg_type = "golden"
+		color = Color.GOLD
 	elif roll > 0.85:
 		egg_type = "silver"
+		color = Color.SILVER
 
 	# 设置元数据
 	egg.set_meta("egg_type", egg_type)
 	egg.set_meta("points", EGG_POINTS[egg_type])
+
+	# Add visual representation if needed
+	if egg.get_child_count() == 0:
+		var rect := ColorRect.new()
+		var size := 15 if egg_type == "normal" else 20
+		rect.size = Vector2(size, size)
+		rect.position = Vector2(-size/2.0, -size/2.0)
+		rect.color = color
+		egg.add_child(rect)
 
 	# 添加点击检测
 	var area := Area2D.new()
@@ -93,6 +109,7 @@ func _create_egg(index: int) -> Node2D:
 	collision.shape = shape
 	area.add_child(collision)
 	egg.add_child(area)
+	area.input_pickable = true
 
 	area.input_event.connect(func(_viewport, event, _shape_idx):
 		if event is InputEventMouseButton and event.pressed:

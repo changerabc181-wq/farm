@@ -102,12 +102,11 @@ func _setup_background_gradient() -> void:
 		particle_container.add_child(star)
 
 func _play_intro_animation() -> void:
-	# 淡入标题
 	title_label.modulate.a = 0.0
 	subtitle_label.modulate.a = 0.0
 	menu_container.modulate.a = 0.0
 
-	# 标题上浮动画
+# 标题上浮动画
 	var title_base_y: float = title_label.position.y
 	title_label.modulate.a = 0.0
 	title_label.position.y = title_base_y + 10.0
@@ -115,7 +114,6 @@ func _play_intro_animation() -> void:
 	tw.set_parallel(true)
 	tw.tween_property(title_label, "modulate:a", 1.0, 0.8).set_ease(Tween.EASE_OUT)
 	tw.tween_property(title_label, "position:y", title_base_y - 20.0, 0.8).set_ease(Tween.EASE_OUT)
-
 	await tw
 
 	# 副标题和菜单渐入
@@ -123,7 +121,7 @@ func _play_intro_animation() -> void:
 	menu_container.modulate.a = 0.0
 	var tw2 := create_tween()
 	tw2.set_parallel(true)
-	tw2.tween_property(subtitle_label, "modulate:a", 1.0, 0.6)
+tw2.tween_property(subtitle_label, "modulate:a", 1.0, 0.6)
 	await get_tree().create_timer(0.2).timeout
 	var tw3 := create_tween()
 	tw3.tween_property(menu_container, "modulate:a", 1.0, 0.6)

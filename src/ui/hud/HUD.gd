@@ -1,57 +1,48 @@
 extends CanvasLayer
-class_name HUD
 
-## HUD - 游戏界面显示
-## 显示时间、日期、体力、金钱等信息
+## 游戏主HUD - 显示体力/金钱/日期/季节
 
-# UI节点引用
-@onready var time_label: Label = $MarginContainer/VBoxContainer/TimeBox/TimeLabel
-@onready var date_label: Label = $MarginContainer/VBoxContainer/TimeBox/DateLabel
-@onready var stamina_bar: ProgressBar = $MarginContainer/VBoxContainer2/StaminaBar
-@onready var stamina_label: Label = $MarginContainer/VBoxContainer2/StaminaLabel
-@onready var money_label: Label = $MarginContainer/MoneyBox/MoneyLabel
+@onready var stamina_bar: ProgressBar = $StaminaBar
+@onready var stamina_label: Label = $StaminaBar/StaminaLabel
+@onready var money_label: Label = $MoneyContainer/MoneyLabel
+@onready var day_label: Label = $DayContainer/DayLabel
+@onready var gold_icon: ColorRect = $MoneyContainer/GoldIcon
+
+var _game_manager: Node = null
+var _time_manager: Node = null
 
 func _ready() -> void:
-	_connect_signals()
+	_game_manager = get_node_or_null("/root/GameManager")
+	_time_manager = get_node_or_null("/root/TimeManager")
 	_update_display()
 
-func _connect_signals() -> void:
-	if TimeManager:
-		get_node("/root/TimeManager").time_changed.connect(_on_time_changed)
-		get_node("/root/TimeManager").day_changed.connect(_on_day_changed)
-	if GameManager:
-		GameManager.stamina_changed.connect(_on_stamina_changed)
-	if MoneySystem:
-		MoneySystem.money_changed.connect(_on_money_changed)
+func _process(_delta: float) -> void:
+	_update_display()
 
 func _update_display() -> void:
-	_update_time_display()
-	_update_stamina_display()
-	_update_money_display()
+	# 体力条
+	if _game_manager:
+		var stamina = _game_manager.get("current_stamina") if _game_manager.has_method("current_stamina") else _game_manager.get("current_stamina", 100.0)
+		var max_stamina = _game_manager.get("max_stamina") if _game_manager.has_method("max_stamina") else 100.0
+		var ratio = clampf(stamina / max_stamina if max_stamina > 0 else 0.0, 0.0, 1.0)
+		stamina_bar.value = ratio * 100.0
+		stamina_label.text = "%d/%d" % [int(stamina), int(max_stamina)]
 
-func _update_time_display() -> void:
-	if TimeManager:
-		time_label.text = TimeManager.get_formatted_time()
-		date_label.text = TimeManager.get_formatted_date()
+		# 体力条颜色：绿>黄>红
+		if ratio > 0.6:
+			stamina_bar.modulate = Color(0.3, 0.9, 0.3, 1.0)  # 绿色
+		elif ratio > 0.3:
+			stamina_bar.modulate = Color(0.9, 0.8, 0.2, 1.0)  # 黄色
+		else:
+			stamina_bar.modulate = Color(0.9, 0.3, 0.2, 1.0)  # 红色
 
-func _update_stamina_display() -> void:
-	if GameManager:
-		stamina_bar.max_value = GameManager.max_stamina
-		stamina_bar.value = GameManager.current_stamina
-		stamina_label.text = str(int(GameManager.current_stamina)) + "/" + str(int(GameManager.max_stamina))
+		# 金钱
+		var money = _game_manager.get_money() if _game_manager.has_method("get_money") else 0
+		money_label.text = "%,d" % money
 
-func _update_money_display() -> void:
-	if MoneySystem:
-		money_label.text = "$" + str(MoneySystem.get_money())
-
-func _on_time_changed(_new_time: float) -> void:
-	_update_time_display()
-
-func _on_day_changed(_new_day: int) -> void:
-	_update_time_display()
-
-func _on_stamina_changed(_new_stamina: float) -> void:
-	_update_stamina_display()
-
-func _on_money_changed(_new_money: int, _delta: int) -> void:
-	_update_money_display()
+	# 日期/季节
+	if _time_manager:
+		var day = _time_manager.get_current_day() if _time_manager.has_method("get_current_day") else 1
+		var season = _time_manager.get_season_name() if _time_manager.has_method("get_season_name") else "Spring"
+		var season_cn = {"Spring": "春", "Summer": "夏", "Fall": "秋", "Winter": "冬"}.get(season, season)
+		day_label.text = "%s 第%d天" % [season_cn, day]

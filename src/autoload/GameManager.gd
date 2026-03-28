@@ -94,10 +94,14 @@ func register_player(player_node: Node2D) -> void:
 
 ## 获取管理器引用（便捷方法）
 func get_inventory_manager():
-	return get_node_or_null("/root/InventoryManager")
+	var inv = get_node_or_null("/root/InventoryManager")
+	if inv: return inv
+	return get_node_or_null("/root/Inventory")
 
 func get_money_manager():
-	return get_node_or_null("/root/MoneyManager")
+	var money = get_node_or_null("/root/MoneyManager")
+	if money: return money
+	return get_node_or_null("/root/MoneySystem")
 
 func get_stamina_manager():
 	return get_node_or_null("/root/StaminaManager")

@@ -5,7 +5,7 @@ class_name SnowballFightMinigame
 ## 冬季节日活动
 
 # 配置
-const SNOWBALL_SCENE: PackedScene = null  # preload("res://src/minigames/Snowball.tscn")  // TODO: Create Snowball.tscn
+const SNOWBALL_SCENE: PackedScene = preload("res://src/minigames/Snowball.tscn") if FileAccess.file_exists("res://src/minigames/Snowball.tscn") else null
 const PLAYER_SPEED: float = 200.0
 const SNOWBALL_SPEED: float = 400.0
 const MAX_HEALTH: int = 5
@@ -70,6 +70,14 @@ func _create_opponent(index: int) -> Node2D:
 	opponent.position = Vector2(100 + (index * 150), 100 + (randi() % 100))
 	opponent.set_meta("health", 3)
 	opponent.set_meta("throw_timer", randf() * 2.0)
+	
+	# Add visual for opponent
+	var rect := ColorRect.new()
+	rect.size = Vector2(32, 32)
+	rect.position = Vector2(-16, -16)
+	rect.color = Color.DARK_SLATE_BLUE
+	opponent.add_child(rect)
+	
 	return opponent
 
 
@@ -124,7 +132,7 @@ func _update_opponents(delta: float) -> void:
 
 
 func _throw_snowball_at_player(opponent: Node2D) -> void:
-	var snowball := Node2D.new()
+	var snowball := _instantiate_snowball()
 	snowball.position = opponent.position
 	snowball.set_meta("direction", (_player_position - opponent.position).normalized())
 	snowball.set_meta("is_player_snowball", false)
@@ -172,6 +180,7 @@ func _check_collisions() -> void:
 
 					if health <= 0:
 						add_score(30)
+						opponent.visible = false
 					else:
 						add_score(10)
 					break
@@ -195,7 +204,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _throw_snowball(target: Vector2) -> void:
-	var snowball := Node2D.new()
+	var snowball := _instantiate_snowball()
 	snowball.position = _player_position
 	snowball.set_meta("direction", (target - _player_position).normalized())
 	snowball.set_meta("is_player_snowball", true)
@@ -205,6 +214,24 @@ func _throw_snowball(target: Vector2) -> void:
 	_can_throw = false
 	await get_tree().create_timer(_throw_cooldown).timeout
 	_can_throw = true
+
+
+func _instantiate_snowball() -> Node2D:
+	var snowball: Node2D
+	if SNOWBALL_SCENE:
+		snowball = SNOWBALL_SCENE.instantiate()
+	else:
+		snowball = Node2D.new()
+	
+	# Add visual representation if needed
+	if snowball.get_child_count() == 0:
+		var rect := ColorRect.new()
+		rect.size = Vector2(10, 10)
+		rect.position = Vector2(-5, -5)
+		rect.color = Color.WHITE
+		snowball.add_child(rect)
+	
+	return snowball
 
 
 func _update_ui() -> void:
