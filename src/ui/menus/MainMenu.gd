@@ -28,12 +28,14 @@ var _particles: Array[Control] = []
 @onready var decoration_bar: ColorRect = $BackgroundLayer/DecorationBar
 
 func _ready() -> void:
+	print("[MainMenu] _ready() called")
 	_setup_styles()
 	_apply_styles()
 	_setup_background_gradient()
 	_populate_savefiles()
 	_play_intro_animation()
 	new_game_btn.grab_focus()
+	print("[MainMenu] Setup complete, animation playing")
 
 	# 验证是否已有存档
 	var save_exists := _has_save_file()
@@ -54,24 +56,24 @@ func _setup_styles() -> void:
 	# 普通按钮样式
 	_button_style_normal = StyleBoxTexture.new()
 	_button_style_normal.texture = load("res://assets/sprites/ui/button_normal.png")
-	_button_style_normal.expand_margin_left = 8
-	_button_style_normal.expand_margin_right = 8
-	_button_style_normal.expand_margin_top = 8
-	_button_style_normal.expand_margin_bottom = 8
+	_button_style_normal.expand_margin_left = 0
+	_button_style_normal.expand_margin_right = 0
+	_button_style_normal.expand_margin_top = 0
+	_button_style_normal.expand_margin_bottom = 0
 
 	_button_style_hover = StyleBoxTexture.new()
 	_button_style_hover.texture = load("res://assets/sprites/ui/button_hover.png")
-	_button_style_hover.expand_margin_left = 8
-	_button_style_hover.expand_margin_right = 8
-	_button_style_hover.expand_margin_top = 8
-	_button_style_hover.expand_margin_bottom = 8
+	_button_style_hover.expand_margin_left = 0
+	_button_style_hover.expand_margin_right = 0
+	_button_style_hover.expand_margin_top = 0
+	_button_style_hover.expand_margin_bottom = 0
 
 	_button_style_pressed = StyleBoxTexture.new()
 	_button_style_pressed.texture = load("res://assets/sprites/ui/button_pressed.png")
-	_button_style_pressed.expand_margin_left = 8
-	_button_style_pressed.expand_margin_right = 8
-	_button_style_pressed.expand_margin_top = 8
-	_button_style_pressed.expand_margin_bottom = 8
+	_button_style_pressed.expand_margin_left = 0
+	_button_style_pressed.expand_margin_right = 0
+	_button_style_pressed.expand_margin_top = 0
+	_button_style_pressed.expand_margin_bottom = 0
 
 func _apply_styles() -> void:
 	var buttons := [new_game_btn, load_game_btn, settings_btn, quit_btn]

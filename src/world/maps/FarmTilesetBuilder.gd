@@ -85,6 +85,7 @@ static func build_tileset() -> TileSet:
 	for enum_key in TileCoord.keys():
 		var props = TILE_PROPERTIES.get(enum_key, {"tile_id": enum_key, "passable": true, "layer": 0})
 		var actual_tile_id: int = props.get("tile_id", enum_key)
+		var atlas_coords := get_coord(actual_tile_id)
 		var tile_data := TileSetCellTile.new()
 		tile_data.texture_origin = Vector2i.ZERO
 
@@ -96,14 +97,19 @@ static func build_tileset() -> TileSet:
 			physics_layer.add_shape(shape)
 			tile_data.add_physics_layer(physics_layer)
 
-		atlas_source.set_tile_data(_pack_tile_data(actual_tile_id), tile_data)
+		atlas_source.set_tile_data(_pack_tile_data(atlas_coords.x, atlas_coords.y), tile_data)
 
 	tile_set.add_source(atlas_source)
 	return tile_set
 
-static func _pack_tile_data(tile_id: int) -> PackedInt32Array:
+static func _pack_tile_data(atlas_x: int, atlas_y: int) -> PackedInt32Array:
+	# Godot 4 TileSetAtlasSource tile_data encoding:
+	# bits 0-19: Coords = atlas_x + atlas_y * 512
+	# bits 20-29: Alternative (0 for main tile)
+	# bits 30-31: flip_h, flip_v flags
+	var coords: int = atlas_x + atlas_y * 512
 	var data := PackedInt32Array()
-	data.append(tile_id & 0xFFFFF)
+	data.append(coords)
 	return data
 
 static func get_tile_name(tile_id: int) -> String:
