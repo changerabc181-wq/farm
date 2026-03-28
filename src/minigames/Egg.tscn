@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://egg_minigame_001"]
+
+[node name="Egg" type="Node2D"]

@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://snowball_minigame_001"]
+
+[node name="Snowball" type="Node2D"]
