@@ -19,7 +19,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.18, 0.12, 0.35, 1)
+color = Color(0.55, 0.75, 0.95, 1)
 
 [node name="DecorationBar" type="ColorRect" parent="BackgroundLayer" unique_id=1624906655]
 anchors_preset = 12
@@ -29,7 +29,7 @@ anchor_bottom = 1.0
 offset_top = -60.0
 grow_horizontal = 2
 grow_vertical = 0
-color = Color(0.2, 0.45, 0.15, 1)
+color = Color(0.35, 0.7, 0.25, 1)
 
 [node name="ParticleLayer" type="Node2D" parent="BackgroundLayer" unique_id=636897149]
 
