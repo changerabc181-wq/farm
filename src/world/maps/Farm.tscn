@@ -24,6 +24,10 @@ position = Vector2(800, 400)
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(800, 400)
 
+[node name="SkyRect" type="ColorRect" parent="."]
+z_index = -10
+color = Color(0.45, 0.75, 0.95, 1)
+
 [node name="TileMap" type="TileMap" parent="."]
 tile_set_subtile_mode = 0
 format = 2
